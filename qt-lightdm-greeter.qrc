@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/dropdown.svg</file>
+        <file>resources/leaveIcon.svg</file>
+        <file>resources/rqt-2.png</file>
+        <file>resources/pardus.png</file>
+        <file>settings.cpp</file>
+        <file>resources/bgs/bg6.jpg</file>
+        <file>resources/keyboard.jpeg</file>
+        <file>resources/ethernet-off.jpg</file>
+        <file>resources/ethernet-on.jpg</file>
+    </qresource>
+</RCC>
