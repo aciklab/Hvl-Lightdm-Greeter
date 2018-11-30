@@ -11,6 +11,7 @@
 #include <QtDebug>
 #include <QSettings>
 #include <QIcon>
+#include <QTranslator>
 
 #include <iostream>
 
@@ -37,6 +38,10 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
+    QTranslator translator;
+    translator.load("hvl-lightdm_tr", "/etc/lightdm");
+    a.installTranslator(&translator);
+
     if (! Settings().iconThemeName_loginform().isEmpty()) {
         QIcon::setThemeName(Settings().iconThemeName_loginform());
     }
@@ -55,6 +60,9 @@ int main(int argc, char *argv[])
         focusWindow->setFocus(Qt::OtherFocusReason);
         focusWindow->activateWindow();
     }
+
+
+
 
     return a.exec();
 }

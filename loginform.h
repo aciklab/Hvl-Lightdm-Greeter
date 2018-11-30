@@ -42,19 +42,22 @@ public:
     ~LoginForm();
     virtual void setFocus(Qt::FocusReason reason);
 
+
 public slots:
-    void userChanged();
+    void cancelLogin();
 
     void startLogin();
     void onPrompt(QString prompt, QLightDM::Greeter::PromptType promptType);
     void onMessage(QString prompt, QLightDM::Greeter::MessageType messageType);
 
     void authenticationComplete();
+    void stopWaitOperation(const bool& networkstatus);
 
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
+
 
 private slots:
     void on_pushButton_resetpwd_clicked();
@@ -64,10 +67,6 @@ private slots:
     void on_userbutton2_clicked();
 
     void on_userbutton3_clicked();
-
-    void on_userbutton4_clicked();
-
-    void on_userbutton5_clicked();
 
     void on_resetpasswordButton_clicked();
 
@@ -80,6 +79,8 @@ private slots:
     void on_userInput_editingFinished();
 
 
+
+    void on_loginbutton_clicked();
 
 private:
     void initialize();
@@ -123,7 +124,9 @@ private:
     bool loginStartFlag;
     bool resetStartFlag;
     QStringList knownUsers;
-
+    int currentUserIndex;
+    int loginTimeot;
+    bool timeoutFlag;
 
 
 

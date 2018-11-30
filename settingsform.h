@@ -34,6 +34,8 @@ public:
     explicit SettingsForm(QWidget *parent = 0);
     ~SettingsForm();
 
+
+
 protected slots:
 
 
@@ -41,8 +43,6 @@ protected slots:
 private slots:
 
     void on_NwpushButton_pressed();
-
-    void on_NwpushButton_released();
 
     void leaveDropDownActivated(int index);
 
@@ -52,6 +52,8 @@ private slots:
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
+Q_SIGNALS:
+     void sendNWStatusSignal(bool &status);
 
 private:
 
@@ -62,6 +64,8 @@ private:
     void checkNetwork();
     pid_t proc_find(const char* name);
     void getKeyboardLayouts();
+    void sendNWStatus(bool nwstatus);
+
 
 
 
@@ -70,14 +74,21 @@ private:
     QLightDM::PowerInterface power;
     QLightDM::SessionsModel sessionsModel;
 
+    QMap<int, void (QLightDM::PowerInterface::*)()> powerSlots;
+
     QTimer *timer;
     QLabel *qlabel;
+    QDialog *dialog;
+
     QString *keyboardList;
     int m_Screen;
     QStringList serviceList;
+    bool nwButtonPressed;
+    bool networkOK;
 
 #define MAX_NETWORK_CHECK_COUNT 3
     int network_check_counter;
+
 
 
 };

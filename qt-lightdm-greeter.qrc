@@ -9,5 +9,6 @@
         <file>resources/keyboard.jpeg</file>
         <file>resources/ethernet-off.jpg</file>
         <file>resources/ethernet-on.jpg</file>
+        <file>resources/load1.gif</file>
     </qresource>
 </RCC>

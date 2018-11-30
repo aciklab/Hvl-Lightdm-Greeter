@@ -96,6 +96,11 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         m_ClockForm->show();
 
 
+        //QObject::connect(m_SettingsForm, SIGNAL(sendNWStatusSignal(bool)), m_LoginForm, SLOT(stopWaitOperation(bool)));
+        QObject::connect(m_SettingsForm, &SettingsForm::sendNWStatusSignal, m_LoginForm, &LoginForm::stopWaitOperation);
+
+
+
 
         // This hack ensures that the primary screen will have focus
         // if there are more screens (move the mouse cursor in the center
@@ -142,8 +147,8 @@ int MainWindow::getOffset(QString settingsOffset, int maxVal, int defaultVal)
             offset = (maxVal * offsetPct)/100;
         }
         else {
-            qWarning() << "Could not understand" << settingsOffset
-                       << "- must be of form <positivenumber>px or <positivenumber>%, e.g. 35px or 25%" ;
+            qWarning() << tr("Could not understand") << settingsOffset
+                       << tr("- must be of form <positivenumber>px or <positivenumber>%, e.g. 35px or 25%") ;
         }
     }
 
@@ -159,10 +164,10 @@ void MainWindow::setBackground()
         QString pathToBackgroundImage = greeterSettings.value(BACKGROUND_IMAGE_KEY).toString();
         
         backgroundImage = QImage(pathToBackgroundImage);
-        qDebug() << backgroundImage << " Ayarlandı!";
+        qDebug() << backgroundImage << tr(" is set as an image");
 
         if (backgroundImage.isNull()) {
-            qWarning() << "Not able to read" << pathToBackgroundImage << "as image";
+            qWarning() << tr("Not able to read") << pathToBackgroundImage << tr("as image");
         }
 
     }
@@ -170,10 +175,10 @@ void MainWindow::setBackground()
         QString pathToBackgroundImage = ":/resources/bgs/bg1.jpg";
         backgroundImage = QImage(pathToBackgroundImage);
 
-        qDebug() << backgroundImage << " Ayarlandı!";
+        qDebug() << backgroundImage << tr(" is set as an image");
 
         if (backgroundImage.isNull()) {
-            qWarning() << "Not able to read" << pathToBackgroundImage << "as image";
+            qWarning() << tr("Not able to read") << pathToBackgroundImage << tr("as image");
         }
     }
     
@@ -188,9 +193,4 @@ void MainWindow::setBackground()
     }
     this->setPalette(palette);
 }
-
-
-
-
-
 

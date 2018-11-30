@@ -12,7 +12,7 @@ void Cache::prepare()
     QDir dir(GREETER_DATA_DIR_PATH);
     if (!dir.exists()) {
         if (!dir.mkpath(GREETER_DATA_DIR_PATH)) {
-            qWarning() << "Unable to create dir" << GREETER_DATA_DIR_PATH;
+            qWarning() << tr("Unable to create dir") << GREETER_DATA_DIR_PATH;
         }
     }
 }

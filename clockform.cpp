@@ -25,6 +25,7 @@ clockForm::clockForm(QWidget *parent) :
     timer->start();
 
     connect(timer, SIGNAL(timeout()), this, SLOT(updateClock()));
+    resized = false;
 }
 
 clockForm::~clockForm()
@@ -39,29 +40,36 @@ void clockForm::updateClock(){
     QDateTime *qdt = new QDateTime();
 
     QString tempstring;
-    QString fontString;
 
-    QFont font("DejaVu Sans Mono");
-    font.setPointSize(32);
-    font.setWeight( QFont::Bold );
 
     tempstring = qdt->currentDateTime().toString("hh:mm");
     ui->clockLabel->setText(tempstring);
-    font.setPointSize(ui->clockLabel->height()/2);
-    ui->clockLabel->setFont(font);
+
 
     tempstring = qdt->currentDateTime().toString("dddd");
     ui->dayLabel->setText(tempstring);
-    font.setPointSize(ui->dayLabel->height()/3);
-    ui->dayLabel->setFont(font);
 
     tempstring = qdt->currentDateTime().toString("dd.MM.yyyy");
     ui->dateLabel->setText(tempstring);
-    font.setPointSize(ui->dateLabel->height()/2);
-    ui->dateLabel->setFont(font);
 
     timer->setInterval(1000);
     timer->start();
+
+    if(!resized){
+        QFont font("Source Code Pro");
+        //font.setPointSize(32);
+        //font.setWeight( QFont::Bold );
+
+        font.setPointSize((ui->clockLabel->height() * 7 ) / 10);
+        ui->clockLabel->setFont(font);
+
+        font.setPointSize(ui->dayLabel->height()/2);
+        ui->dayLabel->setFont(font);
+
+        font.setPointSize((ui->dateLabel->height() * 7) / 10);
+        ui->dateLabel->setFont(font);
+        resized = true;
+    }
 
 }
 

@@ -34,15 +34,17 @@ public:
 
     LoginForm* loginForm() { return m_LoginForm;}
 
+    //SettingsForm* settingsForm() { return m_SettingsForm;}
+
+
 private:
     int getOffset(QString offset, int maxVal, int defaultVal);
     void setBackground();
 
     int m_Screen;
     LoginForm* m_LoginForm;
-    SettingsForm* m_SettingsForm;
     clockForm *m_ClockForm;
-
+    SettingsForm *m_SettingsForm;
 
 };
 
