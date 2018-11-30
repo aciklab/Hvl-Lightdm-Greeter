@@ -134,6 +134,8 @@ void LoginForm::initialize()
     message_received = 0;
     needPasswordChange = 0;
     needReenterOldPassword = 0;
+    loginStartFlag = false;
+    resetStartFlag = false;
 
     loginTimer = new QTimer();
     resetTimer = new QTimer();
@@ -234,6 +236,19 @@ void LoginForm::onPrompt(QString prompt, QLightDM::Greeter::PromptType promptTyp
         ui->acceptbutton->setFocus();
 
     }
+    else if(prompt.compare("Enter new password: ") == 0 && resetStartFlag && !needReenterOldPassword){
+
+        needPasswordChange = 1;
+        ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->resetpage));
+        ui->oldpasswordinput->setEnabled(true);
+        ui->newpasswordinput->setEnabled(true);
+        ui->newpasswordconfirminput->setEnabled(true);
+        ui->newpasswordinput->clear();
+        ui->newpasswordconfirminput->clear();
+        ui->newpasswordinput->setFocus();
+
+        resetStartFlag = false;
+    }
 }
 
 void LoginForm::onMessage(QString prompt, QLightDM::Greeter::MessageType messageType){
@@ -256,9 +271,7 @@ void LoginForm::onMessage(QString prompt, QLightDM::Greeter::MessageType message
     }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->warningpage)){
         ui->warninglabel->setText(type + " : " + prompt);
     }else{
-        ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->resetpage));
         ui->rstpwdmessagelabel->setText(type + " : " + prompt);
-        resetStartFlag = false;
     }
 
 }
@@ -295,6 +308,10 @@ void LoginForm::authenticationComplete()
         Cache().sync();
         QCursor::setPos(0,0);
         m_Greeter.startSessionSync(currentSession());
+        loginStartFlag = false;
+        resetStartFlag = false;
+        message_received = false;
+        needPasswordChange = false;
 
     }else if(loginStartFlag == true || resetStartFlag == true) {
 
@@ -629,8 +646,6 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
             ui->userInput->setFocus();
             ui->passwordInput->clear();
             capsLockCheck();
-            resetStartFlag = false;
-            loginStartFlag = false;
         }
     }
     else if (event->key() == Qt::Key_Up || event->key() == Qt::Key_Down && ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->userspage)) {
@@ -709,14 +724,14 @@ void LoginForm::on_resetpasswordButton_clicked()
 
         resetTimer->setSingleShot(false);
 
-        if(needPasswordChange == 0){
+        if(needPasswordChange == false){
             m_Greeter.cancelAuthentication();
             needPasswordChange = true;
             resetTimerState = 0;
             resetTimer->setInterval(10);
 
         }else if(needReenterOldPassword){
-            needReenterOldPassword = 0;
+            //needReenterOldPassword = 0;
             resetTimerState = 3;
             resetTimer->setInterval(10);
         }else{
