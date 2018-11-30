@@ -49,6 +49,7 @@ public:
     QString sizeY_clockform() { return value("clockform-size-y").toString(); }
     QStringList getservices() { return value("services-to-check").toStringList(); }
     QString logopath() { return value("greeter-loginform-logo-image").toString(); }
+    int waittimeout() { return value("wait-timeout").toInt(); }
 };
 
 

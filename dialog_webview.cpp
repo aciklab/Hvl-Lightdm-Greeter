@@ -15,6 +15,7 @@ Dialog_webview::Dialog_webview(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Dialog_webview)
 {
+
     ui->setupUi(this);
 
     QtWebEngine::initialize();
@@ -52,8 +53,6 @@ QString Dialog_webview::checkPasswordResetWebPage(){
 
     }
 
-    if(ret_string== NULL)
-        ret_string = "http://www.havelsan.com.tr";//todo:default
 
     return ret_string;
 
@@ -68,5 +67,5 @@ void Dialog_webview::Initialize(){
 void Dialog_webview::on_closebutton_clicked()
 {
     close();
-    //exit(0);
+
 }

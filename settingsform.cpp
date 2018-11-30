@@ -9,6 +9,8 @@
 #include <QLabel>
 #include <QTextBrowser>
 #include <QApplication>
+#include <QThread>
+#include <QMessageBox>
 
 #include "settings.h"
 
@@ -21,16 +23,14 @@
 #include <QShortcut>
 
 
+
 SettingsForm::SettingsForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SettingsForm)
 
 {
 
-
-
     ui->setupUi(this);
-
 
     initialize();
 
@@ -38,17 +38,18 @@ SettingsForm::SettingsForm(QWidget *parent) :
 
     qlabel = new QLabel();
 
+    dialog = new QDialog(0, Qt::Popup | Qt::FramelessWindowHint);
+
 
     ui->formFrame->clearFocus();
     ui->kybrdcomboBox->setFocusPolicy(Qt::FocusPolicy::NoFocus);
     ui->leaveComboBox->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 
     timer->setTimerType(Qt::TimerType::CoarseTimer);
-    timer->setInterval(250);
+    timer->setInterval(50);
     timer->setSingleShot(false);
     timer->start();
     connect(timer, SIGNAL(timeout()), this, SLOT(timer_finished()));
-
 
 
 }
@@ -56,6 +57,10 @@ SettingsForm::SettingsForm(QWidget *parent) :
 SettingsForm::~SettingsForm()
 {
     delete ui;
+    delete timer;
+    delete qlabel;
+    delete keyboardList;
+    delete dialog;
 
 }
 
@@ -75,7 +80,10 @@ void SettingsForm::initialize(){
     serviceList = Settings().getservices();
 
     getKeyboardLayouts();
+    ui->kybrdcomboBox->setCurrentText("tr");
     connect(ui->kybrdcomboBox, SIGNAL(activated(int)), this, SLOT(setKeyboardLayout(int)));
+    nwButtonPressed = false;
+
 
 }
 
@@ -92,11 +100,28 @@ void SettingsForm::addLeaveEntry(bool canDo, QString iconName, QString text, QSt
 void SettingsForm::leaveDropDownActivated(int index)
 {
 
+    QMessageBox::StandardButton reply;
+
     QString actionName = ui->leaveComboBox->itemData(index).toString();
-    if      (actionName == "shutdown") power.shutdown();
-    else if (actionName == "restart") power.restart();
-    else if (actionName == "hibernate") power.hibernate();
-    else if (actionName == "suspend") power.suspend();
+    QString text;
+    ui->leaveComboBox->setCurrentIndex(-1);
+
+    if      (actionName == "shutdown") text = tr("Go to Shutdown?");
+    else if (actionName == "restart") text = tr("Go to Restart?");
+    else if (actionName == "hibernate") text = tr("Go to Hibernate?");
+    else if (actionName == "suspend") text = tr("Go to Suspend?");
+
+
+    reply = QMessageBox::question(this, tr("Info"), text, QMessageBox::Ok|QMessageBox::Cancel);
+
+    if (reply == QMessageBox::Ok) {
+
+        if      (actionName == "shutdown") power.shutdown();
+        else if (actionName == "restart") power.restart();
+        else if (actionName == "hibernate") power.hibernate();
+        else if (actionName == "suspend") power.suspend();
+
+    }
 }
 
 
@@ -161,7 +186,9 @@ void SettingsForm::checkNetwork(){
     QByteArray servicearray;
     char * serviceptr;
 
-    ip_string += "  IP   ";
+    int runningServices = 0;
+
+    ip_string += "  IP:\n";
 
 
 
@@ -170,7 +197,7 @@ void SettingsForm::checkNetwork(){
         if( (bool)(flags & QNetworkInterface::IsRunning) && !(bool)(flags & QNetworkInterface::IsLoopBack)){
             foreach (address, netInterface.addressEntries()) {
                 if(address.ip().protocol() == QAbstractSocket::IPv4Protocol){
-                    ip_string += "     " +netInterface.interfaceNameFromIndex(netInterface.index()) + ": " + address.ip().toString()+ '\n';
+                    ip_string += "  " +netInterface.interfaceNameFromIndex(netInterface.index()) + ": " + address.ip().toString()+ '\n';
                     ip_count++;
                 }
             }
@@ -185,16 +212,13 @@ void SettingsForm::checkNetwork(){
         ui->NwpushButton->icon().addPixmap(iconx, QIcon::Mode::Normal, QIcon::State::On);
         ui->NwpushButton->setIcon(iconx);
         ui->NwpushButton->setCheckable(true);
-    }
-    else
-    {
-        networkInfoString = "  IP bilgisi yok\n";
+
+    }else{
+        networkInfoString = tr("  No IP information\n");
         QPixmap iconx(":/resources/ethernet-off.jpg");
         ui->NwpushButton->icon().addPixmap(iconx, QIcon::Mode::Normal, QIcon::State::On);
         ui->NwpushButton->setIcon(iconx);
         ui->NwpushButton->setCheckable(true);
-
-
     }
 
 
@@ -203,15 +227,25 @@ void SettingsForm::checkNetwork(){
         servicearray = serviceList[i].toLatin1();
         serviceptr = servicearray.data();
 
+        networkInfoString += "  ";
+
         pidx = proc_find(serviceptr);
 
-        if(pidx == -1)
-            networkInfoString += serviceList[i] + " servisi çalışmıyor\n";
-        else
-            networkInfoString += serviceList[i] + " servisi çalışıyor\n";
-
+        if(pidx == -1){
+            networkInfoString += serviceList[i] + tr(" service is not working\n");
+        }else{
+            networkInfoString += serviceList[i] + tr(" service is working\n");
+            runningServices++;
+        }
     }
 
+
+    if(ip_count != 0 && serviceList.count() == runningServices){
+        sendNWStatus(true);
+    }
+    else{
+        sendNWStatus(false);
+    }
 
 
 }
@@ -234,7 +268,7 @@ void SettingsForm::timer_finished(){
 void SettingsForm::on_NwpushButton_pressed()
 {
 
-    QVBoxLayout *layout = new QVBoxLayout;
+
     uint line_count = 0;
 
     wchar_t a[networkInfoString.length()];
@@ -251,43 +285,31 @@ void SettingsForm::on_NwpushButton_pressed()
 
     }
 
-
-
-
-
-
-    qlabel->setFixedHeight((line_count + 1) * 20);
-    qlabel->setFixedWidth(300);
+    dialog->setFixedHeight((line_count + 1) * 20);
+    dialog->setFixedWidth(300);
     QPoint ptx = QWidget::mapToGlobal(this->pos());
     QPoint pty = this->pos();
 
 
     uint windowwidth = this->width();
-    uint labelx = ((ptx.x() - pty.x())+ this->width()/2) - (qlabel->width() / 2);
+    uint labelx = ((ptx.x() - pty.x())+ this->width()/2) - (dialog->width() / 2);
+
+    QVBoxLayout *layout = new QVBoxLayout;
+    QLabel *popupLabel = new QLabel();
+    layout->addWidget(popupLabel);
+    //popupLabel->setTextFormat(Qt::RichText);
+    //popupLabel->setOpenExternalLinks(true);
+    popupLabel->setText(networkInfoString);
+    dialog->setLayout(layout);
+    dialog->setGeometry(labelx, (ptx.y() - pty.y()) - ((line_count + 1) * 20), 0, 0);
+    dialog->setFixedHeight((line_count + 1) * 20);
+    dialog->setFixedWidth(300);
 
 
-    qlabel->setGeometry(labelx, (ptx.y() - pty.y()) - ((line_count + 1) * 20), 0, 0);
-    qlabel->setFixedHeight((line_count + 1) * 20);
-    qlabel->setFixedWidth(300);
+    dialog->exec();
 
 
 
-
-    qlabel->setText(networkInfoString);
-    qlabel->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    qlabel->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-    qlabel->setFocus();
-
-
-
-    qlabel->show();
-}
-
-void SettingsForm::on_NwpushButton_released(){
-
-    int x =  qlabel->x();
-
-    qlabel->hide();
 }
 
 
@@ -295,49 +317,80 @@ void SettingsForm::getKeyboardLayouts(){
 
 
     FILE *fp;
-    char path[64];
-    uint readerror = 0;
+    char data[128];
+    char tmpdata[128];
+    char *sp;
+    char *tp;
+    bool readerror = false;
     QString  tmpstring;
 
     tmpstring = "";
 
-    QPixmap iconx(":/resources/keyboard.jpeg");
 
-    fp = popen("/usr/bin/localectl list-x11-keymap-layouts", "r");
+    fp = popen("setxkbmap -query", "r");
     if (fp == NULL) {
-        qDebug() << "Klavye Layoutları alınamadı\n" ;
-        readerror = 1;
+        qDebug() << tr("Current Keyboard layout can not be read\n") ;
+        readerror = true;
     }
 
-    if(readerror == 0){
+    if(readerror == false){
 
-        while (fgets(path, sizeof(path)-1, fp) != NULL) {
-
-            path[strlen(path) - 1] = '\0';
-
-            tmpstring = "";
-
-            for(int i = 0; i< strlen(path); i++)
-            {
-                tmpstring += QChar( path[i]);
-            }
-
-
-
-            ui->kybrdcomboBox->addItem(iconx,tmpstring, tmpstring);
+        if(fread(data, sizeof(data), 1, fp) < 1){
+            qDebug() << tr("Current Keyboard layout can not be read\n") ;
         }
 
-    }else{
-
     }
 
-
-
+    memcpy(tmpdata,data, sizeof(data));
     /* close */
     pclose(fp);
 
 
-    //keyboardList;
+
+    /*get current layout*/
+
+    sp = strstr(data, "layout");
+    if(sp != NULL){
+
+        sp += strlen("layout");
+
+        tp = strtok(sp, "\n");
+
+        while((*tp == ' ' || *tp == ':') && *tp != NULL && *tp != '\n')
+            tp++;
+
+    }
+    if(tp != NULL)
+        tmpstring = QString::fromLocal8Bit(tp);
+
+    sp = strstr(tmpdata, "variant");
+    if(sp != NULL){
+
+        sp += strlen("variant");
+
+        tp = strtok(sp, "\n");
+
+        while((*tp == ' ' || *tp == ':') && *tp != NULL && *tp != '\n')
+            tp++;
+
+    }
+
+    if(tp != NULL && sp != NULL)
+        tmpstring += ' ' + QString::fromLocal8Bit(tp);
+
+
+    QPixmap iconx(":/resources/keyboard.jpeg");
+
+    ui->kybrdcomboBox->addItem(iconx, "Türkçe Q", "tr");
+    ui->kybrdcomboBox->addItem(iconx, "Türkçe F", "tr f");
+    ui->kybrdcomboBox->addItem(iconx, "English Q", "us");
+
+
+    for(int i=0; i< ui->kybrdcomboBox->count();i++){
+
+        if(ui->kybrdcomboBox->itemData(i).toString().compare(tmpstring) == 0)
+            ui->kybrdcomboBox->setCurrentIndex(i);
+    }
 
 
 
@@ -351,9 +404,7 @@ void SettingsForm::setKeyboardLayout(int index){
     char cmd_array[256];
     memset(cmd_array,0,sizeof(cmd_array));
 
-
     QString actionName = ui->kybrdcomboBox->itemData(index).toString();
-
 
     QByteArray ba;
     ba = actionName.toLatin1();
@@ -362,18 +413,14 @@ void SettingsForm::setKeyboardLayout(int index){
 
     sprintf(cmd_array, "/usr/bin/setxkbmap %s",setcommand);
 
-
-
     system(cmd_array);
-
-
 }
-
 
 
 void SettingsForm::keyPressEvent(QKeyEvent *event)
 {
 
+    qlabel->hide();
 
     if (event->key() == Qt::Key_Up || event->key() == Qt::Key_Down) {
 
@@ -382,13 +429,19 @@ void SettingsForm::keyPressEvent(QKeyEvent *event)
         }
         else
         {
-
             QWidget::keyPressEvent(event);
         }
     }
     else
     {
+
         QWidget::keyPressEvent(event);
     }
 
+}
+
+
+void SettingsForm::sendNWStatus(bool nwstatus){
+
+    emit sendNWStatusSignal(nwstatus);
 }
