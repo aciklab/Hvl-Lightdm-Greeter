@@ -19,6 +19,7 @@
 #include <QTimer>
 #include <QLabel>
 #include <QShortcut>
+#include <QBoxLayout>
 
 
 namespace Ui
@@ -62,9 +63,14 @@ private:
     void initialize();
     void addLeaveEntry(bool canDo, QString iconName, QString text, QString actionName);
     void checkNetwork();
-    pid_t proc_find(const char* name);
     void getKeyboardLayouts();
     void sendNWStatus(bool nwstatus);
+    QString getValueOfString(QString data, QString value);
+
+#define SERVICE_WORKING 0
+#define SERVICE_NOT_WORKING -1
+#define SERVICE_NOT_EXIST -2
+    int CheckService(QString Service);
 
 
 
@@ -77,8 +83,11 @@ private:
     QMap<int, void (QLightDM::PowerInterface::*)()> powerSlots;
 
     QTimer *timer;
-    QLabel *qlabel;
+
     QDialog *dialog;
+    QVBoxLayout *layout;
+    QLabel *popupLabel;
+
 
     QString *keyboardList;
     int m_Screen;

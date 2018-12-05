@@ -21,8 +21,9 @@ public:
     void setLastSession(QString userId, QString session) { setValue(userId + "/last-session", session); }
 };
 
-#define CONFIG_FILE "/etc/lightdm/qt-lightdm-greeter.conf"
+#define CONFIG_FILE "/usr/share/lightdm/lightdm-hvl-greeter.conf.d/hvl-lightdm-greeter.conf"
 
+#define BACKGROUND_IMAGE_DIR_KEY "greeter-background-image-dir"
 #define BACKGROUND_IMAGE_KEY "greeter-background-image"
 #define LOGINFORM_OFFSETX_KEY "loginform-offset-x"
 #define LOGINFORM_OFFSETY_KEY "loginform-offset-y"
@@ -36,9 +37,9 @@ public:
 class Settings : public QSettings
 {
 public:
-    Settings() : QSettings(QString("/etc/lightdm/qt-lightdm-greeter.conf"), QSettings::NativeFormat) {}
+    Settings() : QSettings(QString("/usr/share/lightdm/lightdm-hvl-greeter.conf.d/hvl-lightdm-greeter.conf"), QSettings::NativeFormat) {}
     QString iconThemeName_loginform() { return value("greeter-icon-theme").toString(); }
-    QString backgrundImagePath() { return value("greeter-background-image").toString(); }
+    QStringList backgroundImagePath() { return value("greeter-background-image").toStringList(); }
     QString offsetX_loginform() { return value("loginform-offset-x").toString(); }
     QString offsetY_loginform() { return value("loginform-offset-y").toString(); }
     QString offsetX_settingsform() { return value("settingsform-offset-x").toString(); }
@@ -50,6 +51,7 @@ public:
     QStringList getservices() { return value("services-to-check").toStringList(); }
     QString logopath() { return value("greeter-loginform-logo-image").toString(); }
     int waittimeout() { return value("wait-timeout").toInt(); }
+    int cachedusercount(){return value("cached-user-count").toInt();}
 };
 
 

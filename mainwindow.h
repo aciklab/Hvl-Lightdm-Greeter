@@ -45,6 +45,8 @@ private:
     LoginForm* m_LoginForm;
     clockForm *m_ClockForm;
     SettingsForm *m_SettingsForm;
+    static int image_index;
+    static bool selectflag;
 
 };
 

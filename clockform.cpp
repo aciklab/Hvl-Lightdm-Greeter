@@ -57,9 +57,6 @@ void clockForm::updateClock(){
 
     if(!resized){
         QFont font("Source Code Pro");
-        //font.setPointSize(32);
-        //font.setWeight( QFont::Bold );
-
         font.setPointSize((ui->clockLabel->height() * 7 ) / 10);
         ui->clockLabel->setFont(font);
 
