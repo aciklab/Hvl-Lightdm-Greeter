@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2 FATAL_ERROR)
-set(PROJECT qt-lightdm-greeter)
+set(PROJECT hvl-lightdm-greeter)
 project(${PROJECT})
 
 set(CMAKE_AUTOMOC ON)
@@ -18,10 +18,13 @@ find_package(Qt5WebEngine REQUIRED)
 find_package(Qt5WebEngineCore REQUIRED)
 find_package(Qt5WebEngineWidgets REQUIRED)
 find_package(Qt5LinguistTools)
+find_package(Qt5Svg)
+
+
 
 #find_package(Qt5X11Extras REQUIRED QUIET)
 
-QT5_ADD_RESOURCES(RSCS qt-lightdm-greeter.qrc)
+QT5_ADD_RESOURCES(RSCS hvl-lightdm-greeter.qrc)
 
 
 file(GLOB TS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/languages/*.ts)
@@ -38,17 +41,17 @@ include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}
                       ${LIGHTDM_QT_INCLUDE_DIRS}
 )
 
-add_executable ( qt-lightdm-greeter ${SRCS} ${RSCS} ${QM_FILES})
+add_executable ( hvl-lightdm-greeter ${SRCS} ${RSCS} ${QM_FILES})
 
 
 
 
-target_link_libraries ( qt-lightdm-greeter Qt5::Widgets Qt5::Network Qt5::WebEngine Qt5::WebEngineCore Qt5::Quick Qt5::WebEngineWidgets ${LIGHTDM_QT_LIBRARIES})
+target_link_libraries ( hvl-lightdm-greeter Qt5::Widgets Qt5::Network Qt5::WebEngine Qt5::WebEngineCore Qt5::Quick Qt5::WebEngineWidgets ${LIGHTDM_QT_LIBRARIES})
 
 install(TARGETS ${PROJECT} RUNTIME DESTINATION bin)
-install(FILES  qt-lightdm-greeter.desktop  DESTINATION /usr/share/xgreeters)
+install(FILES  hvl-lightdm-greeter.desktop  DESTINATION /usr/share/xgreeters)
 
 if (NOT KEEP_CONFIGS)
-    install(FILES ${QM_FILES} qt-lightdm-greeter.conf DESTINATION /etc/lightdm)
+    install(FILES ${QM_FILES} hvl-lightdm-greeter.conf DESTINATION /usr/share/lightdm/lightdm-hvl-greeter.conf.d)
 endif()
 

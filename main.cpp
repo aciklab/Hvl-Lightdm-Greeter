@@ -38,8 +38,10 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
+    qDebug() << "hvl-lightdm is starting now";
+
     QTranslator translator;
-    translator.load("hvl-lightdm_tr", "/etc/lightdm");
+    translator.load("hvl-lightdm_tr", "/usr/share/lightdm/lightdm-hvl-greeter.conf.d");
     a.installTranslator(&translator);
 
     if (! Settings().iconThemeName_loginform().isEmpty()) {

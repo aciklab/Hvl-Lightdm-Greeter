@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>525</width>
-    <height>324</height>
+    <height>328</height>
    </rect>
   </property>
   <property name="font">
@@ -22,27 +22,26 @@
   <property name="styleSheet">
    <string notr="true">QWidget {
     border-radius: 5px;
-}
-</string>
+}</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
    <property name="spacing">
-    <number>6</number>
+    <number>0</number>
    </property>
    <property name="sizeConstraint">
     <enum>QLayout::SetNoConstraint</enum>
    </property>
    <property name="leftMargin">
-    <number>8</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
-    <number>8</number>
+    <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>8</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>5</number>
+    <number>0</number>
    </property>
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
@@ -55,11 +54,16 @@
      <property name="styleSheet">
       <string notr="true">QWidget {
     border-radius: 5px;
-}
-</string>
+}</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="waitpage">
       <property name="font">
@@ -172,8 +176,8 @@ border:0px solid rgba(255,255,255,0.5);
     color:white;
 	font-size:20px;
 	text-align: left;
-	background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 rgba(200, 200, 200,0.0), stop: 0.5 rgba(200, 200, 200,0.1), stop:1 rgba(200, 200, 200,0.3));
-	color: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 rgba(200, 200, 200,0.0), stop: 0.2 rgba(240, 240, 240,0.2), stop:1 rgba(255, 255, 255,1.0))
+	background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 rgba(80, 80, 80,0.0), stop: 0.2 rgba(80, 80, 80,0.1), stop:1 rgba(80, 80, 80,0.5));
+	color: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 rgba(255, 255, 255,0.0), stop: 0.2 rgba(255, 255, 255,0.2), stop:1 rgba(255, 255, 255,1.0))
 
 }
 
@@ -181,7 +185,7 @@ border:0px solid rgba(255,255,255,0.5);
     color:white;
 	font-size:30px;
 	text-align: left;
-	background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 rgba(200, 200, 200,0.3), stop: 0.5 rgba(200, 200, 200,0.5), stop:1 rgba(200, 200, 200,0.3));
+	background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 rgba(80, 80, 80,0.5), stop: 0.5 rgba(80, 80, 80,0.9), stop:1 rgba(80, 80, 80,0.5));
 
 }
 
@@ -191,8 +195,8 @@ border:0px solid rgba(255,255,255,0.5);
     color:white;
 	font-size:20px;
 	text-align: left;
-	background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:1 rgba(200, 200, 200,0.0), stop: 0.5 rgba(200, 200, 200,0.1), stop:0 rgba(200, 200, 200,0.3));
-	color: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:1 rgba(200, 200, 200, 0.0), stop: 0.8 rgba(240, 240, 240, 0.2), stop:0 rgba(255, 255, 255,1.0))
+	background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:1 rgba(80, 80, 80,0.0), stop: 0.8 rgba(80, 80, 80,0.1), stop:0 rgba(80, 80, 80,0.5));
+	color: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:1 rgba(255, 255, 255, 0.0), stop: 0.8 rgba(255, 255, 255, 0.2), stop:0 rgba(255, 255, 255,1.0))
 
 }
 
@@ -200,7 +204,7 @@ border:0px solid rgba(255,255,255,0.5);
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="spacing">
-        <number>1</number>
+        <number>0</number>
        </property>
        <property name="bottomMargin">
         <number>5</number>
@@ -225,13 +229,13 @@ border:0px solid rgba(255,255,255,0.5);
             <property name="minimumSize">
              <size>
               <width>400</width>
-              <height>93</height>
+              <height>98</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>400</width>
-              <height>93</height>
+              <height>98</height>
              </size>
             </property>
             <property name="focusPolicy">
@@ -256,13 +260,13 @@ border:0px solid rgba(255,255,255,0.5);
             <property name="minimumSize">
              <size>
               <width>400</width>
-              <height>93</height>
+              <height>98</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>400</width>
-              <height>93</height>
+              <height>98</height>
              </size>
             </property>
             <property name="focusPolicy">
@@ -290,13 +294,13 @@ border:0px solid rgba(255,255,255,0.5);
             <property name="minimumSize">
              <size>
               <width>400</width>
-              <height>93</height>
+              <height>98</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>400</width>
-              <height>93</height>
+              <height>98</height>
              </size>
             </property>
             <property name="focusPolicy">
@@ -320,20 +324,14 @@ border:0px solid rgba(255,255,255,0.5);
      </widget>
      <widget class="QWidget" name="loginpage">
       <property name="styleSheet">
-       <string notr="true">QWidget {
-    border-radius: 5px;
-}
-#loginframe{
-border:2px solid rgba(255,255,255,0.5);
+       <string notr="true">#loginframe{
+    border:2px solid rgba(255,255,255,0.7);
+    background-color: rgba(80,80,80, 0.5);
+    border-radius: 10px;
 }
 #messagelabel,
 #hostnameLabel {
 	color: white;
-}
-
-#loginframe{ 
-    background-color: rgba(80,80,80, 0.2);
-    border-radius: 10px;
 }
 
 QComboBox,
@@ -343,32 +341,22 @@ QPushButton {
     background-color: rgba(200, 200, 200,0.5);
 }
 
-
-
-
-QComboBox::drop-down {
-    border:none;
-    width: 24px;
-    text-align: right;
-}
-
-QComboBox::down-arrow {
-    image: url(:/resources/dropdown.svg);
-	color:red;
-}
 QLineEdit::focus{
-border: 2px solid rgba(255, 236, 180 0.1);
+	border: 2px solid rgba(255, 236, 180 0.1);
 	
 }
 QLineEdit{
-color:white;
-font-size:15px;
-padding:5px;
-border:1px solid white;
-background-color: rgba(200,200,200,0.2);
-}</string>
+	color:white;
+	font-size:15px;
+	padding:5px;
+	border:1px solid white;
+	background-color: rgba(200,200,200,0.6);
+ 	border-radius: 5px;
+}
+
+</string>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0">
        <property name="bottomMargin">
         <number>5</number>
        </property>
@@ -380,13 +368,21 @@ background-color: rgba(200,200,200,0.2);
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <stylestrategy>PreferDefault</stylestrategy>
+          </font>
+         </property>
          <property name="frameShape">
-          <enum>QFrame::Box</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
+          <enum>QFrame::Plain</enum>
          </property>
          <property name="lineWidth">
+          <number>1</number>
+         </property>
+         <property name="midLineWidth">
           <number>0</number>
          </property>
          <widget class="QLineEdit" name="passwordInput">
@@ -394,7 +390,7 @@ background-color: rgba(200,200,200,0.2);
            <rect>
             <x>150</x>
             <y>180</y>
-            <width>330</width>
+            <width>331</width>
             <height>60</height>
            </rect>
           </property>
@@ -459,7 +455,7 @@ background-color: rgba(200,200,200,0.2);
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap resource="qt-lightdm-greeter.qrc">:/resources/pardus.png</pixmap>
+           <pixmap resource="hvl-lightdm-greeter.qrc">:/resources/pardus.png</pixmap>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -506,12 +502,15 @@ background-color: rgba(200,200,200,0.2);
            <rect>
             <x>10</x>
             <y>249</y>
-            <width>331</width>
-            <height>41</height>
+            <width>291</width>
+            <height>51</height>
            </rect>
           </property>
           <property name="text">
            <string/>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
           </property>
          </widget>
          <widget class="QLabel" name="iconLabel">
@@ -542,7 +541,7 @@ background-color: rgba(200,200,200,0.2);
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap resource="qt-lightdm-greeter.qrc">:/resources/pardus.png</pixmap>
+           <pixmap resource="hvl-lightdm-greeter.qrc">:/resources/pardus.png</pixmap>
           </property>
           <property name="scaledContents">
            <bool>true</bool>
@@ -581,6 +580,12 @@ background-color: rgba(200,200,200,0.2);
             <bold>false</bold>
            </font>
           </property>
+          <property name="frameShape">
+           <enum>QFrame::Box</enum>
+          </property>
+          <property name="midLineWidth">
+           <number>1</number>
+          </property>
           <property name="text">
            <string>Hostname</string>
           </property>
@@ -597,10 +602,10 @@ background-color: rgba(200,200,200,0.2);
          <widget class="QPushButton" name="pushButton_resetpwd">
           <property name="geometry">
            <rect>
-            <x>270</x>
-            <y>40</y>
-            <width>111</width>
-            <height>51</height>
+            <x>310</x>
+            <y>250</y>
+            <width>81</width>
+            <height>41</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -817,16 +822,17 @@ background-color: rgba(200,200,200,0.2);
            <enum>Qt::NoFocus</enum>
           </property>
           <property name="text">
-           <string>Reset Password</string>
+           <string>Reset
+Password</string>
           </property>
          </widget>
          <widget class="QPushButton" name="loginbutton">
           <property name="geometry">
            <rect>
-            <x>390</x>
-            <y>252</y>
-            <width>82</width>
-            <height>31</height>
+            <x>400</x>
+            <y>250</y>
+            <width>81</width>
+            <height>41</height>
            </rect>
           </property>
           <property name="focusPolicy">
@@ -854,7 +860,7 @@ border:2px solid rgba(255,255,255,0.5);
 }
 
 #warningframe{ 
-    background-color: rgba(80,80,80, 0.2);
+    background-color: rgba(80,80,80, 0.0);
     border-radius: 10px;
 }
 
@@ -953,20 +959,14 @@ background-color: rgba(0,0,255,0);
      </widget>
      <widget class="QWidget" name="resetpage">
       <property name="styleSheet">
-       <string notr="true">QWidget {
-    border-radius: 5px;
-}
-#resetframe{
-border:2px solid rgba(255,255,255,0.5);
+       <string notr="true">#resetframe{
+	border:2px solid rgba(255,255,255,0.7);
+    background-color: rgba(80,80,80, 0.5);
+    border-radius: 10px;
 }
 #rstpwdmessagelabel,
 #hostnameLabel {
 	color: white;
-}
-
-#resetframe{ 
-    background-color: rgba(80,80,80, 0.2);
-    border-radius: 10px;
 }
 
 QComboBox,
@@ -976,29 +976,16 @@ QPushButton {
     background-color: rgba(200, 200, 200,0.5);
 }
 
-
-
-
-QComboBox::drop-down {
-    border:none;
-    width: 24px;
-    text-align: right;
-}
-
-QComboBox::down-arrow {
-    image: url(:/resources/dropdown.svg);
-	color:red;
-}
 QLineEdit::focus{
-border: 2px solid rgba(255, 236, 180 ,1);
+	border: 2px solid rgba(255, 236, 180 ,1);
 	
 }
 QLineEdit{
-color:white;
-font-size:15px;
-padding:5px;
-border:1px solid white;
-background-color: rgba(0,0,255,0);
+	color:white;
+	font-size:15px;
+	padding:5px;
+	border:1px solid white;
+	background-color: rgba(0,0,255,0);
 }</string>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -1014,10 +1001,13 @@ background-color: rgba(0,0,255,0);
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
+          <property name="verticalSpacing">
+           <number>5</number>
+          </property>
           <item row="4" column="0">
            <widget class="QLineEdit" name="newpasswordconfirminput">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1025,13 +1015,13 @@ background-color: rgba(0,0,255,0);
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>50</height>
+              <height>60</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>344</width>
-              <height>50</height>
+              <height>900</height>
              </size>
             </property>
             <property name="focusPolicy">
@@ -1061,7 +1051,7 @@ background-color: rgba(0,0,255,0);
           <item row="1" column="0">
            <widget class="QLineEdit" name="oldpasswordinput">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1069,13 +1059,13 @@ background-color: rgba(0,0,255,0);
             <property name="minimumSize">
              <size>
               <width>200</width>
-              <height>50</height>
+              <height>60</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>344</width>
-              <height>50</height>
+              <height>60</height>
              </size>
             </property>
             <property name="focusPolicy">
@@ -1097,7 +1087,7 @@ background-color: rgba(0,0,255,0);
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>50</height>
+              <height>60</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -1122,16 +1112,22 @@ background-color: rgba(0,0,255,0);
           </item>
           <item row="4" column="1">
            <widget class="QPushButton" name="resetpasswordButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>50</height>
+              <height>55</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>50</height>
+              <height>55</height>
              </size>
             </property>
             <property name="focusPolicy">
@@ -1152,7 +1148,7 @@ background-color: rgba(0,0,255,0);
   </layout>
  </widget>
  <resources>
-  <include location="qt-lightdm-greeter.qrc"/>
+  <include location="hvl-lightdm-greeter.qrc"/>
  </resources>
  <connections/>
 </ui>

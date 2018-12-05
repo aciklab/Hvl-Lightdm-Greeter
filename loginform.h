@@ -94,7 +94,8 @@ private:
     void Debug(QString message);
     bool capsOn();
     void capsLockCheck();
-
+    QString getValueOfString(QString data, QString value);
+    void pageTransition(QWidget *Page);
 
     Ui::LoginForm *ui;
 
@@ -104,15 +105,15 @@ private:
 
     QMap<int, void (QLightDM::PowerInterface::*)()> powerSlots;
 
-    QWebEngineView *view;
     QFrame *user_frame;
     QTimer *resetTimer;
     QTimer *loginTimer;
+    QMovie *mv;
 
     QString userList[5];
     int current_user_button;
-    int cached_user_count;
-    bool message_received;
+    int total_user_count;
+    bool messageReceived;
     bool needPasswordChange;
     bool needReenterOldPassword;
     bool promptFlag;
@@ -127,6 +128,7 @@ private:
     int currentUserIndex;
     int loginTimeot;
     bool timeoutFlag;
+
 
 
 

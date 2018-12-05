@@ -1,10 +1,4 @@
-/*
-* Copyright (c) 2012-2015 Christian Surlykke
-*
-* This file is part of qt-lightdm-greeter 
-* It is distributed under the LGPL 2.1 or later license.
-* Please refer to the LICENSE file for a copy of the license.
-*/
+
 #include <QDebug>
 #include <QCompleter>
 #include <QAbstractListModel>
@@ -60,16 +54,14 @@ LoginForm::LoginForm(QWidget *parent) :
     }
 
 
-    view = new QWebEngineView();
     ui->setupUi(this);
     initialize();
 }
-
 LoginForm::~LoginForm()
 {
     delete ui;
-    delete view;
     delete user_frame;
+    delete mv;
 
 }
 
@@ -89,7 +81,7 @@ void LoginForm::initialize()
     QPixmap icon(":/resources/pardus.png");
     ui->iconLabel->setPixmap(icon.scaled(ui->iconLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
     ui->hostnameLabel->setText(m_Greeter.hostname());
-
+    mv = new QMovie(":/resources/load1.gif");
 
     QString imagepath = Settings().logopath();
 
@@ -131,11 +123,12 @@ void LoginForm::initialize()
     ui->userInput->setText(user);
     cancelLogin();
 
-    message_received = 0;
-    needPasswordChange = 0;
-    needReenterOldPassword = 0;
+    messageReceived = false;
+    needPasswordChange = false;
+    needReenterOldPassword = false;
     loginStartFlag = false;
     resetStartFlag = false;
+    loginTimeot = 0;
 
     loginTimer = new QTimer();
     resetTimer = new QTimer();
@@ -143,28 +136,22 @@ void LoginForm::initialize()
     connect(loginTimer, SIGNAL(timeout()), this, SLOT(LoginTimerFinished()));
     connect(resetTimer, SIGNAL(timeout()), this, SLOT(passwordResetTimerFinished()));
 
+    ui->giflabel->setAttribute(Qt::WA_NoSystemBackground);
+    ui->giflabel->setMovie(mv);
 
     if(Settings().waittimeout() == 0){
 
         if(Cache().getLastUser() != NULL){
-            ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->userspage));
-            ui->userspage->setFocus();
-            ui->userspage->setFocusPolicy(Qt::FocusPolicy::WheelFocus);
+            pageTransition(ui->userspage);
+
         }else{
-            ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->loginpage));
+            pageTransition(ui->loginpage);
         }
     }
     else{
-        ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->waitpage));
-        QMovie *mv = new QMovie(":/resources/load1.gif");
-        mv->start();
-        ui->giflabel->setAttribute(Qt::WA_NoSystemBackground);
-        ui->giflabel->setMovie(mv);
-
+        pageTransition(ui->waitpage);
 
     }
-
-    loginTimeot = 0;
 
 }
 
@@ -173,15 +160,12 @@ void LoginForm::cancelLogin()
 
     ui->messagelabel->clear();
 
+
     if (m_Greeter.inAuthentication()) {
         m_Greeter.cancelAuthentication();
-
-
     }
-    else {
-        ui->userInput->setFocus();
 
-    }
+
 }
 
 
@@ -196,14 +180,10 @@ void LoginForm::startLogin()
     ui->passwordInput->setEnabled(false);
     ui->userInput->setEnabled(false);
 
-
     loginTimer->setTimerType(Qt::TimerType::CoarseTimer);
-
     loginTimer->setSingleShot(false);
-
     loginTimer->setInterval(10);
     loginTimerState = 0;
-
     loginTimer->start();
 
 
@@ -224,7 +204,7 @@ void LoginForm::onPrompt(QString prompt, QLightDM::Greeter::PromptType promptTyp
             needReenterOldPassword = 1;
 
         needPasswordChange = 1;
-        ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->warningpage));
+        pageTransition(ui->warningpage);
         oldPassword = tmpPassword;
         ui->warninglabel->setText(tr("Your Password is Expired. You have to change it"));
         ui->newpasswordinput->setEnabled(true);
@@ -239,7 +219,7 @@ void LoginForm::onPrompt(QString prompt, QLightDM::Greeter::PromptType promptTyp
     else if(prompt.compare("Enter new password: ") == 0 && resetStartFlag && !needReenterOldPassword){
 
         needPasswordChange = 1;
-        ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->resetpage));
+        pageTransition(ui->resetpage);
         ui->oldpasswordinput->setEnabled(true);
         ui->newpasswordinput->setEnabled(true);
         ui->newpasswordconfirminput->setEnabled(true);
@@ -248,6 +228,7 @@ void LoginForm::onPrompt(QString prompt, QLightDM::Greeter::PromptType promptTyp
         ui->newpasswordinput->setFocus();
 
         resetStartFlag = false;
+        loginStartFlag = false;
     }
 }
 
@@ -265,7 +246,7 @@ void LoginForm::onMessage(QString prompt, QLightDM::Greeter::MessageType message
     }
 
     if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->loginpage)){
-        message_received = 1;
+        messageReceived = 1;
         ui->messagelabel->setText(type + " : " + prompt);
         ui->warninglabel->setText(type + " : " + prompt);
     }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->warningpage)){
@@ -306,27 +287,26 @@ void LoginForm::authenticationComplete()
         Cache().setLastSession(ui->userInput->text(), currentSession());
         addUsertoCache(ui->userInput->text());
         Cache().sync();
-        QCursor::setPos(0,0);
         m_Greeter.startSessionSync(currentSession());
         loginStartFlag = false;
         resetStartFlag = false;
-        message_received = false;
+        messageReceived = false;
         needPasswordChange = false;
 
     }else if(loginStartFlag == true || resetStartFlag == true) {
 
         if(loginStartFlag)
-            ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->loginpage));
+            pageTransition(ui->loginpage);
 
         if(resetStartFlag)
-            ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->resetpage));
+            pageTransition(ui->resetpage);
 
         ui->passwordInput->clear();
 
         if(!needPasswordChange)
             cancelLogin();
 
-        if(!message_received)
+        if(!messageReceived)
             ui->messagelabel->setText(tr("Error : Login Incorrect"));
 
         if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->loginpage)){
@@ -347,7 +327,7 @@ void LoginForm::authenticationComplete()
 
         }
 
-        message_received = 0;
+        messageReceived = 0;
         loginStartFlag = false;
         resetStartFlag = false;
 
@@ -364,6 +344,9 @@ void LoginForm::addUsertoCache(QString user_name){
 
     for(i = 0; i< 5; i++){
         if(userList[i].trimmed().compare(user_name) == 0)
+            userList[i].clear();
+
+        if(i >= Settings().cachedusercount())
             userList[i].clear();
 
         if(userList[i].isNull() || userList[i].isEmpty())
@@ -395,20 +378,15 @@ void LoginForm::addUsertoCache(QString user_name){
             userList[0] = user_name;
         }
 
-
-
-
     }
 
-    for(i = 0; i< 5; i++){
+    for(i = 0; i< Settings().cachedusercount(); i++){
         if(!userList[i].isNull())
             Cache().setLastUsertoIndex(userList[i], i);
 
     }
 
 }
-
-
 
 
 void LoginForm::on_pushButton_resetpwd_clicked()
@@ -438,21 +416,18 @@ void LoginForm::checkPasswordResetButton(){
         ui->pushButton_resetpwd->setEnabled(false);
     }
 
-
 }
 
 
 void LoginForm::initializeUserList(){
 
+    total_user_count = 0;
 
-
-    cached_user_count = 0;
-
-    for(int i = 0; i < 5; i++){
+    for(int i = 0; i < Settings().cachedusercount(); i++){
         userList[i] = Cache().getLastUserfromIndex(i);
 
         if(!userList[i].isNull())
-            cached_user_count++;
+            total_user_count++;
     }
 
     ui->userbutton1->setText("");
@@ -496,17 +471,17 @@ void LoginForm::userSelectStateMachine(int key, int button){
 
     if(key == Qt::Key_Up)
         currentUserIndex--;
-    if(key == Qt::Key_Down)
+    else if(key == Qt::Key_Down)
         currentUserIndex++;
 
     if(currentUserIndex < 0)
         currentUserIndex = 0;
 
-    if(currentUserIndex >= cached_user_count)
-        currentUserIndex = cached_user_count - 1;
+    if(currentUserIndex >= total_user_count)
+        currentUserIndex = total_user_count - 1;
 
-    if(button >= cached_user_count)
-        button = cached_user_count - 1;
+    if(button >= total_user_count)
+        button = total_user_count - 1;
 
     if(button >= 0)
         currentUserIndex  = button;
@@ -596,11 +571,9 @@ void LoginForm::userSelectStateMachine(int key, int button){
 
 void LoginForm::keyPressEvent(QKeyEvent *event)
 {
-
-
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
         if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->userspage)){
-            ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->loginpage));
+            pageTransition(ui->loginpage);
             capsLockCheck();
         }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->resetpage))
             on_resetpasswordButton_clicked();
@@ -615,7 +588,7 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
 
         if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->userspage)){
             cancelLogin();
-            ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->loginpage));
+            pageTransition(ui->loginpage);
             ui->userInput->clear();
             ui->passwordInput->clear();
             ui->userInput->setFocus();
@@ -628,7 +601,7 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
             cancelLogin();
 
             if(Cache().getLastUser() != NULL){
-                ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->userspage));
+                pageTransition(ui->userspage);
                 ui->userInput->clear();
                 ui->passwordInput->clear();
                 userSelectStateMachine(0,currentUserIndex);
@@ -637,7 +610,7 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
         }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->resetpage) && !resetStartFlag){
             needPasswordChange = 0;
             cancelLogin();
-            ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->loginpage));
+            pageTransition(ui->loginpage);
             ui->newpasswordconfirminput->clear();
             ui->newpasswordinput->clear();
             ui->oldpasswordinput->clear();
@@ -676,7 +649,7 @@ void LoginForm::on_userbutton1_clicked()
 
 void LoginForm::on_userbutton2_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->loginpage));
+    pageTransition(ui->loginpage);
     ui->userspage->setFocus();
     userSelectStateMachine(0,currentUserIndex);
     ui->passwordInput->setFocus();
@@ -686,9 +659,7 @@ void LoginForm::on_userbutton2_clicked()
 
 void LoginForm::on_userbutton3_clicked()
 {
-
     userSelectStateMachine(0,currentUserIndex + 1);
-
 }
 
 
@@ -725,7 +696,7 @@ void LoginForm::on_resetpasswordButton_clicked()
         resetTimer->setSingleShot(false);
 
         if(needPasswordChange == false){
-            m_Greeter.cancelAuthentication();
+            cancelLogin();
             needPasswordChange = true;
             resetTimerState = 0;
             resetTimer->setInterval(10);
@@ -755,17 +726,14 @@ void LoginForm::LoginTimerFinished(){
     bool endFlag = 0;
     static int promptCheckCounter;
     static int userCheckCounter;
-    bool userFoundFlag = false;
-    QString tempStr;
+
 
     switch(loginTimerState){
     case 0:
 
         ui->waitlabel->setText(tr("Authenticating"));
-        ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->waitpage));
+        pageTransition(ui->waitpage);
         m_Greeter.cancelAuthentication();
-
-        //m_Greeter.cancelAuthentication();
         userCheckCounter = 0;
         loginTimerState = 1;
         lastPrompt.clear();
@@ -784,14 +752,14 @@ void LoginForm::LoginTimerFinished(){
             m_Greeter.respond(ui->passwordInput->text().trimmed());
             endFlag = 1;
         }else if(promptCheckCounter > 200){
-            ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->loginpage));
+            pageTransition(ui->loginpage);
             endFlag = 1;
             ui->passwordInput->setEnabled(true);
             ui->userInput->setEnabled(true);
             ui->passwordInput->setFocus();
             ui->passwordInput->clear();
             m_Greeter.cancelAuthentication();
-            message_received = 0;
+            messageReceived = 0;
             loginStartFlag = false;
             ui->messagelabel->setText(tr("Error : User is unknown"));
         }else{
@@ -819,7 +787,7 @@ void LoginForm::passwordResetTimerFinished(){
     switch(resetTimerState){
 
     case 0:
-        ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->waitpage));
+        pageTransition(ui->waitpage);
         m_Greeter.cancelAuthentication();
         resetTimerState = 1;
         break;
@@ -838,8 +806,7 @@ void LoginForm::passwordResetTimerFinished(){
 
     case 3:
         //old password
-        ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->waitpage));
-
+        pageTransition(ui->waitpage);
         if(lastPrompt.compare("(current) UNIX password: ") == 0)
             m_Greeter.respond(oldPassword.trimmed());
         resetTimerState = 4;
@@ -847,7 +814,7 @@ void LoginForm::passwordResetTimerFinished(){
 
     case 4:
         //"Enter new password: "
-        ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->waitpage));
+        pageTransition(ui->waitpage);
         m_Greeter.respond(ui->newpasswordinput->text().trimmed());
         resetTimerState = 5;
         break;
@@ -875,9 +842,53 @@ void LoginForm::passwordResetTimerFinished(){
 
 void LoginForm::on_acceptbutton_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->resetpage));
+    pageTransition(ui->resetpage);
     ui->newpasswordinput->setFocus();
 
+}
+
+
+QString LoginForm::getValueOfString(QString data, QString value){
+
+    QString result;
+
+    int indx = data.indexOf(value);
+    int endx = 0;
+
+    if(indx == -1){
+        return NULL;
+    }
+
+    indx += value.size();
+    result = data.mid(indx);
+
+    if(result.at(0) != QChar(':') && result.at(0) != QChar('=') ){
+
+        if(result.at(1) != QChar(':') && result.at(1) != QChar('=') )
+            return NULL;
+        else
+            indx = 2;
+
+    }else{
+        indx = 1;
+    }
+
+
+    while(result.at(indx) == ' ' || result.at(indx) == '\n'){
+        indx++;
+    }
+
+    endx = indx;
+
+    while(result.at(endx) != ' ' && result.at(endx) != '\n'){
+        endx++;
+    }
+
+
+
+    result = result.mid(indx, (endx - indx));
+
+    return result;
 }
 
 
@@ -904,8 +915,7 @@ bool LoginForm::capsOn()
         return false;
     }
 
-
-    if(strstr(data, "Caps Lock:   off") != NULL)
+    if(getValueOfString(QString::fromLocal8Bit(data), QString("Caps Lock")).compare("off") == 0)
         ret = false;
     else
         ret = true;
@@ -962,12 +972,12 @@ void LoginForm::stopWaitOperation(const bool& networkstatus){
                 timeoutFlag = false;
 
             if(Cache().getLastUser() != NULL){
-                ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->userspage));
+                pageTransition(ui->userspage);
                 ui->userspage->setFocus();
                 ui->userspage->setFocusPolicy(Qt::FocusPolicy::WheelFocus);
 
             }else{
-                ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->loginpage));
+                pageTransition(ui->loginpage);
             }
 
             loginTimeot = 0;
@@ -976,7 +986,7 @@ void LoginForm::stopWaitOperation(const bool& networkstatus){
     }else if(ui->stackedWidget->currentIndex() != ui->stackedWidget->indexOf(ui->waitpage) && networkstatus == false
              && Settings().waittimeout() > 0 && !timeoutFlag){
         ui->waitlabel->setText(tr("Waiting for Network and Services"));
-        ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(ui->waitpage));
+        pageTransition(ui->waitpage);
         m_Greeter.cancelAuthentication();
         loginTimeot = 0;
         loginStartFlag = false;
@@ -990,4 +1000,36 @@ void LoginForm::stopWaitOperation(const bool& networkstatus){
 void LoginForm::on_loginbutton_clicked()
 {
     startLogin();
+}
+
+
+void LoginForm::pageTransition(QWidget *Page){
+
+
+    ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(Page));
+
+
+    if(Page == ui->waitpage){
+        mv->start();
+    }
+    else if(Page == ui->userspage){
+
+        ui->userspage->setFocus();
+        ui->userspage->setFocusPolicy(Qt::FocusPolicy::WheelFocus);
+        mv->stop();
+    }
+    else if(Page == ui->loginpage){
+
+        mv->stop();
+    }
+    else if(Page == ui->warningpage){
+
+        mv->stop();
+    }
+    else if(Page == ui->resetpage){
+
+        mv->stop();
+    }
+
+
 }

@@ -20,6 +20,9 @@
 #include "settingsform.h"
 #include "clockform.h"
 
+bool MainWindow::selectflag = false;
+int MainWindow::image_index = 0;
+
 MainWindow::MainWindow(int screen, QWidget *parent) :
     QWidget(parent),
     m_Screen(screen)
@@ -30,7 +33,6 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
     setGeometry(screenRect);
 
     setBackground();
-
 
 
     // display login dialog only in the main screen
@@ -47,9 +49,6 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         
         m_LoginForm->move(offsetX, offsetY);
         m_LoginForm->show();
-
-        //todo show users form
-
 
         m_SettingsForm = new SettingsForm(this);
 
@@ -96,7 +95,6 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         m_ClockForm->show();
 
 
-        //QObject::connect(m_SettingsForm, SIGNAL(sendNWStatusSignal(bool)), m_LoginForm, SLOT(stopWaitOperation(bool)));
         QObject::connect(m_SettingsForm, &SettingsForm::sendNWStatusSignal, m_LoginForm, &LoginForm::stopWaitOperation);
 
 
@@ -159,16 +157,46 @@ void MainWindow::setBackground()
 {
     QImage backgroundImage;
     QSettings greeterSettings(CONFIG_FILE, QSettings::IniFormat);
-    
-    if (greeterSettings.contains(BACKGROUND_IMAGE_KEY)) {
-        QString pathToBackgroundImage = greeterSettings.value(BACKGROUND_IMAGE_KEY).toString();
-        
-        backgroundImage = QImage(pathToBackgroundImage);
-        qDebug() << backgroundImage << tr(" is set as an image");
 
-        if (backgroundImage.isNull()) {
-            qWarning() << tr("Not able to read") << pathToBackgroundImage << tr("as image");
+    QPalette palette;
+    QRect rect = QApplication::desktop()->screenGeometry(m_Screen);
+
+    QString pathToBackgroundImageDir = greeterSettings.value(BACKGROUND_IMAGE_DIR_KEY).toString();
+
+
+
+
+    if(!pathToBackgroundImageDir.isNull()){
+
+        if(pathToBackgroundImageDir[pathToBackgroundImageDir.length() - 1 ] != '/')
+            pathToBackgroundImageDir += '/';
+
+
+        QDir directory(pathToBackgroundImageDir);
+        QStringList backgroundImageList = directory.entryList(QStringList() << "*.jpg" << "*.JPG" << "*.jpeg" << "*.JPEG",QDir::Files);
+
+        if(!selectflag){
+
+            qsrand (time(NULL));
+
+            if(backgroundImageList.count() > 1)
+                image_index = qrand() % (backgroundImageList.count());
+            else
+                image_index = 0;
+
+            selectflag = true;
         }
+
+        if (!backgroundImageList.isEmpty()) {
+            QString imagepath = pathToBackgroundImageDir + backgroundImageList[image_index];
+
+            backgroundImage = QImage(imagepath);
+            qDebug() << backgroundImage << tr(" is set as an image");
+
+        }else{
+            qWarning() << tr("Not able to read image at index: ") << image_index << tr(" as image");
+        }
+
 
     }
     else{
@@ -178,14 +206,13 @@ void MainWindow::setBackground()
         qDebug() << backgroundImage << tr(" is set as an image");
 
         if (backgroundImage.isNull()) {
-            qWarning() << tr("Not able to read") << pathToBackgroundImage << tr("as image");
+            qWarning() << tr("Not able to read") << pathToBackgroundImage << tr("as default image");
         }
     }
     
-    QPalette palette;
-    QRect rect = QApplication::desktop()->screenGeometry(m_Screen);
+
     if (backgroundImage.isNull()) {
-        palette.setColor(QPalette::Background, Qt::black);
+        palette.setColor(QPalette::Background, qRgb(255,203,80));
     }
     else {
         QBrush brush(backgroundImage.scaled(rect.width(), rect.height()));
