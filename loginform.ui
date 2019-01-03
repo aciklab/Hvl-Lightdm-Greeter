@@ -109,7 +109,7 @@ QPushButton {
           <property name="geometry">
            <rect>
             <x>180</x>
-            <y>110</y>
+            <y>114</y>
             <width>281</width>
             <height>61</height>
            </rect>
@@ -225,8 +225,14 @@ QToolButton:pressed{
        <property name="spacing">
         <number>6</number>
        </property>
+       <property name="leftMargin">
+        <number>9</number>
+       </property>
        <property name="topMargin">
         <number>5</number>
+       </property>
+       <property name="rightMargin">
+        <number>9</number>
        </property>
        <property name="bottomMargin">
         <number>5</number>
@@ -330,7 +336,7 @@ QLineEdit{
        <item>
         <widget class="QFrame" name="loginframe">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -361,7 +367,7 @@ QLineEdit{
          <widget class="QLineEdit" name="passwordInput">
           <property name="geometry">
            <rect>
-            <x>70</x>
+            <x>66</x>
             <y>165</y>
             <width>300</width>
             <height>40</height>
@@ -406,7 +412,7 @@ QLineEdit{
          <widget class="QLabel" name="logolabel">
           <property name="geometry">
            <rect>
-            <x>170</x>
+            <x>166</x>
             <y>10</y>
             <width>100</width>
             <height>100</height>
@@ -437,7 +443,7 @@ QLineEdit{
          <widget class="QLineEdit" name="userInput">
           <property name="geometry">
            <rect>
-            <x>70</x>
+            <x>66</x>
             <y>120</y>
             <width>300</width>
             <height>40</height>
@@ -490,7 +496,7 @@ QLineEdit{
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>80</y>
+            <y>0</y>
             <width>150</width>
             <height>31</height>
            </rect>
@@ -537,7 +543,7 @@ QLineEdit{
          <widget class="QPushButton" name="pushButton_resetpwd">
           <property name="geometry">
            <rect>
-            <x>220</x>
+            <x>216</x>
             <y>210</y>
             <width>71</width>
             <height>36</height>
@@ -767,7 +773,7 @@ Password</string>
          <widget class="QPushButton" name="loginbutton">
           <property name="geometry">
            <rect>
-            <x>300</x>
+            <x>295</x>
             <y>210</y>
             <width>71</width>
             <height>36</height>
@@ -783,7 +789,7 @@ Password</string>
          <widget class="QPushButton" name="pwShowbutton">
           <property name="geometry">
            <rect>
-            <x>340</x>
+            <x>335</x>
             <y>175</y>
             <width>30</width>
             <height>20</height>
@@ -827,7 +833,7 @@ Password</string>
          <widget class="QPushButton" name="backButton">
           <property name="geometry">
            <rect>
-            <x>70</x>
+            <x>66</x>
             <y>210</y>
             <width>71</width>
             <height>36</height>
@@ -1077,7 +1083,7 @@ QLineEdit{
             </property>
             <property name="maximumSize">
              <size>
-              <width>290</width>
+              <width>300</width>
               <height>40</height>
              </size>
             </property>
@@ -1105,7 +1111,7 @@ QLineEdit{
             </property>
             <property name="maximumSize">
              <size>
-              <width>290</width>
+              <width>300</width>
               <height>40</height>
              </size>
             </property>
@@ -1139,7 +1145,7 @@ QLineEdit{
             </property>
             <property name="maximumSize">
              <size>
-              <width>300</width>
+              <width>350</width>
               <height>40</height>
              </size>
             </property>
@@ -1157,33 +1163,71 @@ QLineEdit{
             </property>
            </widget>
           </item>
-          <item alignment="Qt::AlignHCenter">
-           <widget class="QPushButton" name="resetpasswordButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <property name="spacing">
+             <number>0</number>
             </property>
-            <property name="minimumSize">
-             <size>
-              <width>300</width>
-              <height>40</height>
-             </size>
+            <property name="sizeConstraint">
+             <enum>QLayout::SetDefaultConstraint</enum>
             </property>
-            <property name="maximumSize">
-             <size>
-              <width>344</width>
-              <height>40</height>
-             </size>
+            <property name="leftMargin">
+             <number>40</number>
             </property>
-            <property name="focusPolicy">
-             <enum>Qt::ClickFocus</enum>
+            <property name="rightMargin">
+             <number>40</number>
             </property>
-            <property name="text">
-             <string>Reset Password</string>
-            </property>
-           </widget>
+            <item>
+             <widget class="QPushButton" name="cancelResetButton">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
+              <property name="text">
+               <string>Cancel</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="resetpasswordButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>50</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
+              <property name="text">
+               <string>Reset Password</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
            <widget class="QLabel" name="rstpwdmessagelabel">

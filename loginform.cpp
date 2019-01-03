@@ -3,7 +3,6 @@
 #include <QCompleter>
 #include <QAbstractListModel>
 #include <QModelIndex>
-#include <QFile>
 #include <QTextStream>
 #include <QStringList>
 #include <QPixmap>
@@ -14,13 +13,13 @@
 #include <QMetaMethod>
 #include <QNetworkInterface>
 #include <QTimer>
-#include "qquickview.h"
 #include <QWebEngineView>
 #include <QPushButton>
 #include <QMovie>
 #include <QShortcut>
 #include <QToolButton>
 #include <QPropertyAnimation>
+#include <QProcess>
 
 #include "loginform.h"
 #include "ui_loginform.h"
@@ -29,8 +28,6 @@
 #include <pwd.h>
 #include "settingsform.h"
 #include "mainwindow.h"
-
-
 
 
 const int KeyRole = QLightDM::SessionsModel::KeyRole;
@@ -59,7 +56,6 @@ LoginForm::LoginForm(QWidget *parent) :
         close();
     }
 
-
     ui->setupUi(this);
     initialize();
 }
@@ -84,6 +80,8 @@ void LoginForm::initialize()
 {
     ui->hostnameLabel->setText(m_Greeter.hostname());
     mv = new QMovie(":/resources/load1.gif");
+    mv->setScaledSize(QSize(ui->giflabel->width(), ui->giflabel->height()));
+
 
     QString imagepath = Settings().logopath();
 
@@ -110,7 +108,6 @@ void LoginForm::initialize()
 
     //ui->passwordInput->setEnabled(false);
     ui->passwordInput->clear();
-
 
     initializeUserList();
 
@@ -179,8 +176,6 @@ void LoginForm::initialize()
     QWidget::setTabOrder(ui->oldpasswordinput, ui->newpasswordinput);
     QWidget::setTabOrder(ui->newpasswordinput, ui->newpasswordconfirminput);
 
-
-
 }
 
 void LoginForm::cancelLogin()
@@ -227,7 +222,9 @@ void LoginForm::onPrompt(QString prompt, QLightDM::Greeter::PromptType promptTyp
 
     qInfo() << "Received Prompt: " + prompt + " type: " + QString::number(promptType);
 
-    if((prompt.compare("Enter new password: ") == 0 || prompt.compare("New password: ") == 0 || prompt.compare("(current) UNIX password: ") == 0 || prompt.compare("Current Password: ") == 0) && needPasswordChange != 1 && !resetStartFlag){
+    if((prompt.compare("Enter new password: ") == 0 || prompt.compare("New password: ") == 0 ||
+        prompt.compare("(current) UNIX password: ") == 0 || prompt.compare("Current Password: ") == 0)
+            && needPasswordChange != 1 && !resetStartFlag){
 
         if(prompt.compare("(current) UNIX password: " ) == 0 || prompt.compare("Current Password: ") == 0)
             needReenterOldPassword = 1;
@@ -400,7 +397,6 @@ void LoginForm::addUsertoCache(QString user_name){
                     userList[i-1].clear();
 
                 }
-
             }
 
             userList[0] = user_name;
@@ -439,8 +435,6 @@ void LoginForm::on_pushButton_resetpwd_clicked()
 }
 
 
-
-
 void LoginForm::checkPasswordResetButton(){
 
     uint password_key_selection = 0;
@@ -472,8 +466,6 @@ void LoginForm::initializeUserList(){
             total_user_count++;
     }
 
-
-
     for(int i = 0; i < 5; i++){
         if((userList[i].isNull() || userList[i].isEmpty()) && i < 4){
 
@@ -500,11 +492,9 @@ void LoginForm::initializeUserList(){
 
             if(username.compare(userList[i]) == 0){
                 imagepath = userModel.data(modelIndex, QLightDM::UsersModel::ImagePathRole).toString();
+                break;
             }
-
-
         }
-
 
         toolButtons[i] = new QToolButton(ui->usersframe);
 
@@ -526,12 +516,7 @@ void LoginForm::initializeUserList(){
             toolButtons[i]->setIcon(iconx);
         }
 
-
-
-        QSize sz;
-        sz.setHeight(100);
-        sz.setWidth(100);
-        toolButtons[i]->setIconSize(sz);
+        toolButtons[i]->setIconSize(QSize(100,100));
 
         toolButtons[i]->setText(userList[i]);
         toolButtons[i]->setObjectName(QString("toolbutton%1").arg(i));
@@ -546,30 +531,16 @@ void LoginForm::initializeUserList(){
 
     current_user_button = 1;
     currentUserIndex = 0;
-
-
 }
-
 
 void LoginForm::usersbuttonReposition(){
 
 
     int middlepoint = ui->usersframe->width() / 2;
-
     int defaultframelength = ui->usersframe->width() / 5;
-
     int totalframelength = defaultframelength * total_user_count;
-
     int framestart = middlepoint - (totalframelength / 2);
-
     int buttonx = 0;
-
-
-
-    centralButtonPoint.setX(middlepoint - 60);
-    //centralButtonPoint.y;
-
-
 
     for(int i = 0; i< total_user_count; i++){
 
@@ -582,8 +553,6 @@ void LoginForm::usersbuttonReposition(){
         anim1[i]->setDuration(250);
         anim1[i]->setStartValue(QRect(buttonx + 20 ,100, 80, 100));
 
-
-
     }
 
 
@@ -591,18 +560,9 @@ void LoginForm::usersbuttonReposition(){
 
     for(int i = 0; i< total_user_count; i++){
 
-
         buttonx = framestart + ((defaultframelength - 120) / 2) + (i * defaultframelength);
-
-        //toolButtons[i]->setGeometry(buttonx ,100, 120, 150);
-
-
         anim1[i]->setEndValue(QRect(buttonx ,100, 120, 150));
-
         animGroup->addAnimation(anim1[i]);
-
-
-
     }
 
     animGroup->start();
@@ -613,18 +573,24 @@ void LoginForm::usersbuttonReposition(){
 void LoginForm::userButtonClicked(){
 
 
-    int i = 0;
 
     QObject *senderObj = sender(); // This will give Sender object
     QString senderObjName = senderObj->objectName();
 
-    for(i = 0; i< total_user_count; i++){
+    for(int i = 0; i< total_user_count; i++){
 
         if(senderObjName.compare(QString("toolbutton%1").arg(i)) == 0){
+            currentUserIndex = i;
             break;
         }
 
     }
+
+    loginPageTransition();
+}
+
+
+void LoginForm::loginPageTransition(){
 
 
     int middlepoint = ui->usersframe->width() / 2;
@@ -641,7 +607,7 @@ void LoginForm::userButtonClicked(){
 
         anim1[j]->setDuration(150);
 
-        if(j == i){
+        if(j == currentUserIndex){
             anim1[j]->setStartValue(QRect(toolButtons[j]->x(), toolButtons[j]->y(), toolButtons[j]->width(), toolButtons[j]->height()));
             anim1[j]->setEndValue(QRect(buttonx ,100, 120, 150));
 
@@ -658,7 +624,6 @@ void LoginForm::userButtonClicked(){
     }
 
     animGroup->start();
-    currentUserIndex = i;
 
     for(int i = 0; i< total_user_count; i++){
 
@@ -671,16 +636,14 @@ void LoginForm::userButtonClicked(){
 
 
 
-
     animationTimer->setTimerType(Qt::TimerType::CoarseTimer);
     animationTimer->setSingleShot(false);
-    animationTimer->setInterval(150);
+    animationTimer->setInterval(160);
     animationTimerState = 0;
     animationTimer->start();
 
 
 }
-
 
 void LoginForm::animationTimerFinished(){
 
@@ -691,11 +654,11 @@ void LoginForm::animationTimerFinished(){
 
         for(int i = 0; i< total_user_count; i++){
 
-            if(i != currentUserIndex)
+            if(i != currentUserIndex){
                 toolButtons[i]->hide();
-            else
-                toolButtons[i]->setStyleSheet("background-color:rgba(50, 50, 50,0.7)");
-
+            }else{
+                toolButtons[i]->setStyleSheet("background-color:rgba(50, 50, 50,0.7);\nborder-radius=10px;");
+            }
             toolButtons[i]->setText("");
         }
 
@@ -703,15 +666,30 @@ void LoginForm::animationTimerFinished(){
         animationTimer->stop();
         animationTimer->start();
 
+
+        ui->logolabel->setPixmap(toolButtons[currentUserIndex]->icon().pixmap(ui->logolabel->width(), ui->logolabel->height()));
+
         anim1[0] = new QPropertyAnimation(toolButtons[currentUserIndex], "geometry");
         anim1[0]->setDuration(150);
 
-        anim1[0]->setStartValue(QRect(toolButtons[currentUserIndex]->x(), toolButtons[currentUserIndex]->y(), toolButtons[currentUserIndex]->width(), toolButtons[currentUserIndex]->height()));
-        anim1[0]->setEndValue(QRect(ui->loginframe->x(), ui->loginframe->y(), ui->loginframe->width(), ui->loginframe->height()));
+        anim1[0]->setStartValue(QRect(toolButtons[currentUserIndex]->x(), toolButtons[currentUserIndex]->y(),
+                                      toolButtons[currentUserIndex]->width(), toolButtons[currentUserIndex]->height()));
+
+        anim1[0]->setEndValue(QRect(ui->loginframe->x() - ui->loginpage->layout()->contentsMargins().left(),
+                                    ui->loginframe->y() - ui->loginpage->layout()->contentsMargins().top(),
+                                    ui->loginframe->width(), ui->loginframe->height()));
         anim1[0]->start();
         break;
 
     case 1:
+
+        animationTimerState++;
+        animationTimer->stop();
+        animationTimer->setInterval(50);
+        animationTimer->start();
+        break;
+
+    case 2:
 
         pageTransition(ui->loginpage);
         ui->userspage->setFocus();
@@ -723,8 +701,6 @@ void LoginForm::animationTimerFinished(){
 
         break;
 
-    case 2:
-        break;
     }
 
 }
@@ -769,15 +745,7 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
         if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->userspage)){
-           // pageTransition(ui->loginpage);
-            //ui->passwordInput->setFocus();
-            //capsLockCheck();
-
-            animationTimer->setTimerType(Qt::TimerType::CoarseTimer);
-            animationTimer->setSingleShot(false);
-            animationTimer->setInterval(150);
-            animationTimerState = 0;
-            animationTimer->start();
+            loginPageTransition();
 
         }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->resetpage))
             on_resetpasswordButton_clicked();
@@ -800,6 +768,7 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
 
         if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->userspage)){
             cancelLogin();
+            ui->logolabel->clear();
             pageTransition(ui->loginpage);
             ui->userInput->clear();
             ui->passwordInput->clear();
@@ -807,7 +776,7 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
             capsLockCheck();
             needPasswordChange = 0;
 
-        }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->loginpage) /*&& !loginStartFlag*/){
+        }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->loginpage)){
 
             needPasswordChange = 0;
             cancelLogin();
@@ -818,25 +787,16 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
             }
 
         }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->resetpage) && !resetStartFlag){
-            needPasswordChange = 0;
-            cancelLogin();
-            pageTransition(ui->loginpage);
-            ui->newpasswordconfirminput->clear();
-            ui->newpasswordinput->clear();
-            ui->oldpasswordinput->clear();
-            ui->userInput->setEnabled(true);
-            ui->passwordInput->setEnabled(true);
-            ui->userInput->setFocus();
-            ui->passwordInput->clear();
-            capsLockCheck();
-            ui->rstpwdmessagelabel->clear();
-        }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->waitpage) && loginStartFlag && !resetStartFlag){
+            on_cancelResetButton_clicked();
+        }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->waitpage) &&
+                 loginStartFlag && !resetStartFlag){
             // m_Greeter.cancelAuthentication();
             //pageTransition(ui->loginpage);
 
         }
     }
-    else if (event->key() == Qt::Key_Left || event->key() == Qt::Key_Right && ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->userspage)) {
+    else if (event->key() == Qt::Key_Left || event->key() == Qt::Key_Right &&
+             ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->userspage)) {
         userSelectStateMachine(event->key(), -1);
     }else {
         QWidget::keyPressEvent(event);
@@ -1112,8 +1072,6 @@ QString LoginForm::getValueOfString(QString data, QString value){
         endx++;
     }
 
-
-
     result = result.mid(indx, (endx - indx));
 
     return result;
@@ -1134,7 +1092,9 @@ bool LoginForm::capsOn()
     }
 
 
-    if(fread(data, sizeof(data), 1, fp) < 0){
+    int read_size = fread(data, 1, sizeof(data), fp);
+
+    if(read_size < 1){
         qWarning() << " Unable to read capslock status" ;
 
         /* close */
@@ -1154,9 +1114,7 @@ bool LoginForm::capsOn()
 
 void LoginForm::on_userInput_editingFinished()
 {
-
     capsLockCheck();
-
 }
 
 
@@ -1213,8 +1171,11 @@ void LoginForm::stopWaitOperation(const bool& networkstatus){
             loginTimeot = 0;
         }
 
-    }else if(ui->stackedWidget->currentIndex() != ui->stackedWidget->indexOf(ui->waitpage) && ui->stackedWidget->currentIndex() != ui->stackedWidget->indexOf(ui->userspage) && networkstatus == false
-             && Settings().waittimeout() > 0 && !timeoutFlag &&!loginStartFlag && !resetStartFlag){
+    }else if(ui->stackedWidget->currentIndex() != ui->stackedWidget->indexOf(ui->waitpage) &&
+             ui->stackedWidget->currentIndex() != ui->stackedWidget->indexOf(ui->userspage) &&
+             networkstatus == false && Settings().waittimeout() > 0 && !timeoutFlag &&
+             !loginStartFlag && !resetStartFlag){
+
         ui->waitlabel->setText(tr("Waiting for Network and Services"));
         pageTransition(ui->waitpage);
         cancelLogin();
@@ -1252,10 +1213,6 @@ void LoginForm::pageTransition(QWidget *Page){
         mv->stop();
     }
     else if(Page == ui->loginpage){
-
-
-        // ui->logolabel->move(centralButtonPoint);
-
 
         if(ui->userInput->text().isEmpty())
             ui->userInput->setFocus();
@@ -1303,5 +1260,25 @@ void LoginForm::on_backButton_clicked()
     if(Cache().getLastUser() != NULL){
         pageTransition(ui->userspage);
         userSelectStateMachine(0, currentUserIndex);
+    }
+}
+
+void LoginForm::on_cancelResetButton_clicked()
+{
+
+    if(!resetStartFlag){
+        needPasswordChange = 0;
+        cancelLogin();
+        pageTransition(ui->loginpage);
+        ui->newpasswordconfirminput->clear();
+        ui->newpasswordinput->clear();
+        ui->oldpasswordinput->clear();
+        ui->userInput->setEnabled(true);
+        ui->passwordInput->setEnabled(true);
+        ui->userInput->setFocus();
+        ui->passwordInput->clear();
+        capsLockCheck();
+        ui->rstpwdmessagelabel->clear();
+
     }
 }
