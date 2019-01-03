@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>452</width>
-    <height>100</height>
+    <width>412</width>
+    <height>60</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,29 +24,22 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget {
-    border-radius: 10px;
-}
-#formFrame{
-border:2px solid rgba(255,255,255,0.5);
-}
-
-#hostnameLabel {
-	color: white;
-}
-
-#formFrame { 
-    background-color: rgba(80,80,80, 0.2);
     border-radius: 5px;
 }
+#formFrame{
+	border:0px solid rgba(255,255,255,0.5);
+    background-color: rgba(50,50,50, 0.0);
+    border-radius: 5px;
+}
+
 
 QComboBox,
 QPushButton {
     color:black;
+	font-size:12px;
     border: 1px solid silver;
-    background-color: rgba(200, 200, 200,0.5);
+    background-color: rgba(200, 200, 200,0.9);
 }
-
-
 
 
 QComboBox::drop-down {
@@ -59,19 +52,21 @@ QComboBox::down-arrow {
     image: url(:/resources/dropdown.svg);
 	color:red;
 }
-QLineEdit::focus{
-border: 2px solid rgba(255, 236, 180 ,1);
-	
-}
-QLineEdit{
-color:white;
-font-size:15px;
-padding:5px;
-border:1px solid white;
-background-color: rgba(0,0,255,0);
-}</string>
+</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QFrame" name="formFrame">
      <property name="sizePolicy">
@@ -96,13 +91,33 @@ background-color: rgba(0,0,255,0);
       <number>0</number>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QComboBox" name="kybrdcomboBox">
         <property name="minimumSize">
          <size>
           <width>160</width>
-          <height>60</height>
+          <height>45</height>
          </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>-1</pointsize>
+         </font>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::TabFocus</enum>
         </property>
         <property name="editable">
          <bool>false</bool>
@@ -110,24 +125,27 @@ background-color: rgba(0,0,255,0);
         <property name="currentText">
          <string/>
         </property>
+        <property name="currentIndex">
+         <number>-1</number>
+        </property>
+        <property name="insertPolicy">
+         <enum>QComboBox::InsertAtBottom</enum>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+        </property>
+        <property name="minimumContentsLength">
+         <number>0</number>
+        </property>
         <property name="iconSize">
          <size>
-          <width>40</width>
-          <height>40</height>
+          <width>30</width>
+          <height>30</height>
          </size>
         </property>
-        <property name="duplicatesEnabled">
+        <property name="frame">
          <bool>false</bool>
         </property>
-        <item>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="qt-lightdm-greeter.qrc">
-           <normaloff>:/resources/keyboard.jpeg</normaloff>:/resources/keyboard.jpeg</iconset>
-         </property>
-        </item>
        </widget>
       </item>
       <item>
@@ -135,26 +153,23 @@ background-color: rgba(0,0,255,0);
         <property name="minimumSize">
          <size>
           <width>80</width>
-          <height>60</height>
+          <height>45</height>
          </size>
         </property>
         <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
+         <enum>Qt::TabFocus</enum>
         </property>
         <property name="toolTip">
          <string/>
         </property>
-        <property name="text">
-         <string/>
-        </property>
         <property name="icon">
-         <iconset resource="qt-lightdm-greeter.qrc">
-          <normaloff>:/resources/rqt-2.png</normaloff>:/resources/rqt-2.png</iconset>
+         <iconset resource="hvl-lightdm-greeter.qrc">
+          <normaloff>:/resources/pardus.png</normaloff>:/resources/pardus.png</iconset>
         </property>
         <property name="iconSize">
          <size>
-          <width>40</width>
-          <height>40</height>
+          <width>35</width>
+          <height>35</height>
          </size>
         </property>
         <property name="shortcut">
@@ -173,19 +188,22 @@ background-color: rgba(0,0,255,0);
         <property name="minimumSize">
          <size>
           <width>160</width>
-          <height>60</height>
+          <height>45</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>160</width>
-          <height>60</height>
+          <width>16777215</width>
+          <height>16777215</height>
          </size>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::TabFocus</enum>
         </property>
         <property name="iconSize">
          <size>
-          <width>40</width>
-          <height>40</height>
+          <width>30</width>
+          <height>30</height>
          </size>
         </property>
         <item>
@@ -193,7 +211,7 @@ background-color: rgba(0,0,255,0);
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="qt-lightdm-greeter.qrc">
+          <iconset resource="hvl-lightdm-greeter.qrc">
            <normaloff>:/resources/leaveIcon.svg</normaloff>:/resources/leaveIcon.svg</iconset>
          </property>
         </item>
@@ -205,7 +223,7 @@ background-color: rgba(0,0,255,0);
   </layout>
  </widget>
  <resources>
-  <include location="qt-lightdm-greeter.qrc"/>
+  <include location="hvl-lightdm-greeter.qrc"/>
  </resources>
  <connections/>
 </ui>

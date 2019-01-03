@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Hvl LightDM Greeter
 Comment=This runs the Hvl LightDM greeter, it should only be run from LightDM
-Exec=hvl-lightdm-greeter
+Exec=hvl-lightdm-greeter --no-sandbox
 Type=Application
 X-Ubuntu-Gettext-Domain=lightdm

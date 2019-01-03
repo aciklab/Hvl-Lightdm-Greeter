@@ -12,6 +12,9 @@
 #include <QSettings>
 #include <QIcon>
 #include <QTranslator>
+#include <QString>
+#include <QLocale>
+#include <QRegularExpression>
 
 #include <iostream>
 
@@ -24,7 +27,7 @@ QTextStream ts;
 
 void messageHandler(QtMsgType type, const QMessageLogContext&, const QString& msg)
 {
-    std::cerr << type << ": " << msg.toLatin1().data() << "\n";
+    std::cerr << type << ": " << QTime::currentTime().toString().toLatin1().data() << " " << msg.toLatin1().data() << "\n";
 }
 
 int main(int argc, char *argv[])
@@ -38,10 +41,20 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
+
     qDebug() << "hvl-lightdm is starting now";
 
+
+    QString locale = QLocale::system().name();
+
     QTranslator translator;
-    translator.load("hvl-lightdm_tr", "/usr/share/lightdm/lightdm-hvl-greeter.conf.d");
+
+    if(!translator.load(locale, "/usr/share/lightdm/lightdm-hvl-greeter.conf.d/lang")){
+
+        if(!translator.load(locale.section('_', 0, 0) , "/usr/share/lightdm/lightdm-hvl-greeter.conf.d/lang")){
+            qInfo() << "Failed to load translator file for locale  " + locale;
+        }
+    }
     a.installTranslator(&translator);
 
     if (! Settings().iconThemeName_loginform().isEmpty()) {
@@ -62,9 +75,6 @@ int main(int argc, char *argv[])
         focusWindow->setFocus(Qt::OtherFocusReason);
         focusWindow->activateWindow();
     }
-
-
-
 
     return a.exec();
 }

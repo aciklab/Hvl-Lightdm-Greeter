@@ -23,7 +23,6 @@ public:
 private:
     Ui::clockForm *ui;
     QTimer *timer;
-    void initialize();
     bool resized;
 };
 

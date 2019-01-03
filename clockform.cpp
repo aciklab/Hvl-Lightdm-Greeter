@@ -15,8 +15,6 @@ clockForm::clockForm(QWidget *parent) :
     ui->setupUi(this);
 
     timer = new QTimer();
-
-
     timer->setTimerType(Qt::TimerType::CoarseTimer);
 
     timer->setSingleShot(false);
@@ -31,6 +29,7 @@ clockForm::clockForm(QWidget *parent) :
 clockForm::~clockForm()
 {
     delete ui;
+    delete timer;
 }
 
 void clockForm::updateClock(){
@@ -67,12 +66,6 @@ void clockForm::updateClock(){
         ui->dateLabel->setFont(font);
         resized = true;
     }
-
-}
-
-void clockForm::initialize(){
-
-
 
 }
 
