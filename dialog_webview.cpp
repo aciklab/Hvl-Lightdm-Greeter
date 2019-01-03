@@ -23,6 +23,7 @@ Dialog_webview::Dialog_webview(QWidget *parent) :
     setFixedHeight(700 + ui->closebutton->width() + 1);
     setFixedWidth(1024);
 
+
     ui->widget1->setFixedHeight(700);
     ui->widget1->setFixedWidth(1024);
     ui->widget1->move(0, ui->closebutton->width());
@@ -32,7 +33,10 @@ Dialog_webview::Dialog_webview(QWidget *parent) :
 
     if(!tmpurl.isEmpty() && !tmpurl.isNull()){
         ui->widget1->load(QUrl(tmpurl,QUrl::ParsingMode::TolerantMode));
-        ui->widget1->setFocus();
+        //ui->widget1->setFocus();
+        qInfo() <<  "Opening webpage " +  tmpurl + " now";
+    }else{
+        qCritical() << "Failed to opening webpage " +  tmpurl;
     }
 }
 

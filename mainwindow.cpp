@@ -13,12 +13,25 @@
 #include <QDebug>
 #include <QtNetwork/QtNetwork>
 #include <QMessageBox>
+#include <QBitmap>
+#include <QPainter>
 
 #include "mainwindow.h"
 #include "loginform.h"
 #include "settings.h"
 #include "settingsform.h"
 #include "clockform.h"
+
+#include "stdlib.h"
+
+#include <X11/Xatom.h>
+#include <X11/Xlib.h>
+#include <QtX11Extras/QX11Info>
+#include <X11/Xcursor/Xcursor.h>
+#include <X11/Xutil.h>
+#include <X11/Xos.h>
+
+
 
 bool MainWindow::selectflag = false;
 int MainWindow::image_index = 0;
@@ -34,10 +47,11 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
 
     setBackground();
 
-
     // display login dialog only in the main screen
     
-    if (showLoginForm()) {
+    if (m_Screen == QApplication::desktop()->primaryScreen()) {
+
+
         m_LoginForm = new LoginForm(this);
 
         int maxX = screenRect.width() - m_LoginForm->width();
@@ -60,10 +74,6 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         offsetX = getOffset(Settings().offsetX_settingsform(), maxX, defaultX);
         offsetY = getOffset(Settings().offsetY_settingsform(), maxY, defaultY);
 
-        if(offsetY < (m_LoginForm->y() + m_LoginForm->height())){
-            offsetY = m_LoginForm->y() + m_LoginForm->height() + 1;
-        }
-
 
         m_SettingsForm->move(offsetX, offsetY);
         m_SettingsForm->show();
@@ -74,8 +84,8 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         maxX = screenRect.width();
         maxY = screenRect.height();
 
-        int sizex = getOffset(Settings().sizeX_clockform(), maxX, 20*maxX/100);
-        int sizey = getOffset(Settings().sizeY_clockform(), maxY, 20*maxY/100);
+        int sizex = getOffset(Settings().sizeX_clockform(), maxX, (20 * maxX) / 100);
+        int sizey = getOffset(Settings().sizeY_clockform(), maxY, (20 * maxY) / 100);
 
 
         if(sizex !=0 && sizey != 0)
@@ -98,8 +108,6 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         QObject::connect(m_SettingsForm, &SettingsForm::sendNWStatusSignal, m_LoginForm, &LoginForm::stopWaitOperation);
 
 
-
-
         // This hack ensures that the primary screen will have focus
         // if there are more screens (move the mouse cursor in the center
         // of primary screen - not in the center of all X area). It
@@ -107,6 +115,10 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         int centerX = screenRect.width()/2 + screenRect.x();
         int centerY = screenRect.height()/2 + screenRect.y();
         QCursor::setPos(centerX, centerY);
+        this->cursor().setShape(Qt::ArrowCursor);
+
+
+
     }
 }
 
@@ -145,7 +157,7 @@ int MainWindow::getOffset(QString settingsOffset, int maxVal, int defaultVal)
             offset = (maxVal * offsetPct)/100;
         }
         else {
-            qWarning() << tr("Could not understand") << settingsOffset
+            qWarning() << tr("Could not understand ") << settingsOffset
                        << tr("- must be of form <positivenumber>px or <positivenumber>%, e.g. 35px or 25%") ;
         }
     }
@@ -164,8 +176,6 @@ void MainWindow::setBackground()
     QString pathToBackgroundImageDir = greeterSettings.value(BACKGROUND_IMAGE_DIR_KEY).toString();
 
 
-
-
     if(!pathToBackgroundImageDir.isNull()){
 
         if(pathToBackgroundImageDir[pathToBackgroundImageDir.length() - 1 ] != '/')
@@ -173,7 +183,7 @@ void MainWindow::setBackground()
 
 
         QDir directory(pathToBackgroundImageDir);
-        QStringList backgroundImageList = directory.entryList(QStringList() << "*.jpg" << "*.JPG" << "*.jpeg" << "*.JPEG",QDir::Files);
+        QStringList backgroundImageList = directory.entryList(QStringList() << "*.jpg" << "*.JPG" << "*.jpeg" << "*.JPEG"<<"*.png"<<"*.PNG",QDir::Files);
 
         if(!selectflag){
 
@@ -190,8 +200,8 @@ void MainWindow::setBackground()
         if (!backgroundImageList.isEmpty()) {
             QString imagepath = pathToBackgroundImageDir + backgroundImageList[image_index];
 
-            backgroundImage = QImage(imagepath);
-            qDebug() << backgroundImage << tr(" is set as an image");
+            backgroundImage = QImage(imagepath, "jpg");
+            qDebug() << imagepath << tr(" is set as an background image");
 
         }else{
             qWarning() << tr("Not able to read image at index: ") << image_index << tr(" as image");
@@ -203,7 +213,7 @@ void MainWindow::setBackground()
         QString pathToBackgroundImage = ":/resources/bgs/bg1.jpg";
         backgroundImage = QImage(pathToBackgroundImage);
 
-        qDebug() << backgroundImage << tr(" is set as an image");
+        qDebug()  << pathToBackgroundImage << tr(" is set as an image");
 
         if (backgroundImage.isNull()) {
             qWarning() << tr("Not able to read") << pathToBackgroundImage << tr("as default image");
@@ -215,9 +225,77 @@ void MainWindow::setBackground()
         palette.setColor(QPalette::Background, qRgb(255,203,80));
     }
     else {
-        QBrush brush(backgroundImage.scaled(rect.width(), rect.height()));
+        QBrush brush(backgroundImage.scaled(rect.width(), rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         palette.setBrush(this->backgroundRole(), brush);
     }
     this->setPalette(palette);
+
+
+    /* We are painting x root background with current greeter background */
+    if(m_Screen == QApplication::desktop()->primaryScreen()){
+        if(!backgroundImage.isNull()){
+            QImage tmpimage = backgroundImage.scaled(rect.width(), rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+            setRootBackground(tmpimage);
+        }else{
+            QImage tmpimage(rect.width(), rect.height(), QImage::Format_ARGB32_Premultiplied) ;
+            tmpimage.fill(qRgb(255,203,80));
+            setRootBackground(tmpimage);
+
+        }
+    }
 }
+
+
+void MainWindow::setRootBackground(QImage img){
+
+    Display *dis  = QX11Info::display();
+    int screen = m_Screen;
+    Window win = RootWindow(dis, screen);
+
+    QRect screenRect = QApplication::desktop()->screenGeometry(m_Screen);
+
+    int width = screenRect.width();
+    int height = screenRect.height();
+
+    unsigned int depth = (unsigned int)DefaultDepth(dis, screen);
+
+    XFlush(dis);
+
+    Pixmap pix = XCreatePixmap(dis,win, width, height, depth);
+
+    char *tempimage = (char *)malloc(width * height * 4);
+
+    int k = 0;
+
+    for(int i = 0; i< height; i++ ){
+        for(int j = 0; j< width; j++){
+            *((uint*)tempimage + k) = img.pixel(j,i);
+            k++;
+        }
+    }
+
+    Visual *visual = DefaultVisual(dis, screen);
+
+    XImage *image = XCreateImage(dis, visual, 24, ZPixmap, 0, tempimage, width, height, 32, 0);
+
+    GC gc = XCreateGC(dis, pix, 0, NULL);
+
+
+    XPutImage(dis, pix, gc, image, 0, 0, 0, 0, width, height);
+
+
+    XSetWindowBackgroundPixmap(dis, win, pix);
+
+    /* Prevent from x shaped cursor after greeter is Closed */
+    Cursor c = XcursorLibraryLoadCursor(dis, "arrow");
+    XDefineCursor (dis, win, c);
+
+    XFreePixmap(dis, pix);
+    XDestroyImage(image);
+
+    XClearWindow(dis, win);
+}
+
+
+
 

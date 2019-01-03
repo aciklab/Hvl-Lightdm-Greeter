@@ -19,11 +19,16 @@
 #include <QWebEngineView>
 #include <QTimer>
 #include <QFrame>
+#include <QToolButton>
+#include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
 
 
 #include <QLightDM/Power>
 #include <QLightDM/Greeter>
 #include <QLightDM/SessionsModel>
+#include <QLightDM/UsersModel>
+
 
 
 namespace Ui
@@ -58,15 +63,13 @@ protected:
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
 
+Q_SIGNALS:
+    void setRootBackground();
+
+
 
 private slots:
     void on_pushButton_resetpwd_clicked();
-
-    void on_userbutton1_clicked();
-
-    void on_userbutton2_clicked();
-
-    void on_userbutton3_clicked();
 
     void on_resetpasswordButton_clicked();
 
@@ -78,9 +81,17 @@ private slots:
 
     void on_userInput_editingFinished();
 
-
-
     void on_loginbutton_clicked();
+
+    void on_pwShowbutton_pressed();
+
+    void on_pwShowbutton_released();
+
+    void userButtonClicked();
+
+    void on_backButton_clicked();
+
+    void animationTimerFinished();
 
 private:
     void initialize();
@@ -91,26 +102,36 @@ private:
     void initializeUserList();
     void addUsertoCache(QString user);
     void userSelectStateMachine(int key, int button);
-    void Debug(QString message);
     bool capsOn();
     void capsLockCheck();
     QString getValueOfString(QString data, QString value);
     void pageTransition(QWidget *Page);
+    void usersbuttonReposition();
+
 
     Ui::LoginForm *ui;
 
     QLightDM::Greeter m_Greeter;
     QLightDM::PowerInterface power;
     QLightDM::SessionsModel sessionsModel;
+    QLightDM::UsersModel userModel;
 
     QMap<int, void (QLightDM::PowerInterface::*)()> powerSlots;
 
     QFrame *user_frame;
     QTimer *resetTimer;
     QTimer *loginTimer;
+    QTimer *animationTimer;
     QMovie *mv;
 
     QString userList[5];
+    QToolButton *toolButtons[5];
+
+    QPropertyAnimation *anim1[5];
+    QPropertyAnimation *anim2[5];
+
+    QParallelAnimationGroup *animGroup;
+
     int current_user_button;
     int total_user_count;
     bool messageReceived;
@@ -128,6 +149,9 @@ private:
     int currentUserIndex;
     int loginTimeot;
     bool timeoutFlag;
+    bool networkOK;
+    QPoint centralButtonPoint;
+    int animationTimerState;
 
 
 

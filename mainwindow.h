@@ -15,6 +15,7 @@
 #include "loginform.h"
 #include "settingsform.h"
 #include "clockform.h"
+#include <X11/Xlib.h>
 
 namespace Ui {
     class MainWindow;
@@ -40,6 +41,7 @@ public:
 private:
     int getOffset(QString offset, int maxVal, int defaultVal);
     void setBackground();
+    void setRootBackground(QImage img);
 
     int m_Screen;
     LoginForm* m_LoginForm;

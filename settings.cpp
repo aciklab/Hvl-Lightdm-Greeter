@@ -5,7 +5,7 @@
 
 
 
-const QString Cache::GREETER_DATA_DIR_PATH = "/var/lib/lightdm/qt-lightdm-greeter";
+const QString Cache::GREETER_DATA_DIR_PATH = "/var/lib/lightdm/hvl-lightdm-greeter";
 
 void Cache::prepare()
 {

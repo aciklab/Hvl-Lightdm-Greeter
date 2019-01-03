@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>525</width>
+    <width>800</width>
     <height>328</height>
    </rect>
   </property>
@@ -24,25 +24,7 @@
     border-radius: 5px;
 }</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
-   <property name="spacing">
-    <number>0</number>
-   </property>
-   <property name="sizeConstraint">
-    <enum>QLayout::SetNoConstraint</enum>
-   </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="minimumSize">
@@ -93,6 +75,28 @@ QPushButton {
 </string>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="bottomMargin">
+        <number>5</number>
+       </property>
+       <item>
+        <spacer name="horizontalSpacer_7">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>132</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item>
         <widget class="QFrame" name="waitframe">
          <property name="frameShape">
@@ -104,7 +108,7 @@ QPushButton {
          <widget class="QLabel" name="waitlabel">
           <property name="geometry">
            <rect>
-            <x>160</x>
+            <x>180</x>
             <y>110</y>
             <width>281</width>
             <height>61</height>
@@ -120,6 +124,9 @@ QPushButton {
            <font>
             <pointsize>20</pointsize>
            </font>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::WheelFocus</enum>
           </property>
           <property name="text">
            <string>Waiting for Network and Services</string>
@@ -137,11 +144,14 @@ QPushButton {
          <widget class="QLabel" name="giflabel">
           <property name="geometry">
            <rect>
-            <x>100</x>
+            <x>120</x>
             <y>120</y>
             <width>50</width>
             <height>50</height>
            </rect>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::WheelFocus</enum>
           </property>
           <property name="text">
            <string/>
@@ -149,11 +159,30 @@ QPushButton {
           <property name="textFormat">
            <enum>Qt::PlainText</enum>
           </property>
+          <property name="pixmap">
+           <pixmap resource="hvl-lightdm-greeter.qrc">:/resources/load1.gif</pixmap>
+          </property>
           <property name="scaledContents">
            <bool>true</bool>
           </property>
          </widget>
         </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_8">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>132</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -162,55 +191,60 @@ QPushButton {
        <string notr="true">QWidget {
     border-radius: 1px;
 }
-#usersframe{
-border:0px solid rgba(255,255,255,0.5);
-}
-
 #usersframe{ 
-    background-color: rgba(80,80,80, 0.0);
-    border-radius: 1px;
+	border:0px solid rgba(255,255,255,0.5);
+    background-color: rgba(50,50,50, 0.0);
+    border-radius: 10px;
 }
 
 
-#userbutton1 {
+
+QToolButton {
     color:white;
-	font-size:20px;
-	text-align: left;
-	background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 rgba(80, 80, 80,0.0), stop: 0.2 rgba(80, 80, 80,0.1), stop:1 rgba(80, 80, 80,0.5));
-	color: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 rgba(255, 255, 255,0.0), stop: 0.2 rgba(255, 255, 255,0.2), stop:1 rgba(255, 255, 255,1.0))
-
+	font-size:12px;
+	border-radius: 5px;
+    font:bold;
+    background-color: rgba(50,50,50, 0.7); 
 }
 
-#userbutton2 {
-    color:white;
-	font-size:30px;
-	text-align: left;
-	background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 rgba(80, 80, 80,0.5), stop: 0.5 rgba(80, 80, 80,0.9), stop:1 rgba(80, 80, 80,0.5));
+QToolButton:hover{
 
+	border: 2px rgba(255, 75, 8, 1.0);
 }
 
+QToolButton:pressed{
 
-
-#userbutton3 {
-    color:white;
-	font-size:20px;
-	text-align: left;
-	background: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:1 rgba(80, 80, 80,0.0), stop: 0.8 rgba(80, 80, 80,0.1), stop:0 rgba(80, 80, 80,0.5));
-	color: qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:1 rgba(255, 255, 255, 0.0), stop: 0.8 rgba(255, 255, 255, 0.2), stop:0 rgba(255, 255, 255,1.0))
-
+	background-color:rgba(200, 200, 200, 0.9);
+	color:black;
+	border:2px solid rgb(255,202,8);
+	
 }
-
 </string>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
        <property name="spacing">
-        <number>0</number>
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>5</number>
        </property>
        <property name="bottomMargin">
         <number>5</number>
        </property>
        <item>
         <widget class="QFrame" name="usersframe">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>764</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
@@ -220,104 +254,6 @@ border:0px solid rgba(255,255,255,0.5);
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <item alignment="Qt::AlignHCenter">
-           <widget class="QPushButton" name="userbutton1">
-            <property name="minimumSize">
-             <size>
-              <width>400</width>
-              <height>98</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>400</width>
-              <height>98</height>
-             </size>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::ClickFocus</enum>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="text">
-             <string>userbutton1</string>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>50</width>
-              <height>50</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item alignment="Qt::AlignHCenter">
-           <widget class="QPushButton" name="userbutton2">
-            <property name="minimumSize">
-             <size>
-              <width>400</width>
-              <height>98</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>400</width>
-              <height>98</height>
-             </size>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::ClickFocus</enum>
-            </property>
-            <property name="text">
-             <string>userbutton2</string>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>50</width>
-              <height>50</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item alignment="Qt::AlignHCenter">
-           <widget class="QPushButton" name="userbutton3">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>400</width>
-              <height>98</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>400</width>
-              <height>98</height>
-             </size>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::ClickFocus</enum>
-            </property>
-            <property name="text">
-             <string>userbutton3</string>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>50</width>
-              <height>50</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </widget>
        </item>
       </layout>
@@ -325,24 +261,32 @@ border:0px solid rgba(255,255,255,0.5);
      <widget class="QWidget" name="loginpage">
       <property name="styleSheet">
        <string notr="true">#loginframe{
-    border:2px solid rgba(255,255,255,0.7);
-    background-color: rgba(80,80,80, 0.5);
+    border:0px solid rgba(255,255,255,0.7);
+    background-color: rgba(50,50,50, 0.8);
     border-radius: 10px;
 }
-#messagelabel,
+#messagelabel{
+	color: white;
+	font-size:12px;
+    font:bold;
+}
 #hostnameLabel {
 	color: white;
+	font-size:14px;
+    font:bold italic;
 }
 
 QComboBox,
 QPushButton {
     color:black;
+	font-size:12px;
+    font:bold;
     border: 1px solid silver;
-    background-color: rgba(200, 200, 200,0.5);
+    background-color: rgba(200, 200, 200,0.9);
 }
 
 QLineEdit::focus{
-	border: 2px solid rgba(255, 236, 180 0.1);
+	border: 2px solid rgba(255, 202, 8 0.1);
 	
 }
 QLineEdit{
@@ -350,16 +294,39 @@ QLineEdit{
 	font-size:15px;
 	padding:5px;
 	border:1px solid white;
-	background-color: rgba(200,200,200,0.6);
+	background-color: rgba(200,200,200,0.8);
  	border-radius: 5px;
 }
 
-</string>
+
+#pwShowbutton {
+	background-color: rgba(200,200,200,0.0);
+	border: 0px;
+}</string>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="topMargin">
+        <number>5</number>
+       </property>
        <property name="bottomMargin">
         <number>5</number>
        </property>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>160</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item>
         <widget class="QFrame" name="loginframe">
          <property name="sizePolicy">
@@ -367,6 +334,12 @@ QLineEdit{
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>432</width>
+           <height>300</height>
+          </size>
          </property>
          <property name="font">
           <font>
@@ -388,16 +361,16 @@ QLineEdit{
          <widget class="QLineEdit" name="passwordInput">
           <property name="geometry">
            <rect>
-            <x>150</x>
-            <y>180</y>
-            <width>331</width>
-            <height>60</height>
+            <x>70</x>
+            <y>165</y>
+            <width>300</width>
+            <height>40</height>
            </rect>
           </property>
           <property name="minimumSize">
            <size>
-            <width>330</width>
-            <height>60</height>
+            <width>270</width>
+            <height>40</height>
            </size>
           </property>
           <property name="maximumSize">
@@ -433,22 +406,22 @@ QLineEdit{
          <widget class="QLabel" name="logolabel">
           <property name="geometry">
            <rect>
-            <x>10</x>
-            <y>110</y>
-            <width>130</width>
-            <height>130</height>
+            <x>170</x>
+            <y>10</y>
+            <width>100</width>
+            <height>100</height>
            </rect>
           </property>
           <property name="minimumSize">
            <size>
-            <width>130</width>
-            <height>130</height>
+            <width>100</width>
+            <height>100</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>5000</width>
-            <height>5000</height>
+            <width>100</width>
+            <height>100</height>
            </size>
           </property>
           <property name="text">
@@ -464,16 +437,16 @@ QLineEdit{
          <widget class="QLineEdit" name="userInput">
           <property name="geometry">
            <rect>
-            <x>150</x>
-            <y>110</y>
-            <width>330</width>
-            <height>60</height>
+            <x>70</x>
+            <y>120</y>
+            <width>300</width>
+            <height>40</height>
            </rect>
           </property>
           <property name="minimumSize">
            <size>
-            <width>330</width>
-            <height>60</height>
+            <width>270</width>
+            <height>40</height>
            </size>
           </property>
           <property name="maximumSize">
@@ -502,7 +475,7 @@ QLineEdit{
            <rect>
             <x>10</x>
             <y>249</y>
-            <width>291</width>
+            <width>411</width>
             <height>51</height>
            </rect>
           </property>
@@ -513,56 +486,19 @@ QLineEdit{
            <bool>true</bool>
           </property>
          </widget>
-         <widget class="QLabel" name="iconLabel">
-          <property name="geometry">
-           <rect>
-            <x>390</x>
-            <y>12</y>
-            <width>90</width>
-            <height>90</height>
-           </rect>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>90</width>
-            <height>90</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>90</width>
-            <height>90</height>
-           </size>
-          </property>
-          <property name="layoutDirection">
-           <enum>Qt::LeftToRight</enum>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="pixmap">
-           <pixmap resource="hvl-lightdm-greeter.qrc">:/resources/pardus.png</pixmap>
-          </property>
-          <property name="scaledContents">
-           <bool>true</bool>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
          <widget class="QLabel" name="hostnameLabel">
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>30</y>
-            <width>250</width>
-            <height>60</height>
+            <y>80</y>
+            <width>150</width>
+            <height>31</height>
            </rect>
           </property>
           <property name="minimumSize">
            <size>
-            <width>250</width>
-            <height>60</height>
+            <width>150</width>
+            <height>30</height>
            </size>
           </property>
           <property name="maximumSize">
@@ -573,11 +509,10 @@ QLineEdit{
           </property>
           <property name="font">
            <font>
-            <family>Bitstream Vera Sans</family>
-            <pointsize>14</pointsize>
-            <weight>50</weight>
+            <pointsize>-1</pointsize>
+            <weight>75</weight>
             <italic>true</italic>
-            <bold>false</bold>
+            <bold>true</bold>
            </font>
           </property>
           <property name="frameShape">
@@ -602,10 +537,10 @@ QLineEdit{
          <widget class="QPushButton" name="pushButton_resetpwd">
           <property name="geometry">
            <rect>
-            <x>310</x>
-            <y>250</y>
-            <width>81</width>
-            <height>41</height>
+            <x>220</x>
+            <y>210</y>
+            <width>71</width>
+            <height>36</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -628,7 +563,7 @@ QLineEdit{
              </colorrole>
              <colorrole role="Button">
               <brush brushstyle="SolidPattern">
-               <color alpha="127">
+               <color alpha="229">
                 <red>200</red>
                 <green>200</green>
                 <blue>200</blue>
@@ -655,7 +590,7 @@ QLineEdit{
              </colorrole>
              <colorrole role="Base">
               <brush brushstyle="SolidPattern">
-               <color alpha="127">
+               <color alpha="229">
                 <red>200</red>
                 <green>200</green>
                 <blue>200</blue>
@@ -664,7 +599,7 @@ QLineEdit{
              </colorrole>
              <colorrole role="Window">
               <brush brushstyle="SolidPattern">
-               <color alpha="127">
+               <color alpha="229">
                 <red>200</red>
                 <green>200</green>
                 <blue>200</blue>
@@ -693,7 +628,7 @@ QLineEdit{
              </colorrole>
              <colorrole role="Button">
               <brush brushstyle="SolidPattern">
-               <color alpha="127">
+               <color alpha="229">
                 <red>200</red>
                 <green>200</green>
                 <blue>200</blue>
@@ -720,7 +655,7 @@ QLineEdit{
              </colorrole>
              <colorrole role="Base">
               <brush brushstyle="SolidPattern">
-               <color alpha="127">
+               <color alpha="229">
                 <red>200</red>
                 <green>200</green>
                 <blue>200</blue>
@@ -729,7 +664,7 @@ QLineEdit{
              </colorrole>
              <colorrole role="Window">
               <brush brushstyle="SolidPattern">
-               <color alpha="127">
+               <color alpha="229">
                 <red>200</red>
                 <green>200</green>
                 <blue>200</blue>
@@ -758,7 +693,7 @@ QLineEdit{
              </colorrole>
              <colorrole role="Button">
               <brush brushstyle="SolidPattern">
-               <color alpha="127">
+               <color alpha="229">
                 <red>200</red>
                 <green>200</green>
                 <blue>200</blue>
@@ -785,7 +720,7 @@ QLineEdit{
              </colorrole>
              <colorrole role="Base">
               <brush brushstyle="SolidPattern">
-               <color alpha="127">
+               <color alpha="229">
                 <red>200</red>
                 <green>200</green>
                 <blue>200</blue>
@@ -794,7 +729,7 @@ QLineEdit{
              </colorrole>
              <colorrole role="Window">
               <brush brushstyle="SolidPattern">
-               <color alpha="127">
+               <color alpha="229">
                 <red>200</red>
                 <green>200</green>
                 <blue>200</blue>
@@ -815,7 +750,10 @@ QLineEdit{
           </property>
           <property name="font">
            <font>
-            <pointsize>10</pointsize>
+            <pointsize>-1</pointsize>
+            <weight>75</weight>
+            <italic>false</italic>
+            <bold>true</bold>
            </font>
           </property>
           <property name="focusPolicy">
@@ -829,20 +767,96 @@ Password</string>
          <widget class="QPushButton" name="loginbutton">
           <property name="geometry">
            <rect>
-            <x>400</x>
-            <y>250</y>
-            <width>81</width>
-            <height>41</height>
+            <x>300</x>
+            <y>210</y>
+            <width>71</width>
+            <height>36</height>
            </rect>
           </property>
           <property name="focusPolicy">
            <enum>Qt::NoFocus</enum>
           </property>
           <property name="text">
-           <string>Log in</string>
+           <string>Login</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pwShowbutton">
+          <property name="geometry">
+           <rect>
+            <x>340</x>
+            <y>175</y>
+            <width>30</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="hvl-lightdm-greeter.qrc">
+            <normaloff>:/resources/eye.png</normaloff>:/resources/eye.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+          <property name="autoRepeat">
+           <bool>false</bool>
+          </property>
+          <property name="autoExclusive">
+           <bool>false</bool>
+          </property>
+          <property name="autoRepeatDelay">
+           <number>300</number>
+          </property>
+          <property name="autoRepeatInterval">
+           <number>100</number>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="backButton">
+          <property name="geometry">
+           <rect>
+            <x>70</x>
+            <y>210</y>
+            <width>71</width>
+            <height>36</height>
+           </rect>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="text">
+           <string>Cancel</string>
           </property>
          </widget>
         </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>160</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -852,51 +866,50 @@ Password</string>
     border-radius: 5px;
 }
 #warningframe{
-border:2px solid rgba(255,255,255,0.5);
+	border:0px solid rgba(255,255,255,0.5);
+    background-color: rgba(80,80,80, 0.0);
+    border-radius: 10px;
 }
 #warninglabel {
 	color: white;
  	text-align: center;
 }
 
-#warningframe{ 
-    background-color: rgba(80,80,80, 0.0);
-    border-radius: 10px;
-}
-
 QComboBox,
 QPushButton {
     color:black;
+	font-size:12px;
+    font:bold;
     border: 1px solid silver;
-    background-color: rgba(200, 200, 200,0.5);
+    background-color: rgba(200, 200, 200,0.9);
 }
 
 
-
-
-QComboBox::drop-down {
-    border:none;
-    width: 24px;
-    text-align: right;
-}
-
-QComboBox::down-arrow {
-    image: url(:/resources/dropdown.svg);
-	color:red;
-}
-QLineEdit::focus{
-border: 2px solid rgba(255, 236, 180 ,1);
-	
-}
-QLineEdit{
-color:white;
-font-size:15px;
-padding:5px;
-border:1px solid white;
-background-color: rgba(0,0,255,0);
-}</string>
+</string>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="bottomMargin">
+        <number>5</number>
+       </property>
+       <item>
+        <spacer name="horizontalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>132</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item>
         <widget class="QFrame" name="warningframe">
          <property name="styleSheet">
@@ -923,7 +936,7 @@ background-color: rgba(0,0,255,0);
              </font>
             </property>
             <property name="text">
-             <string/>
+             <string>Warning for password reset</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -955,29 +968,48 @@ background-color: rgba(0,0,255,0);
          </layout>
         </widget>
        </item>
+       <item>
+        <spacer name="horizontalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>132</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="resetpage">
       <property name="styleSheet">
        <string notr="true">#resetframe{
-	border:2px solid rgba(255,255,255,0.7);
-    background-color: rgba(80,80,80, 0.5);
-    border-radius: 10px;
+	border:0px solid rgba(255,255,255,0.5);
+    background-color: rgba(50,50,50, 0.8);
+    border-radius: 5px;
 }
-#rstpwdmessagelabel,
-#hostnameLabel {
+#rstpwdmessagelabel {
 	color: white;
+	font-size:11px;
+    font:bold;
 }
 
 QComboBox,
 QPushButton {
     color:black;
+	font-size:12px;
+    font:bold;
     border: 1px solid silver;
-    background-color: rgba(200, 200, 200,0.5);
+    background-color: rgba(200, 200, 200,0.9);
 }
 
 QLineEdit::focus{
-	border: 2px solid rgba(255, 236, 180 ,1);
+	border: 2px solid rgba(255, 236, 180 0.1);
 	
 }
 QLineEdit{
@@ -985,10 +1017,38 @@ QLineEdit{
 	font-size:15px;
 	padding:5px;
 	border:1px solid white;
-	background-color: rgba(0,0,255,0);
-}</string>
+	background-color: rgba(200,200,200,0.8);
+ 	border-radius: 5px;
+}
+
+</string>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="bottomMargin">
+        <number>5</number>
+       </property>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>162</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item>
         <widget class="QFrame" name="resetframe">
          <property name="styleSheet">
@@ -1000,55 +1060,8 @@ QLineEdit{
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <property name="verticalSpacing">
-           <number>5</number>
-          </property>
-          <item row="4" column="0">
-           <widget class="QLineEdit" name="newpasswordconfirminput">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>60</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>344</width>
-              <height>900</height>
-             </size>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="echoMode">
-             <enum>QLineEdit::Password</enum>
-            </property>
-            <property name="placeholderText">
-             <string>Confirm New Password</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0" colspan="2">
-           <widget class="QLabel" name="rstpwdmessagelabel">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item alignment="Qt::AlignHCenter">
            <widget class="QLineEdit" name="oldpasswordinput">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -1058,14 +1071,14 @@ QLineEdit{
             </property>
             <property name="minimumSize">
              <size>
-              <width>200</width>
-              <height>60</height>
+              <width>300</width>
+              <height>40</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>344</width>
-              <height>60</height>
+              <width>290</width>
+              <height>40</height>
              </size>
             </property>
             <property name="focusPolicy">
@@ -1082,18 +1095,18 @@ QLineEdit{
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item alignment="Qt::AlignHCenter">
            <widget class="QLineEdit" name="newpasswordinput">
             <property name="minimumSize">
              <size>
-              <width>0</width>
-              <height>60</height>
+              <width>300</width>
+              <height>40</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>344</width>
-              <height>16777215</height>
+              <width>290</width>
+              <height>40</height>
              </size>
             </property>
             <property name="focusPolicy">
@@ -1110,7 +1123,41 @@ QLineEdit{
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item alignment="Qt::AlignHCenter">
+           <widget class="QLineEdit" name="newpasswordconfirminput">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>300</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>300</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="echoMode">
+             <enum>QLineEdit::Password</enum>
+            </property>
+            <property name="placeholderText">
+             <string>Confirm New Password</string>
+            </property>
+           </widget>
+          </item>
+          <item alignment="Qt::AlignHCenter">
            <widget class="QPushButton" name="resetpasswordButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -1120,14 +1167,14 @@ QLineEdit{
             </property>
             <property name="minimumSize">
              <size>
-              <width>0</width>
-              <height>55</height>
+              <width>300</width>
+              <height>40</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>16777215</width>
-              <height>55</height>
+              <width>344</width>
+              <height>40</height>
              </size>
             </property>
             <property name="focusPolicy">
@@ -1138,8 +1185,34 @@ QLineEdit{
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QLabel" name="rstpwdmessagelabel">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>162</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
