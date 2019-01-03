@@ -93,6 +93,8 @@ private slots:
 
     void animationTimerFinished();
 
+    void on_cancelResetButton_clicked();
+
 private:
     void initialize();
     QString currentSession();
@@ -107,6 +109,7 @@ private:
     QString getValueOfString(QString data, QString value);
     void pageTransition(QWidget *Page);
     void usersbuttonReposition();
+    void loginPageTransition();
 
 
     Ui::LoginForm *ui;
@@ -150,7 +153,6 @@ private:
     int loginTimeot;
     bool timeoutFlag;
     bool networkOK;
-    QPoint centralButtonPoint;
     int animationTimerState;
 
 

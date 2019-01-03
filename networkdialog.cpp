@@ -77,6 +77,7 @@ void NetworkDialog::on_logbutton_clicked()
 
     QString  tmpstring;
     QString outstr;
+    int size;
 
     tmpstring = "";
 
@@ -95,10 +96,12 @@ void NetworkDialog::on_logbutton_clicked()
 
     rewind(fp);
 
-    if(fread(data, sizeof(data), 1, fp) < 1){
-        //qWarning() << tr("Greeter log read error");
-        //pclose(fp);
-        // return;
+
+    size = fread(data, 1, sizeof(data), fp);
+    if(size < 1){
+        qWarning() << tr("Greeter log read error");
+        pclose(fp);
+        return;
     }
 
     /* close */
@@ -114,7 +117,7 @@ void NetworkDialog::on_logbutton_clicked()
         }
     }
 
-    tmpstring = QString::fromLocal8Bit(data);
+    tmpstring = QString::fromLocal8Bit(data,size);
 
     ui->NDtextEdit->setText(tmpstring);
 

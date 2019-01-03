@@ -56,13 +56,8 @@ SettingsForm::SettingsForm(QWidget *parent) :
     layout = new QVBoxLayout;
     popupLabel = new QLabel();
 
-
-
     networkOK = true;
     network_check_counter = 0;
-
-
-
 
     //ui->formFrame->clearFocus();
     //ui->kybrdcomboBox->setFocusPolicy(Qt::FocusPolicy::NoFocus);
@@ -74,7 +69,6 @@ SettingsForm::SettingsForm(QWidget *parent) :
     timer->setSingleShot(false);
     timer->start();
     connect(timer, SIGNAL(timeout()), this, SLOT(timer_finished()));
-
 
     rce = new rightClickEnabler(ui->NwpushButton);
 
@@ -179,6 +173,7 @@ int SettingsForm::CheckService(QString Service){
     bool readerror = false;
     QString  tmpstring;
     QString outstr;
+    int read_size;
 
     tmpstring = "";
 
@@ -192,7 +187,9 @@ int SettingsForm::CheckService(QString Service){
     }
 
 
-    if(fread(data, sizeof(data), 1, fp) < 1){
+    read_size = fread(data, 1, sizeof(data), fp);
+
+    if(read_size < 1){
         qWarning() << Service + " Service check failed";
         return SERVICE_NOT_EXIST;
     }
@@ -202,7 +199,7 @@ int SettingsForm::CheckService(QString Service){
 
     /*get current layout*/
 
-    outstr = getValueOfString(QString::fromLocal8Bit(data), QString("Active"));
+    outstr = getValueOfString(QString::fromLocal8Bit(data, read_size), QString("Active"));
 
     if(outstr == NULL){
 
@@ -422,6 +419,7 @@ void SettingsForm::getKeyboardLayouts(){
     bool readerror = false;
     QString  tmpstring;
     QString outstr;
+    int read_size;
 
     tmpstring = "";
 
@@ -433,8 +431,10 @@ void SettingsForm::getKeyboardLayouts(){
 
     if(readerror == false){
 
-        if(fread(data, sizeof(data), 1, fp) < 1){
-            //qDebug() << tr("Current Keyboard layout can not be read\n") ;
+        read_size = fread(data, 1, sizeof(data), fp);
+
+        if( read_size < 1){
+            qDebug() << tr("Current Keyboard layout can not be read\n") ;
         }
 
     }
@@ -444,12 +444,12 @@ void SettingsForm::getKeyboardLayouts(){
 
     /*get current layout*/
 
-    outstr = getValueOfString(QString::fromLocal8Bit(data), QString("layout"));
+    outstr = getValueOfString(QString::fromLocal8Bit(data, read_size), QString("layout"));
 
     if(outstr != NULL)
         tmpstring = outstr;
 
-    outstr = getValueOfString(QString::fromLocal8Bit(data), QString("variant"));
+    outstr = getValueOfString(QString::fromLocal8Bit(data, read_size), QString("variant"));
 
     if(outstr != NULL)
         tmpstring += ' ' + outstr;
