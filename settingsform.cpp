@@ -137,7 +137,7 @@ void SettingsForm::leaveDropDownActivated(int index)
     msgbox.addButton(tr("Cancel"), QMessageBox::NoRole);
 
 
-    msgbox.setStyleSheet("\nQWidget {\nbackground-color: rgba(80,80,80,1);\ncolor: white;\nfont:bold;\nborder: 1px solid silver;\nfont-size:14px;\n}\nQLabel{\nborder: 0px\n}\nQPushButton{\nmin-width: 250px\ncolor:white;\nfont-size:14px;\nfont:bold;\nbackground-color: rgba(200, 200, 200,1);\n}\n");
+    //msgbox.setStyleSheet("\nQWidget {\nbackground-color: rgba(200,200,200,1);\ncolor: white;\nfont:bold;\nborder: 1px solid silver;\nfont-size:14px;\n}\nQLabel{\nborder: 0px\n}\nQPushButton{\nmin-width: 250px\ncolor:white;\nfont-size:14px;\nfont:bold;\nbackground-color:rgba(80, 80, 80,1.0);\n}\n");
 
     //msgbox.setProperty("background-color", qRgba(80,80,80,1));
     msgbox.setText(text);
