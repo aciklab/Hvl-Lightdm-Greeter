@@ -479,6 +479,9 @@ void LoginForm::initializeUserList(){
     qInfo() <<  (QString::number(total_user_count) + " users found for last users cache");
 
 
+    if(total_user_count == 0)
+        return;
+
     QString username;
     QString imagepath;
     QModelIndex modelIndex;
@@ -599,27 +602,27 @@ void LoginForm::loginPageTransition(){
     animGroup->clear();
     animGroup = new QParallelAnimationGroup;
 
-    for(int j = 0; j < total_user_count; j++){
+    for(int i = 0; i < total_user_count; i++){
 
         //delete anim1[j];
 
-        anim1[j] = new QPropertyAnimation(toolButtons[j], "geometry");
+        anim1[i] = new QPropertyAnimation(toolButtons[i], "geometry");
 
-        anim1[j]->setDuration(150);
+        anim1[i]->setDuration(150);
 
-        if(j == currentUserIndex){
-            anim1[j]->setStartValue(QRect(toolButtons[j]->x(), toolButtons[j]->y(), toolButtons[j]->width(), toolButtons[j]->height()));
-            anim1[j]->setEndValue(QRect(buttonx ,100, 120, 150));
+        if(i == currentUserIndex){
+            anim1[i]->setStartValue(QRect(toolButtons[i]->x(), toolButtons[i]->y(), toolButtons[i]->width(), toolButtons[i]->height()));
+            anim1[i]->setEndValue(QRect(buttonx ,100, 120, 150));
 
         }else{
 
-            anim1[j]->setStartValue(QRect(toolButtons[j]->x(), toolButtons[j]->y(), toolButtons[j]->width(), toolButtons[j]->height()));
-            anim1[j]->setEndValue(QRect(buttonx ,100, 120, 150));
+            anim1[i]->setStartValue(QRect(toolButtons[i]->x(), toolButtons[i]->y(), toolButtons[i]->width(), toolButtons[i]->height()));
+            anim1[i]->setEndValue(QRect(buttonx ,100, 120, 150));
 
         }
 
 
-        animGroup->addAnimation(anim1[j]);
+        animGroup->addAnimation(anim1[i]);
 
     }
 
@@ -664,20 +667,26 @@ void LoginForm::animationTimerFinished(){
 
         animationTimerState++;
         animationTimer->stop();
+        animationTimer->setInterval(260);
         animationTimer->start();
 
 
         ui->logolabel->setPixmap(toolButtons[currentUserIndex]->icon().pixmap(ui->logolabel->width(), ui->logolabel->height()));
 
         anim1[0] = new QPropertyAnimation(toolButtons[currentUserIndex], "geometry");
-        anim1[0]->setDuration(150);
+        anim1[0]->setDuration(250);
 
         anim1[0]->setStartValue(QRect(toolButtons[currentUserIndex]->x(), toolButtons[currentUserIndex]->y(),
                                       toolButtons[currentUserIndex]->width(), toolButtons[currentUserIndex]->height()));
-
+/*
         anim1[0]->setEndValue(QRect(ui->loginframe->x() - ui->loginpage->layout()->contentsMargins().left(),
                                     ui->loginframe->y() - ui->loginpage->layout()->contentsMargins().top(),
                                     ui->loginframe->width(), ui->loginframe->height()));
+*/
+
+        //todo: I have to get this values correctly
+        anim1[0]->setEndValue(QRect(166, 7, 432, 300));
+
         anim1[0]->start();
         break;
 

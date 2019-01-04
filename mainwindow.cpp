@@ -286,10 +286,11 @@ void MainWindow::setRootBackground(QImage img){
 
     XSetWindowBackgroundPixmap(dis, win, pix);
 
-    /* Prevent from x shaped cursor after greeter is Closed */
+    /* Prevent from x shaped cursor after greeter is closed */
     Cursor c = XcursorLibraryLoadCursor(dis, "arrow");
     XDefineCursor (dis, win, c);
 
+    /* Clear pixmap */
     XFreePixmap(dis, pix);
     XDestroyImage(image);
 
