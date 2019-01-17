@@ -164,7 +164,7 @@ QComboBox::down-arrow {
         </property>
         <property name="icon">
          <iconset resource="hvl-lightdm-greeter.qrc">
-          <normaloff>:/resources/pardus.png</normaloff>:/resources/pardus.png</iconset>
+          <normaloff>:/resources/ethernet-off.png</normaloff>:/resources/ethernet-off.png</iconset>
         </property>
         <property name="iconSize">
          <size>

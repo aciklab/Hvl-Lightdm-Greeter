@@ -9,5 +9,6 @@
         <file>resources/ethernet-off.png</file>
         <file>resources/ethernet-on.png</file>
         <file>resources/keyboard.png</file>
+        <file>resources/avatar-default.png</file>
     </qresource>
 </RCC>

@@ -48,8 +48,7 @@ add_executable ( hvl-lightdm-greeter ${SRCS} ${RSCS} ${QM_FILES})
 
 
 
-target_link_libraries ( hvl-lightdm-greeter Qt5::Widgets Qt5::Network Qt5::WebEngine Qt5::WebEngineCore Qt5::Quick Qt5::WebEngineWidgets ${LIGHTDM_QT_LIBRARIES} ${LIGHTDM_X11_LIBRARIES} ${LIGHTDM_CAIRO_LIBRARIES}
-    ${LIGHTDM_X11_EXTRA_LIBRARIES} ${LIGHTDM_XCURSOR_LIBRARIES})
+target_link_libraries ( hvl-lightdm-greeter Qt5::Widgets Qt5::Network Qt5::WebEngine Qt5::WebEngineCore Qt5::Quick Qt5::WebEngineWidgets ${LIGHTDM_QT_LIBRARIES} ${LIGHTDM_X11_LIBRARIES} ${LIGHTDM_X11_EXTRA_LIBRARIES} ${LIGHTDM_XCURSOR_LIBRARIES})
 
 install(TARGETS ${PROJECT} RUNTIME DESTINATION bin)
 install(FILES  hvl-lightdm-greeter.desktop  DESTINATION /usr/share/xgreeters)

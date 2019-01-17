@@ -28,7 +28,6 @@
 SettingsForm::SettingsForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SettingsForm)
-
 {
 
     ui->setupUi(this);
@@ -102,8 +101,6 @@ void SettingsForm::initialize(){
     ui->kybrdcomboBox->setCurrentText("tr");
     connect(ui->kybrdcomboBox, SIGNAL(activated(int)), this, SLOT(setKeyboardLayout(int)));
     nwButtonPressed = false;
-
-
 }
 
 void SettingsForm::addLeaveEntry(bool canDo, QString iconName, QString text, QString actionName)
@@ -114,13 +111,10 @@ void SettingsForm::addLeaveEntry(bool canDo, QString iconName, QString text, QSt
 }
 
 
-
-
 void SettingsForm::leaveDropDownActivated(int index)
 {
 
     QMessageBox msgbox;
-
 
     QString actionName = ui->leaveComboBox->itemData(index).toString();
     QString text;
@@ -130,8 +124,6 @@ void SettingsForm::leaveDropDownActivated(int index)
     else if (actionName == "restart") text = tr("Go to Restart?");
     else if (actionName == "hibernate") text = tr("Go to Hibernate?");
     else if (actionName == "suspend") text = tr("Go to Suspend?");
-
-
 
     msgbox.addButton(tr("Ok"), QMessageBox::YesRole);
     msgbox.addButton(tr("Cancel"), QMessageBox::NoRole);
@@ -149,8 +141,6 @@ void SettingsForm::leaveDropDownActivated(int index)
     }
 
 
-
-
     if (!msgbox.exec()) {
 
         qInfo() << "System is going to " + actionName + "now";
@@ -159,18 +149,15 @@ void SettingsForm::leaveDropDownActivated(int index)
         else if (actionName == "restart") power.restart();
         else if (actionName == "hibernate") power.hibernate();
         else if (actionName == "suspend") power.suspend();
-
-
-
     }
 }
+
 
 int SettingsForm::CheckService(QString Service){
 
     FILE *fp;
     char data[220];
 
-    bool readerror = false;
     QString  tmpstring;
     QString outstr;
     int read_size;
@@ -178,9 +165,9 @@ int SettingsForm::CheckService(QString Service){
     tmpstring = "";
 
     QString command = "systemctl status " + Service;
-    QByteArray commnadb = command.toLocal8Bit();
+    QByteArray commandba = command.toLocal8Bit();
 
-    fp = popen(commnadb.data(), "r");
+    fp = popen(commandba.data(), "r");
     if (fp == NULL) {
         qWarning() << Service + " Service check failed";
         return SERVICE_NOT_EXIST;//no need to wait
@@ -243,8 +230,6 @@ void SettingsForm::checkNetwork(){
 
     uint ip_count = 0;
     int res;
-
-
 
     int runningServices = 0;
 
@@ -342,15 +327,11 @@ void SettingsForm::timer_finished(){
 
 void SettingsForm::on_NwpushButton_clicked()
 {
-
     uint line_count = 0;
 
-
-    for(int i=0; i<networkInfoString.length() ; i++)
-    {
+    for(int i=0; i<networkInfoString.length() ; i++){
         if(networkInfoString[i] == '\n')
             line_count++;
-
     }
 
     dialog->setFixedHeight((line_count + 1) * 20);
@@ -366,20 +347,14 @@ void SettingsForm::on_NwpushButton_clicked()
     dialog->setGeometry(labelx, (pt_g.y() - pt.y()) - ((line_count + 1) * 20), 0, 0);
     dialog->setFixedHeight((line_count + 1) * 20);
     dialog->setFixedWidth(this->width());
-
-
     dialog->exec();
-
-
-
 
 }
 
 
-void SettingsForm::on_NwpushButton_Right_Clicked()
+void SettingsForm::on_NwpushButton_Right_Clicked(void)
 {
     uint line_count = 0;
-
 
     for(int i=0; i<networkInfoString.length() ; i++)
     {
@@ -402,8 +377,6 @@ void SettingsForm::on_NwpushButton_Right_Clicked()
     nwDialog->setFixedHeight((line_count + 1) * 20 + 100);
     nwDialog->setFixedWidth(this->width());
 
-
-
     nwDialog->exec();
     nwDialog->clearFocus();
 
@@ -412,7 +385,6 @@ void SettingsForm::on_NwpushButton_Right_Clicked()
 
 
 void SettingsForm::getKeyboardLayouts(){
-
 
     FILE *fp;
     char data[128];
@@ -468,10 +440,7 @@ void SettingsForm::getKeyboardLayouts(){
     if(ui->kybrdcomboBox->findData(tmpstring) == -1){
 
         ui->kybrdcomboBox->addItem(iconx, tmpstring, tmpstring);
-
-
     }
-
 
     for(int i=0; i< ui->kybrdcomboBox->count(); i++){
 

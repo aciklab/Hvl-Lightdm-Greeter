@@ -1,10 +1,3 @@
-/*
-* Copyright (c) 2012-2015 Christian Surlykke, Petr Vanek
-*
-* This file is part of qt-lightdm-greeter 
-* It is distributed under the LGPL 2.1 or later license.
-* Please refer to the LICENSE file for a copy of the license.
-*/
 #include <QRect>
 #include <QApplication>
 #include <QDesktopWidget>
@@ -13,8 +6,6 @@
 #include <QDebug>
 #include <QtNetwork/QtNetwork>
 #include <QMessageBox>
-#include <QBitmap>
-#include <QPainter>
 
 #include "mainwindow.h"
 #include "loginform.h"
@@ -88,8 +79,7 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         int sizey = getOffset(Settings().sizeY_clockform(), maxY, (20 * maxY) / 100);
 
 
-        if(sizex !=0 && sizey != 0)
-        {
+        if(sizex != 0 && sizey != 0){
             m_ClockForm->setFixedHeight(sizey);
             m_ClockForm->setFixedWidth(sizex);
         }
@@ -116,8 +106,6 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         int centerY = screenRect.height()/2 + screenRect.y();
         QCursor::setPos(centerX, centerY);
         this->cursor().setShape(Qt::ArrowCursor);
-
-
 
     }
 }
@@ -213,16 +201,18 @@ void MainWindow::setBackground()
         QString pathToBackgroundImage = ":/resources/bgs/bg1.jpg";
         backgroundImage = QImage(pathToBackgroundImage);
 
-        qDebug()  << pathToBackgroundImage << tr(" is set as an image");
+
 
         if (backgroundImage.isNull()) {
             qWarning() << tr("Not able to read") << pathToBackgroundImage << tr("as default image");
+        }else{
+            qDebug()  << pathToBackgroundImage << tr(" is set as an image");
         }
     }
     
 
     if (backgroundImage.isNull()) {
-        palette.setColor(QPalette::Background, qRgb(255,203,80));
+        palette.setColor(QPalette::Background, qRgb(255, 203, 80));
     }
     else {
         QBrush brush(backgroundImage.scaled(rect.width(), rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
@@ -252,7 +242,7 @@ void MainWindow::setRootBackground(QImage img){
     int screen = m_Screen;
     Window win = RootWindow(dis, screen);
 
-    QRect screenRect = QApplication::desktop()->screenGeometry(m_Screen);
+    QRect screenRect = QApplication::desktop()->screenGeometry(screen);
 
     int width = screenRect.width();
     int height = screenRect.height();
