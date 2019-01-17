@@ -25,33 +25,33 @@
 <context>
     <name>LoginForm</name>
     <message>
-        <location filename="../loginform.ui" line="403"/>
+        <location filename="../loginform.ui" line="421"/>
         <source>password</source>
         <translation>Parola</translation>
     </message>
     <message>
-        <location filename="../loginform.ui" line="476"/>
+        <location filename="../loginform.ui" line="494"/>
         <source>user id</source>
         <translation>Kullanıcı Adı</translation>
     </message>
     <message>
-        <location filename="../loginform.ui" line="531"/>
+        <location filename="../loginform.ui" line="549"/>
         <source>Hostname</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../loginform.ui" line="846"/>
-        <location filename="../loginform.ui" line="1198"/>
+        <location filename="../loginform.ui" line="864"/>
+        <location filename="../loginform.ui" line="1238"/>
         <source>Cancel</source>
         <translation>İptal</translation>
     </message>
     <message>
-        <location filename="../loginform.ui" line="1226"/>
+        <location filename="../loginform.ui" line="1266"/>
         <source>Reset Password</source>
         <translation>Parola Sıfırla</translation>
     </message>
     <message>
-        <location filename="../loginform.ui" line="970"/>
+        <location filename="../loginform.ui" line="1009"/>
         <source>OK</source>
         <translation>Tamam</translation>
     </message>
@@ -62,44 +62,49 @@
     </message>
     <message>
         <location filename="../loginform.ui" line="132"/>
-        <location filename="../loginform.cpp" line="1185"/>
+        <location filename="../loginform.cpp" line="1208"/>
         <source>Waiting for Network and Services</source>
         <translation>Ağ ve Servisler Bekleniyor</translation>
     </message>
     <message>
-        <location filename="../loginform.ui" line="769"/>
+        <location filename="../loginform.ui" line="787"/>
         <source>Reset
 Password</source>
         <translation>Parola
 Sıfırla</translation>
     </message>
     <message>
-        <location filename="../loginform.ui" line="786"/>
+        <location filename="../loginform.ui" line="804"/>
         <source>Login</source>
         <translation>Giriş</translation>
     </message>
     <message>
-        <location filename="../loginform.ui" line="945"/>
+        <location filename="../loginform.ui" line="882"/>
+        <source>userLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../loginform.ui" line="984"/>
         <source>Warning for password reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../loginform.ui" line="1162"/>
+        <location filename="../loginform.ui" line="1202"/>
         <source>Confirm New Password</source>
         <translation>Yeni Parola Onayla</translation>
     </message>
     <message>
-        <location filename="../loginform.ui" line="1100"/>
+        <location filename="../loginform.ui" line="1140"/>
         <source>Old Password</source>
         <translation>Eski Parola</translation>
     </message>
     <message>
-        <location filename="../loginform.ui" line="1128"/>
+        <location filename="../loginform.ui" line="1168"/>
         <source>New Password</source>
         <translation>Yeni Parola</translation>
     </message>
     <message>
-        <location filename="../loginform.cpp" line="235"/>
+        <location filename="../loginform.cpp" line="234"/>
         <source>Your Password is Expired. You have to change it</source>
         <translation>Parolanızın Süresi Doldu. Şimdi Değiştirmek Zorundasınız</translation>
     </message>
@@ -114,34 +119,40 @@ Sıfırla</translation>
         <translation>Bilgi</translation>
     </message>
     <message>
-        <location filename="../loginform.cpp" line="344"/>
+        <location filename="../loginform.cpp" line="343"/>
         <source>Error : Login Incorrect</source>
         <translation>Giriş Bilgileri Hatalı</translation>
     </message>
     <message>
-        <location filename="../loginform.cpp" line="831"/>
-        <location filename="../loginform.cpp" line="842"/>
+        <location filename="../loginform.cpp" line="537"/>
+        <location filename="../loginform.cpp" line="570"/>
+        <source>Other User</source>
+        <translation>Başka Kullanıcı</translation>
+    </message>
+    <message>
+        <location filename="../loginform.cpp" line="851"/>
+        <location filename="../loginform.cpp" line="862"/>
         <source>Old password is wrong</source>
         <translation>Eski parola hatalı</translation>
     </message>
     <message>
-        <location filename="../loginform.cpp" line="836"/>
-        <location filename="../loginform.cpp" line="846"/>
+        <location filename="../loginform.cpp" line="856"/>
+        <location filename="../loginform.cpp" line="866"/>
         <source>New passwords are not same</source>
         <translation>Girilen yeni parolalar aynı değil</translation>
     </message>
     <message>
-        <location filename="../loginform.cpp" line="896"/>
+        <location filename="../loginform.cpp" line="915"/>
         <source>Authenticating</source>
         <translation>Giriş Yapılıyor</translation>
     </message>
     <message>
-        <location filename="../loginform.cpp" line="928"/>
+        <location filename="../loginform.cpp" line="947"/>
         <source>Error : User is unknown</source>
         <translation>Hata : Kullanıcı Bilinmiyor</translation>
     </message>
     <message>
-        <location filename="../loginform.cpp" line="930"/>
+        <location filename="../loginform.cpp" line="949"/>
         <source>Error : Network is not connected</source>
         <translation>Hata : Ağ bağlı değil</translation>
     </message>
@@ -151,10 +162,10 @@ Sıfırla</translation>
         <translation type="vanished">Capslock durumu okunamadı</translation>
     </message>
     <message>
-        <location filename="../loginform.cpp" line="1133"/>
-        <location filename="../loginform.cpp" line="1135"/>
-        <location filename="../loginform.cpp" line="1140"/>
-        <location filename="../loginform.cpp" line="1143"/>
+        <location filename="../loginform.cpp" line="1156"/>
+        <location filename="../loginform.cpp" line="1158"/>
+        <location filename="../loginform.cpp" line="1163"/>
+        <location filename="../loginform.cpp" line="1166"/>
         <source>Caps Lock is on</source>
         <translation>Caps lock açık</translation>
     </message>
@@ -162,42 +173,42 @@ Sıfırla</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../mainwindow.cpp" line="160"/>
+        <location filename="../mainwindow.cpp" line="148"/>
         <source>Could not understand </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="161"/>
+        <location filename="../mainwindow.cpp" line="149"/>
         <source>- must be of form &lt;positivenumber&gt;px or &lt;positivenumber&gt;%, e.g. 35px or 25%</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="204"/>
+        <location filename="../mainwindow.cpp" line="192"/>
         <source> is set as an background image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="207"/>
+        <location filename="../mainwindow.cpp" line="195"/>
         <source>Not able to read image at index: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="207"/>
+        <location filename="../mainwindow.cpp" line="195"/>
         <source> as image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="216"/>
+        <location filename="../mainwindow.cpp" line="209"/>
         <source> is set as an image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="219"/>
+        <location filename="../mainwindow.cpp" line="207"/>
         <source>Not able to read</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="219"/>
+        <location filename="../mainwindow.cpp" line="207"/>
         <source>as default image</source>
         <translation type="unfinished"></translation>
     </message>
@@ -218,13 +229,13 @@ Sıfırla</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../networkdialog.ui" line="119"/>
+        <location filename="../networkdialog.ui" line="125"/>
         <source>Restart Service</source>
         <translation>Servisi Yeniden 
 Başlat</translation>
     </message>
     <message>
-        <location filename="../networkdialog.ui" line="141"/>
+        <location filename="../networkdialog.ui" line="147"/>
         <source>Show Logs</source>
         <translation>Logları Göster</translation>
     </message>
@@ -248,57 +259,57 @@ Başlat</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="38"/>
+        <location filename="../settingsform.cpp" line="37"/>
         <source>SettingsForm is initializing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="91"/>
+        <location filename="../settingsform.cpp" line="90"/>
         <source>Shutdown</source>
         <translation>Kapat</translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="92"/>
+        <location filename="../settingsform.cpp" line="91"/>
         <source>Restart</source>
         <translation>Yeniden Başlat</translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="93"/>
+        <location filename="../settingsform.cpp" line="92"/>
         <source>Hibernate</source>
         <translation>Uyku</translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="94"/>
+        <location filename="../settingsform.cpp" line="93"/>
         <source>Suspend</source>
         <translation>Hazırda Beklet</translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="129"/>
+        <location filename="../settingsform.cpp" line="123"/>
         <source>Go to Shutdown?</source>
         <translation>Bilgisayar Kapansın mı?</translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="130"/>
+        <location filename="../settingsform.cpp" line="124"/>
         <source>Go to Restart?</source>
         <translation>Bilgisayar Yeniden Başlatılsın mı?</translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="131"/>
+        <location filename="../settingsform.cpp" line="125"/>
         <source>Go to Hibernate?</source>
         <translation>Bilkisayar Uykuya Girsin mi?</translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="132"/>
+        <location filename="../settingsform.cpp" line="126"/>
         <source>Go to Suspend?</source>
         <translation>Bilgisayar Beklemeye Alınsın mı?</translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="136"/>
+        <location filename="../settingsform.cpp" line="128"/>
         <source>Ok</source>
         <translation>Tamam</translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="137"/>
+        <location filename="../settingsform.cpp" line="129"/>
         <source>Cancel</source>
         <translation>İptal</translation>
     </message>
@@ -307,12 +318,12 @@ Başlat</translation>
         <translation type="vanished">Bilgi</translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="220"/>
+        <location filename="../settingsform.cpp" line="207"/>
         <source> Service is working</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="228"/>
+        <location filename="../settingsform.cpp" line="215"/>
         <source> Service is not working</source>
         <translation type="unfinished"></translation>
     </message>
@@ -321,28 +332,28 @@ Başlat</translation>
         <translation type="vanished">Servis kontrolü başarısız oldu</translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="290"/>
+        <location filename="../settingsform.cpp" line="275"/>
         <source>  No IP information
 </source>
         <translation>  IP bilgisi yok
 </translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="305"/>
+        <location filename="../settingsform.cpp" line="290"/>
         <source> service is not working
 </source>
         <translation> servisi çalışmıyor
 </translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="307"/>
+        <location filename="../settingsform.cpp" line="292"/>
         <source> service is working
 </source>
         <translation> servisi çalışıyor
 </translation>
     </message>
     <message>
-        <location filename="../settingsform.cpp" line="437"/>
+        <location filename="../settingsform.cpp" line="409"/>
         <source>Current Keyboard layout can not be read
 </source>
         <translation>Klavye seçenekleri alınamadı</translation>

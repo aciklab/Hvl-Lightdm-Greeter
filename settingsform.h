@@ -54,7 +54,7 @@ private slots:
 
 public slots:
 
-    void on_NwpushButton_Right_Clicked();
+    void on_NwpushButton_Right_Clicked(void);
     void networkCheckSlot(void);
 
 

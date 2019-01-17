@@ -108,10 +108,10 @@ QPushButton {
          <widget class="QLabel" name="waitlabel">
           <property name="geometry">
            <rect>
-            <x>180</x>
-            <y>114</y>
-            <width>281</width>
-            <height>61</height>
+            <x>9</x>
+            <y>150</y>
+            <width>471</width>
+            <height>41</height>
            </rect>
           </property>
           <property name="maximumSize">
@@ -135,7 +135,7 @@ QPushButton {
            <bool>false</bool>
           </property>
           <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           <set>Qt::AlignCenter</set>
           </property>
           <property name="wordWrap">
            <bool>true</bool>
@@ -144,11 +144,23 @@ QPushButton {
          <widget class="QLabel" name="giflabel">
           <property name="geometry">
            <rect>
-            <x>120</x>
-            <y>120</y>
+            <x>219</x>
+            <y>90</y>
             <width>50</width>
             <height>50</height>
            </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>60</height>
+           </size>
           </property>
           <property name="focusPolicy">
            <enum>Qt::WheelFocus</enum>
@@ -198,13 +210,13 @@ QPushButton {
 }
 
 
-
+QPushButton,
 QToolButton {
     color:white;
 	font-size:12px;
 	border-radius: 5px;
     font:bold;
-    background-color: rgba(50,50,50, 0.7); 
+    background-color: rgba(50,50,50, 0.9); 
 }
 
 QToolButton:hover{
@@ -212,6 +224,7 @@ QToolButton:hover{
 	border: 2px rgba(255, 75, 8, 1.0);
 }
 
+QPushButton:pressed,
 QToolButton:pressed{
 
 	background-color:rgba(200, 200, 200, 0.9);
@@ -267,9 +280,8 @@ QToolButton:pressed{
      <widget class="QWidget" name="loginpage">
       <property name="styleSheet">
        <string notr="true">#loginframe{
-    border:0px solid rgba(255,255,255,0.7);
     background-color: rgba(50,50,50, 0.8);
-    border-radius: 10px;
+	border-radius: 10px;
 }
 #messagelabel{
 	color: white;
@@ -280,6 +292,12 @@ QToolButton:pressed{
 	color: white;
 	font-size:14px;
     font:bold italic;
+}
+
+#userLabel {
+	color: white;
+	font-size:18px;
+    
 }
 
 QComboBox,
@@ -846,6 +864,27 @@ Password</string>
            <string>Cancel</string>
           </property>
          </widget>
+         <widget class="QLabel" name="userLabel">
+          <property name="geometry">
+           <rect>
+            <x>140</x>
+            <y>120</y>
+            <width>151</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>-1</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>userLabel</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
         </widget>
        </item>
        <item>
@@ -997,7 +1036,8 @@ QPushButton {
        <string notr="true">#resetframe{
 	border:0px solid rgba(255,255,255,0.5);
     background-color: rgba(50,50,50, 0.8);
-    border-radius: 5px;
+ 	sbackground-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgba(50,50,50, 0.3), stop:0.4 rgba(50,50,50, 0.8), stop:1 rgba(80,80,80, 1.0));
+    border-radius: 10px;
 }
 #rstpwdmessagelabel {
 	color: white;

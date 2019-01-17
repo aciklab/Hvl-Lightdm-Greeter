@@ -13,23 +13,26 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="windowOpacity">
+   <double>1.000000000000000</double>
+  </property>
   <property name="styleSheet">
-   <string notr="true">QDialog,
-QWidget {
-    border-radius: 5px;
+   <string notr="true">QDialog{
+
+ 	background-color: rgba(80,80,80, 0);
 }
 
+
 #NDframe{
-    border:2px solid rgba(255,255,255,1);
+    border:2px solid silver;
     background-color: rgba(80,80,80, 1);
-    border-radius: 10px;
 }
+
 #NDtextEdit{
 	color: white;
 	font-size:12px;
 	background-color: rgba(80,80,80, 1);
 }
-
 
 QComboBox,
 QPushButton {
@@ -38,6 +41,7 @@ QPushButton {
     font:bold;
     border: 1px solid silver;
     background-color: rgba(200, 200, 200,1);
+	border-radius: 5px;
 }
 
 QPushButton:pressed{
@@ -47,12 +51,14 @@ QPushButton:pressed{
     font:bold;
     border: 1px solid silver;
     background-color: rgba(120, 120, 120,1);
+	
 }
 
 QComboBox::drop-down {
     border:none;
 	font-size:18px;
     text-align: right;
+	border-radius: 5px;
 }
 
 QComboBox::down-arrow {
@@ -62,19 +68,19 @@ QComboBox::down-arrow {
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="leftMargin">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>2</number>
+    <number>0</number>
    </property>
    <item>
     <widget class="QFrame" name="NDframe">

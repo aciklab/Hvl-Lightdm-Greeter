@@ -22,13 +22,13 @@
 #include <QToolButton>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
+#include <QShortcut>
 
 
 #include <QLightDM/Power>
 #include <QLightDM/Greeter>
 #include <QLightDM/SessionsModel>
 #include <QLightDM/UsersModel>
-
 
 
 namespace Ui
@@ -126,12 +126,12 @@ private:
     QTimer *loginTimer;
     QTimer *animationTimer;
     QMovie *mv;
+    QShortcut *shortcut;
 
     QString userList[5];
-    QToolButton *toolButtons[5];
+    QToolButton *toolButtons[6];
 
-    QPropertyAnimation *anim1[5];
-    QPropertyAnimation *anim2[5];
+    QPropertyAnimation *anim1[6];
 
     QParallelAnimationGroup *animGroup;
 
