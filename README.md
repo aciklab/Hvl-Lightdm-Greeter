@@ -1,22 +1,94 @@
-# qt-lightdm-greeter
+# hvl-lightdm-greeter 
 
-qt-lightdm-greeter is a simple frontend for the lightdm displaymanager, written in c++ and qt5.
+# TURKISH
 
-It has it's roots in the razor project, where it was developed under the name razor-lightdm-greeter. When razor was merged into LXQt it was renamed to lxqt-lightdm-greeter.
+hvl-lightdm-greeter lightdm yüklü sistemlerde kullanılabilecek bir giriş ekranı uygulamasıdır.  [qt-lightdm-greeter](https://github.com/surlykke/qt-lightdm-greeter) 'dan esinlenilerek c++ ve qt ile yazılmıştır.
 
-As of september 2015 I have renamed it to qt-lightdm-greeter and cut it's ties to LXQt. This was primarily because LXQt recommends SDDM as its displaymanager and because the application had very little integration with LXQt. 
+Bu giriş ekranı, süresi dolmuş parolaları sıfırlama imkanı verebilmektedir (Windows aktif dizin hesapları ve yerel kullanıcı hesapları ile test edilmiştir). 
+Eğer bir parolanın değiştirlmesi gerekiyorsa giriş sırsında kullanıcının parolasını sıfırlaması istenir. Arkasından parola sıfırlama sayfası açılarak kullanıcının parolasını sıfırlaması sağlanır.
 
-qt-lightdm-greeter sports a razor-qt logo as a reminder of it's origin.
+Giriş ekranı Pardus 17.4 ve Xubuntu 18.04'de test edilmiştir.
+
+`Giriş ekranı`
+![Login screen_tr](ss/loginpage_tr.jpg)
+
+`Kullanıcı seçimi`
+![Users screen_tr](ss/userspage_tr.jpg)
+
+`Parola sıfırlama uyarısı`
+![Users screen_tr](ss/prompt_tr.jpg)
+
+`Parola sıfırlama Sayfası`
+![Users screen_tr](ss/reset_tr.jpg)
+
+
+## Kurulum
+
+Kodu derlemek için, cmake, gcc, qt5, lightdm, qtwebengine5-dev, qt5LinguistTools, qt5X11Extras-dev, libxcursor-dev paketlerinin sisteminizde kurulu olduğuna emin olun
+
+Çalıştırmak için bağımlılıklar şunlardır: lightdm, libqt5webenginewidgets5, liblightdm-qt5-3-0, libqt5webengine5, libx11-6, libxcursor1, libqt5x11extras5
+
+Kurlum için, aşağıdaki komutları çalıştırın:
+    
+git clone https://github.com/mertcelen/Hvl-Lightdm-Greeter.git
+cd Hvl-Lightdm-Greeter
+mkdir build
+cd build
+cmake ..
+make 
+sudo make install
+
+
+## hvl-lightdm greeter'ı aktif hale getirmek için;
+
+ `/etc/lightdm/lightdm.conf`, dosyası içinde, `SeatDefaults` bölümü altına aşağıdaki satırı ekleyin ya da başka bir değere atanmışsa güncelleyin:
+
+    greeter-session=hvl-lightdm-greeter
+
+Eğer böyle bir dosya mevcut değilse oluşturun.	
+	
+## Konfigürasyon
+
+`/usr/share/lightdm/lightdm-hvl-greeter.conf.d/hvl-lightdm-greeter.conf` dosyası içinde kullanılabilecek çeşitli konfigürasyon seçenekleri bulunmaktadır. Örnek olarak: 
+	-Arka plan resmi, 
+	-Giriş, saat ve ayar formlarının pozisyonları, 
+	-Beklenmesi gereken servisler vb..
+Bu dosya içinde detaylı açıklamalar yapılmıştır. 
+
+
+
+# ENGLISH
+
+hvl-lightdm-greeter is a login application for the lightdm displaymanager, written in c++ and qt5. This project inspired by [qt-lightdm-greeter](https://github.com/surlykke/qt-lightdm-greeter) 
+
+This greeter provides to reset expired passwords (Tested with Windows active directory accounts and local accounts). If a password expired. greeter opens password reset page and prompt user to reset password.
+
+Tested on Pardus 17.4 and Xubuntu 18.04
+
+`Login screen`
+![Login screen](ss/loginpage_en.jpg)
+
+`Users screen`
+![Users screen](ss/userspage_en.jpg)
+
+`Prompt screen`
+![Users screen](ss/prompt_en.jpg)
+
+`Password reset screen`
+![Users screen](ss/reset_en.jpg)
+
 
 ## Installing
 
-Make sure you have cmake, gcc, qt5 and liblightdm-qt5 (and lightdm) installed on your system
+For building, make sure you have cmake, gcc, qt5, qtwebengine5-dev, qt5LinguistTools, qt5X11Extras-dev, libxcursor-dev installed on your system
 
-Do
+For running, dependencies are : lightdm, libqt5webenginewidgets5, liblightdm-qt5-3-0, libqt5webengine5, libx11-6, libxcursor1, libqt5x11extras5
+
+To install, do:
     
 ```shell
-git clone https://github.com/surlykke/qt-lightdm-greeter.git
-cd qt-lightdm-greeter
+git clone https://github.com/mertcelen/Hvl-Lightdm-Greeter.git
+cd Hvl-Lightdm-Greeter
 mkdir build
 cd build
 cmake ..
@@ -24,38 +96,22 @@ make
 sudo make install
 ```
 
-## How to enable qt-lightdm greeter
+## How to enable hvl-lightdm greeter
 
 Update or insert in(to) your `/etc/lightdm/lightdm.conf`, in the `SeatDefaults` section, this line:
 
-    greeter-session=qt-lightdm-greeter
+    greeter-session=hvl-lightdm-greeter
 
-## Configure qt-lightdm-greeter
+If this file is not exist create new one.	
+	
+## Configururation
 
-The file `/etc/lightdm/qt-lightdm-greeter.conf` allows for a 
-few configurations of qt-lightdm-greeter (background-image, positioning of loginform). 
+The file `/usr/share/lightdm/lightdm-hvl-greeter.conf.d/hvl-lightdm-greeter.conf` allows to configure hvl-lightdm-greeter. For example: 
+	-background-image, 
+	-positioning of loginform, settingsform and clockform. 
+	-System services to wait etc.
 The configuration options are documented in that file.
 
-# Last Version of Lightdm
 
-`BG 0`
-![BG 1](resources/bgs/bg0.jpg)
 
-`BG 1`
-![BG 1](resources/bgs/bg1.jpg)
-
-`BG 2`
-![BG 2](resources/bgs/bg2.jpg)
-
-`BG 3`
-![BG 3](resources/bgs/bg3.jpg)
-
-`BG 4`
-![BG 4](resources/bgs/bg4.jpg)
-
-`BG 5`
-![BG 5](resources/bgs/bg5.jpg)
-
-`BG 6`
-![BG 6](resources/bgs/bg6.jpg)
 

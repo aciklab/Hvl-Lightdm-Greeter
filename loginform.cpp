@@ -409,9 +409,7 @@ void LoginForm::addUsertoCache(QString user_name){
 
     }
 
-
-
-    for(i = 0; i< Settings().cachedusercount(); i++){
+    for(i = 0; i < Settings().cachedusercount(); i++){
         if(!userList[i].isNull() && !userList[i].isEmpty())
             Cache().setLastUsertoIndex(userList[i], i);
         else
@@ -475,8 +473,9 @@ void LoginForm::initializeUserList(){
     qInfo() <<  (QString::number(total_user_count) + " users found for last users cache");
 
 
-    if(total_user_count == 0)
+    if(total_user_count == 0){
         return;
+    }
 
     QString username;
     QString imagepath;
@@ -492,7 +491,6 @@ void LoginForm::initializeUserList(){
             if(i != total_user_count){
 
                 if(username.compare(userList[i]) == 0){
-
 
                     imagepath = userModel.data(modelIndex, QLightDM::UsersModel::ImagePathRole).toString();
                     break;
@@ -618,8 +616,6 @@ void LoginForm::loginPageTransition(){
 
     int middlepoint = ui->usersframe->width() / 2;
     int buttonx = middlepoint - (TOOL_BUTTON_WIDTH / 2);
-
-
 
     animGroup->clear();
     animGroup = new QParallelAnimationGroup;
