@@ -29,7 +29,8 @@ Kodu derlemek için, cmake, gcc, qt5, lightdm, qtwebengine5-dev, qt5LinguistTool
 Çalıştırmak için bağımlılıklar şunlardır: lightdm, libqt5webenginewidgets5, liblightdm-qt5-3-0, libqt5webengine5, libx11-6, libxcursor1, libqt5x11extras5
 
 Kurlum için, aşağıdaki komutları çalıştırın:
-    
+
+```shell
 git clone https://github.com/mertcelen/Hvl-Lightdm-Greeter.git
 cd Hvl-Lightdm-Greeter
 mkdir build
@@ -37,7 +38,7 @@ cd build
 cmake ..
 make 
 sudo make install
-
+```
 
 ## hvl-lightdm greeter'ı aktif hale getirmek için;
 
