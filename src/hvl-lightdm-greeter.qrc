@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/avatar-default.png</file>
+        <file>resources/avatar-default.svg</file>
+        <file>resources/dropdown.svg</file>
+        <file>resources/ethernet-off.png</file>
+        <file>resources/ethernet-on.png</file>
+        <file>resources/eye.png</file>
+        <file>resources/keyboard.png</file>
+        <file>resources/leaveIcon.svg</file>
+        <file>resources/load1.gif</file>
+        <file>resources/pardus.png</file>
+    </qresource>
+</RCC>
