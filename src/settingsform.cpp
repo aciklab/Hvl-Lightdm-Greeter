@@ -23,7 +23,7 @@
 #include <sys/types.h>
 #include <QShortcut>
 
-
+QString SettingsForm::current_layout = NULL;
 
 SettingsForm::SettingsForm(QWidget *parent) :
     QWidget(parent),
@@ -116,9 +116,11 @@ void SettingsForm::leaveDropDownActivated(int index)
 
     QMessageBox msgbox;
 
+    if(index == 0)
+        return;
+
     QString actionName = ui->leaveComboBox->itemData(index).toString();
     QString text;
-    ui->leaveComboBox->setCurrentIndex(-1);
 
     if      (actionName == "shutdown") text = tr("Go to Shutdown?");
     else if (actionName == "restart") text = tr("Go to Restart?");
@@ -133,6 +135,9 @@ void SettingsForm::leaveDropDownActivated(int index)
 
     //msgbox.setProperty("background-color", qRgba(80,80,80,1));
     msgbox.setText(text);
+    QFont font("DejaVu Sans Book");
+    font.setPointSize(12); //gm_edition 24
+    msgbox.setFont(font);
 
     QList<QAbstractButton *> buttons = msgbox.buttons();
 
@@ -150,6 +155,8 @@ void SettingsForm::leaveDropDownActivated(int index)
         else if (actionName == "hibernate") power.hibernate();
         else if (actionName == "suspend") power.suspend();
     }
+
+    ui->leaveComboBox->setCurrentIndex(-1);
 }
 
 
@@ -175,6 +182,7 @@ int SettingsForm::CheckService(QString Service){
 
 
     read_size = fread(data, 1, sizeof(data), fp);
+    pclose(fp);
 
     if(read_size < 1){
         qWarning() << Service + " Service check failed";
@@ -182,7 +190,7 @@ int SettingsForm::CheckService(QString Service){
     }
 
     /* close */
-    pclose(fp);
+
 
     /*get current layout*/
 
@@ -347,6 +355,9 @@ void SettingsForm::on_NwpushButton_clicked()
     dialog->setGeometry(labelx, (pt_g.y() - pt.y()) - ((line_count + 1) * 20), 0, 0);
     dialog->setFixedHeight((line_count + 1) * 20);
     dialog->setFixedWidth(this->width());
+    QFont font("DejaVu Sans Book");
+    font.setPointSize(10);//gm_edition 20
+    dialog->setFont(font);
     dialog->exec();
 
 }
@@ -435,6 +446,8 @@ void SettingsForm::getKeyboardLayouts(){
 
 
     qInfo() << "Current Keyboard layout is: " +  tmpstring;
+    emit sendKeyboardLayout(tmpstring);
+    current_layout = tmpstring;
 
 
     if(ui->kybrdcomboBox->findData(tmpstring) == -1){
@@ -471,7 +484,11 @@ void SettingsForm::setKeyboardLayout(int index){
     sprintf(cmd_array, "/usr/bin/setxkbmap %s &",setcommand);
 
     system(cmd_array);
+
+    //set onscreen keyboard layout
+    emit sendKeyboardLayout(actionName);
 }
+
 
 
 QString SettingsForm::getValueOfString(QString data, QString value){

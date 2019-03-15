@@ -15,26 +15,50 @@
 
 #include "stdlib.h"
 
+
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <QtX11Extras/QX11Info>
 #include <X11/Xcursor/Xcursor.h>
 #include <X11/Xutil.h>
 #include <X11/Xos.h>
+#include<X11/extensions/Xrandr.h>
 
+
+#ifdef SCREENKEYBOARD
+#include "keyboard.h"
+#endif
+
+#define LOGINFORM_DEFAULT_WIDTH 800
+#define LOGINFORM_DEFAULT_HEIGHT 336
 
 
 bool MainWindow::selectflag = false;
 int MainWindow::image_index = 0;
+MainWindow **MainWindow::mainWindowsList = NULL;
+
+int MainWindow::widgetScreen = 0;
 
 MainWindow::MainWindow(int screen, QWidget *parent) :
     QWidget(parent),
     m_Screen(screen)
 {
+
+
     setObjectName(QString("MainWindow_%1").arg(screen));
 
     QRect screenRect = QApplication::desktop()->screenGeometry(screen);
     setGeometry(screenRect);
+
+
+
+
+
+    if(mainWindowsList != NULL)
+        mainWindowsList[m_Screen] = this;
+
+
+    previousScreen = 1;
 
     setBackground();
 
@@ -42,6 +66,18 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
     
     if (m_Screen == QApplication::desktop()->primaryScreen()) {
 
+        if(QApplication::desktop()->screenCount() > 1){
+            mainWindowsList = (MainWindow**)malloc(sizeof(MainWindow*) * QApplication::desktop()->screenCount());
+            mainWindowsList[m_Screen] = this;
+
+
+        }
+
+        qApp->installEventFilter(this);
+
+        currentScreen = m_Screen;
+
+        widgetScreen = m_Screen;
 
         m_LoginForm = new LoginForm(this);
 
@@ -78,12 +114,12 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         int sizex = getOffset(Settings().sizeX_clockform(), maxX, (20 * maxX) / 100);
         int sizey = getOffset(Settings().sizeY_clockform(), maxY, (20 * maxY) / 100);
 
-
+#if 0
         if(sizex != 0 && sizey != 0){
             m_ClockForm->setFixedHeight(sizey);
             m_ClockForm->setFixedWidth(sizex);
         }
-
+#endif
         maxX = screenRect.width() - m_ClockForm->width();
         maxY = screenRect.height() - m_ClockForm->height();
         defaultX = 5*maxX/100;
@@ -94,10 +130,6 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         m_ClockForm->move(offsetX, offsetY);
         m_ClockForm->show();
 
-
-        QObject::connect(m_SettingsForm, &SettingsForm::sendNWStatusSignal, m_LoginForm, &LoginForm::stopWaitOperation);
-
-
         // This hack ensures that the primary screen will have focus
         // if there are more screens (move the mouse cursor in the center
         // of primary screen - not in the center of all X area). It
@@ -107,7 +139,15 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         QCursor::setPos(centerX, centerY);
         this->cursor().setShape(Qt::ArrowCursor);
 
+        QObject::connect(m_SettingsForm, &SettingsForm::sendNWStatusSignal, this, &MainWindow::receiveNetworkStatus);
+        QObject::connect(this, &MainWindow::sendNetworkStatustoChilds, m_LoginForm, &LoginForm::stopWaitOperation);
+
+
+        keyboardInit();
+
+
     }
+
 }
 
 MainWindow::~MainWindow()
@@ -159,7 +199,7 @@ void MainWindow::setBackground()
     QSettings greeterSettings(CONFIG_FILE, QSettings::IniFormat);
 
     QPalette palette;
-    QRect rect = QApplication::desktop()->screenGeometry(m_Screen);
+    QRect rect = QApplication::desktop()->screenGeometry(QApplication::desktop()->screenNumber());
 
     QString pathToBackgroundImageDir = greeterSettings.value(BACKGROUND_IMAGE_DIR_KEY).toString();
 
@@ -188,8 +228,8 @@ void MainWindow::setBackground()
         if (!backgroundImageList.isEmpty()) {
             QString imagepath = pathToBackgroundImageDir + backgroundImageList[image_index];
 
-            backgroundImage = QImage(imagepath, "jpg");
-            qDebug() << imagepath << tr(" is set as an background image");
+            backgroundImage = QImage(imagepath);
+            //  qDebug() << imagepath << tr(" is set as an background image");
 
         }else{
             qWarning() << tr("Not able to read image at index: ") << image_index << tr(" as image");
@@ -202,12 +242,13 @@ void MainWindow::setBackground()
         backgroundImage = QImage(pathToBackgroundImage);
 
 
-
+#if 0
         if (backgroundImage.isNull()) {
             qWarning() << tr("Not able to read") << pathToBackgroundImage << tr("as default image");
         }else{
             qDebug()  << pathToBackgroundImage << tr(" is set as an image");
         }
+#endif
     }
     
 
@@ -215,7 +256,7 @@ void MainWindow::setBackground()
         palette.setColor(QPalette::Background, qRgb(255, 203, 80));
     }
     else {
-        QBrush brush(backgroundImage.scaled(rect.width(), rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        QBrush brush(backgroundImage.scaled(rect.width(), rect.height(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
         palette.setBrush(this->backgroundRole(), brush);
     }
     this->setPalette(palette);
@@ -224,7 +265,7 @@ void MainWindow::setBackground()
     /* We are painting x root background with current greeter background */
     if(m_Screen == QApplication::desktop()->primaryScreen()){
         if(!backgroundImage.isNull()){
-            QImage tmpimage = backgroundImage.scaled(rect.width(), rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+            QImage tmpimage = backgroundImage.scaled(rect.width(), rect.height(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
             setRootBackground(tmpimage);
         }else{
             QImage tmpimage(rect.width(), rect.height(), QImage::Format_ARGB32_Premultiplied) ;
@@ -289,4 +330,212 @@ void MainWindow::setRootBackground(QImage img){
 
 
 
+
+
+void MainWindow::moveForms(int screen_number){
+
+
+    QRect screenRect = QApplication::desktop()->screenGeometry(screen_number);
+    setGeometry(screenRect);
+
+    screenRect.x();
+
+    int maxX = screenRect.width() - m_LoginForm->width();
+    int maxY = screenRect.height() - m_LoginForm->height();
+    int defaultX = 50*maxX/100;
+    int defaultY = 30*maxY/100;
+    int offsetX = getOffset(Settings().offsetX_loginform(), maxX, defaultX);
+    int offsetY = getOffset(Settings().offsetY_loginform(), maxY, defaultY);
+
+    m_LoginForm->move(offsetX , offsetY);
+    m_LoginForm->show();
+
+    maxX = screenRect.width() - m_SettingsForm->width();
+    maxY = screenRect.height() - m_SettingsForm->height();
+    defaultX = 50*maxX/100;
+    defaultY = 80*maxY/100;
+    offsetX = getOffset(Settings().offsetX_settingsform(), maxX, defaultX);
+    offsetY = getOffset(Settings().offsetY_settingsform(), maxY, defaultY);
+
+
+    m_SettingsForm->move(offsetX, offsetY);
+    m_SettingsForm->show();
+
+    maxX = screenRect.width();
+    maxY = screenRect.height();
+
+    int sizex = getOffset(Settings().sizeX_clockform(), maxX, (20 * maxX) / 100);
+    int sizey = getOffset(Settings().sizeY_clockform(), maxY, (20 * maxY) / 100);
+
+
+    delete m_ClockForm;
+    m_ClockForm = new clockForm(this);
+
+    if(sizex != 0 && sizey != 0){
+        m_ClockForm->setFixedHeight(sizey);
+        m_ClockForm->setFixedWidth(sizex);
+    }
+
+    maxX = screenRect.width() - m_ClockForm->width();
+    maxY = screenRect.height() - m_ClockForm->height();
+    defaultX = 5*maxX/100;
+    defaultY = 5*maxY/100;
+    offsetX = getOffset(Settings().offsetX_clockform(), maxX, defaultX);
+    offsetY = getOffset(Settings().offsetY_clockform(), maxY, defaultY);
+
+    m_ClockForm->move(offsetX, offsetY);
+    // m_ClockForm->resized = false;
+    m_ClockForm->show();
+
+
+}
+
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+
+    if (event->type() == QEvent::MouseMove && QApplication::desktop()->screenCount() > 1)
+    {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+        QPoint globalCursorPos = QCursor::pos();
+        int mousescreen = qApp->desktop()->screenNumber(globalCursorPos);
+
+        if(mousescreen != currentScreen){
+
+            previousScreen = currentScreen;
+            currentScreen = mousescreen;
+
+            QRect prvScreenRect = QApplication::desktop()->screenGeometry(previousScreen);
+            QRect curScreenRect = QApplication::desktop()->screenGeometry(currentScreen);
+
+            for (int i = 0; i < QApplication::desktop()->screenCount(); i++){
+                if(mainWindowsList[i]->pos().x() == prvScreenRect.x() && mainWindowsList[i]->pos().y() == prvScreenRect.y()){
+
+                    mainWindowsList[i]->hide();
+                    mainWindowsList[i]->setGeometry(curScreenRect);
+                    mainWindowsList[i]->move(QPoint(curScreenRect.x(), curScreenRect.y()));
+                    mainWindowsList[i]->setBackground();
+                    mainWindowsList[i]->show();
+
+
+                }else if(mainWindowsList[i]->pos().x() == curScreenRect.x() && mainWindowsList[i]->pos().y() == curScreenRect.y()){
+
+                    mainWindowsList[i]->hide();
+                    mainWindowsList[i]->setGeometry(prvScreenRect);
+                    mainWindowsList[i]->move(QPoint(prvScreenRect.x(), prvScreenRect.y()));
+                    mainWindowsList[i]->setBackground();
+                    moveForms(currentScreen);
+                    mainWindowsList[i]->show();
+
+                }
+
+            }
+
+
+        }
+
+    }
+    return false;
+}
+
+
+
+void MainWindow::receiveKeyboardRequest(QPoint from, int width){
+
+    int middlepoint = from.x() + (width / 2);
+    int keyboard_width = screenKeyboard->width();
+    int keyboard_height = screenKeyboard->height();
+
+    QRect screenRect = QApplication::desktop()->screenGeometry(QApplication::desktop()->primaryScreen());
+
+
+    if(screenRect.width() <= 640){
+
+        keyboard_width = 640;
+        keyboard_height = 240;
+
+    }else if(screenRect.width() <= 800){
+
+        keyboard_width = 800;
+        keyboard_height = 300;
+
+    }
+
+    screenKeyboard->setGeometry(middlepoint - (keyboard_width / 2), from.y() + 150,  keyboard_width, keyboard_height);
+
+    from.setX(middlepoint -  (keyboard_width / 2));
+    from.setY( from.y() + 150);
+
+
+    if(from.y() + keyboard_height > screenRect.height() ){
+
+        from.setY( screenRect.height() - keyboard_height);
+    }
+
+    screenKeyboard->move(from);
+
+    screenKeyboard->show();
+
+}
+
+
+void MainWindow::receiveKeyboardClose(){
+    screenKeyboard->close();
+
+    emit keyboardClosed();
+
+}
+
+void MainWindow::sendKeyPress(QString key){
+
+    emit sendKeytoChilds(key);
+
+}
+
+
+
+void MainWindow::checkNetwork(){
+
+}
+
+
+void MainWindow::receiveNetworkStatus(bool connected){
+
+    emit sendNetworkStatustoChilds(connected);
+
+}
+
+
+void MainWindow::keyboardInit(){
+
+
+#ifdef SCREENKEYBOARD
+
+    if(Settings().screenkeyboardenabled().compare("y") != 0){
+        return;
+    }
+
+    //screen keyboard
+
+    screenKeyboard = new Keyboard(this);
+    screenKeyboard->setKeyboardLayout(m_SettingsForm->current_layout);
+
+
+    screenKeyboard->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::WindowSystemMenuHint | Qt::WindowDoesNotAcceptFocus);
+    screenKeyboard->close();
+
+    connect(screenKeyboard, &Keyboard::sendKey, this, &MainWindow::sendKeyPress);
+    connect(this, &MainWindow::sendKeytoChilds, m_LoginForm,&LoginForm::keyboardEvent);
+
+    connect(screenKeyboard, &Keyboard::sendCloseEvent, this, &MainWindow::receiveKeyboardClose);
+    connect(this, &MainWindow::keyboardClosed, m_LoginForm,&LoginForm::keyboardCloseEvent);
+
+    connect(m_LoginForm, &LoginForm::sendKeyboardRequest, this, &MainWindow::receiveKeyboardRequest);
+
+    connect(m_LoginForm, &LoginForm::sendKeyboardCloseRequest, this, &MainWindow::receiveKeyboardClose);
+    connect(m_SettingsForm, &SettingsForm::sendKeyboardLayout, screenKeyboard, &Keyboard::setKeyboardLayout);
+
+#endif
+
+}
 

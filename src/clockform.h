@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QTimer>
+#include "main.h"
 
 namespace Ui {
 class clockForm;
@@ -19,11 +20,12 @@ private slots:
 public:
     explicit clockForm(QWidget *parent = 0);
     ~clockForm();
+    bool resized;
 
 private:
     Ui::clockForm *ui;
     QTimer *timer;
-    bool resized;
+
 };
 
 #endif // CLOCKFORM_H

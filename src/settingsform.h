@@ -35,6 +35,7 @@ class SettingsForm : public QWidget
 public:
     explicit SettingsForm(QWidget *parent = 0);
     ~SettingsForm();
+    static QString current_layout;
 
 
 
@@ -61,7 +62,8 @@ public slots:
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
 Q_SIGNALS:
-     void sendNWStatusSignal(bool &status);
+     void sendNWStatusSignal(bool status);
+     void sendKeyboardLayout(QString &layout);
 
 private:
 

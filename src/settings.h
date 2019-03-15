@@ -51,7 +51,10 @@ public:
     QStringList getservices() { return value("services-to-check").toStringList(); }
     QString logopath() { return value("greeter-loginform-logo-image").toString(); }
     int waittimeout() { return value("wait-timeout").toInt(); }
+    int  network_ok_timeout() { return value("network-ok-timeout").toInt(); }
     int cachedusercount(){return value("cached-user-count").toInt();}
+    QString screenkeyboardenabled(){return value("screen_keyboard").toString(); }
+
 };
 
 

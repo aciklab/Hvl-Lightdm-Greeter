@@ -1,12 +1,7 @@
-/*
-* Copyright (c) 2012-2015 Christian Surlykke
-*
-* This file is part of qt-lightdm-greeter 
-* It is distributed under the LGPL 2.1 or later license.
-* Please refer to the LICENSE file for a copy of the license.
-*/
 #ifndef LOGINFORM_H
 #define LOGINFORM_H
+
+#include "main.h"
 
 #include <QWidget>
 #include <QProcess>
@@ -23,12 +18,27 @@
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 #include <QShortcut>
+#include <QLabel>
 
 
 #include <QLightDM/Power>
 #include <QLightDM/Greeter>
 #include <QLightDM/SessionsModel>
 #include <QLightDM/UsersModel>
+
+
+
+#ifdef SCREENKEYBOARD
+#include "keyboard.h"
+#endif
+
+#define TOOL_BUTTON_Y        100
+#define TOOL_BUTTON_HEIGHT   150
+#define TOOL_BUTTON_WIDTH    114
+#define MAX_TOOL_BUTTON_COUNT   6
+#define TOOL_BUTTON_ICON_SIZE   100
+#define LOGO_LABEL_SIZE     TOOL_BUTTON_ICON_SIZE
+#define TOOL_BUTTON_FONT_SIZE  12
 
 
 namespace Ui
@@ -46,6 +56,7 @@ public:
     explicit LoginForm(QWidget *parent = 0);
     ~LoginForm();
     virtual void setFocus(Qt::FocusReason reason);
+    void setGreeter();
 
 
 public slots:
@@ -54,9 +65,15 @@ public slots:
     void startLogin();
     void onPrompt(QString prompt, QLightDM::Greeter::PromptType promptType);
     void onMessage(QString prompt, QLightDM::Greeter::MessageType messageType);
+    void resetRequest();
 
     void authenticationComplete();
     void stopWaitOperation(const bool& networkstatus);
+#ifdef SCREENKEYBOARD
+
+    void keyboardCloseEvent();
+    void keyboardEvent(QString key);
+#endif
 
 
 protected:
@@ -64,7 +81,9 @@ protected:
     virtual void keyReleaseEvent(QKeyEvent *event);
 
 Q_SIGNALS:
-    void setRootBackground();
+    void sendKeyboardRequest(QPoint from, int width);
+    void sendKeyboardCloseRequest();
+
 
 
 
@@ -95,6 +114,13 @@ private slots:
 
     void on_cancelResetButton_clicked();
 
+
+#ifdef SCREENKEYBOARD
+    void focusChanged(QWidget *old, QWidget *now);
+
+#endif
+
+
 private:
     void initialize();
     QString currentSession();
@@ -110,7 +136,7 @@ private:
     void pageTransition(QWidget *Page);
     void usersbuttonReposition();
     void loginPageTransition();
-
+    void preparetoLogin();
 
     Ui::LoginForm *ui;
 
@@ -127,6 +153,9 @@ private:
     QTimer *animationTimer;
     QMovie *mv;
     QShortcut *shortcut;
+
+
+
 
     QString userList[5];
     QToolButton *toolButtons[6];
@@ -146,6 +175,7 @@ private:
     int resetTimerState;
     int loginTimerState;
     QString lastPrompt;
+    QString lastMessage;
     bool loginStartFlag;
     bool resetStartFlag;
     QStringList knownUsers;
@@ -155,6 +185,8 @@ private:
     bool networkOK;
     int animationTimerState;
 
+    bool loginprompt;
+    int nwcheckcount;
 
 
 

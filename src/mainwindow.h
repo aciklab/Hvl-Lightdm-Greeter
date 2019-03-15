@@ -1,10 +1,3 @@
-/*
-* Copyright (c) 2012-2015 Christian Surlykke, Petr Vanek
-*
-* This file is part of qt-lightdm-greeter 
-* It is distributed under the LGPL 2.1 or later license.
-* Please refer to the LICENSE file for a copy of the license.
-*/
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -15,10 +8,15 @@
 #include "loginform.h"
 #include "settingsform.h"
 #include "clockform.h"
-#include <X11/Xlib.h>
+
+#include "main.h"
+
+#ifdef SCREENKEYBOARD
+#include "keyboard.h"
+#endif
 
 namespace Ui {
-    class MainWindow;
+class MainWindow;
 }
 
 class MainWindow : public QWidget
@@ -37,11 +35,31 @@ public:
 
     //SettingsForm* settingsForm() { return m_SettingsForm;}
 
+Q_SIGNALS:
+    void networkInfo(bool connected);
+    void keyboardClosed();
+    void sendKeytoChilds(QString key);
+    void sendNetworkStatustoChilds(bool connected);
+
+public slots:
+    void receiveKeyboardRequest(QPoint from, int width);
+    void receiveKeyboardClose();
+    void sendKeyPress(QString key);
+    void receiveNetworkStatus(bool connected);
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event);
 
 private:
     int getOffset(QString offset, int maxVal, int defaultVal);
     void setBackground();
     void setRootBackground(QImage img);
+    void moveForms(int screen_number);
+
+    void keyboardInit();
+    void checkNetwork();
+
+
 
     int m_Screen;
     LoginForm* m_LoginForm;
@@ -50,6 +68,22 @@ private:
     static int image_index;
     static bool selectflag;
 
+    int currentScreen;
+    int previousScreen;
+    static int widgetScreen;
+    int screenCount;
+    static MainWindow **mainWindowsList;
+
+#ifdef SCREENKEYBOARD
+    Keyboard *screenKeyboard;
+    bool keyboardisactive;
+#endif
+
+
+
 };
+
+
+
 
 #endif // MAINWINDOW_H

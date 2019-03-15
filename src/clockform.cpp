@@ -54,19 +54,29 @@ void clockForm::updateClock(){
 
     timer->setInterval(1000);
     timer->start();
+    QFont font("Source Code Pro");
+    font.setPointSize(50);//gm_edition 100
+    ui->clockLabel->setFont(font);
 
+    font.setPointSize(20); //gm_edition 40
+    ui->dayLabel->setFont(font);
+
+    font.setPointSize(30);  //gm_edition 60
+    ui->dateLabel->setFont(font);
+
+#if 0
     if(!resized){
         QFont font("Source Code Pro");
-        font.setPointSize((ui->clockLabel->height() * 7 ) / 10);
+        font.setPointSize((ui->clockLabel->height() * 6 ) / 10);
         ui->clockLabel->setFont(font);
 
         font.setPointSize(ui->dayLabel->height()/2);
         ui->dayLabel->setFont(font);
 
-        font.setPointSize((ui->dateLabel->height() * 7) / 10);
+        font.setPointSize((ui->dateLabel->height() * 5) / 10);
         ui->dateLabel->setFont(font);
         resized = true;
     }
-
+#endif
 }
 

@@ -13,6 +13,12 @@
     <height>60</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -70,7 +76,7 @@ QComboBox::down-arrow {
    <item>
     <widget class="QFrame" name="formFrame">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -90,25 +96,34 @@ QComboBox::down-arrow {
      <property name="lineWidth">
       <number>0</number>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="5,2,5">
+      <property name="spacing">
+       <number>8</number>
+      </property>
       <property name="leftMargin">
        <number>0</number>
       </property>
       <property name="topMargin">
-       <number>0</number>
+       <number>8</number>
       </property>
       <property name="rightMargin">
        <number>0</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
+       <number>8</number>
       </property>
       <item>
        <widget class="QComboBox" name="kybrdcomboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>160</width>
-          <height>45</height>
+          <width>40</width>
+          <height>20</height>
          </size>
         </property>
         <property name="font">
@@ -150,10 +165,16 @@ QComboBox::down-arrow {
       </item>
       <item>
        <widget class="QPushButton" name="NwpushButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>80</width>
-          <height>45</height>
+          <width>20</width>
+          <height>20</height>
          </size>
         </property>
         <property name="focusPolicy">
@@ -185,10 +206,16 @@ QComboBox::down-arrow {
       </item>
       <item>
        <widget class="QComboBox" name="leaveComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
-          <width>160</width>
-          <height>45</height>
+          <width>40</width>
+          <height>20</height>
          </size>
         </property>
         <property name="maximumSize">
