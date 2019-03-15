@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/onurkepenek/Hvl-Lightdm-Greeter.svg?branch=master)](https://travis-ci.org/onurkepenek/Hvl-Lightdm-Greeter)
+
 # hvl-lightdm-greeter 
 
 # TURKISH
