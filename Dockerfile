@@ -19,4 +19,4 @@ RUN apt-get update \
 	libxcursor-dev \  
 	libxrandr-dev
 
-COPY . /usr/hvl-lightdm-greeter/
+COPY . /hvl-lightdm-greeter

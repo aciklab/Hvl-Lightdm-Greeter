@@ -7,13 +7,14 @@ services:
   - docker
 
 before_install:
-  - docker build -t pardus/Hvl-Lightdm-Greeter .
-  - docker run -d --name build pardus/hvl-lightdm-greeter tail -f /dev/null
+  - docker build -t pardus/hvl-lightdm-greeter .
+  - docker run -t -d  --name buildx pardus/hvl-lightdm-greeter 
 
 install:
-  - docker exec build  /bin/sh -c 'cd /hvl-lightdm-greeter; mkdir build'
+  - docker exec buildx  /bin/sh -c 'cd /hvl-lightdm-greeter/;mkdir -p build'
+
 
 script:
-  - docker exec build  /bin/sh -c 'cd build'
-  - docker exec build  /bin/sh -c 'cmake ..'
-  - docker exec build  /bin/sh -c 'make'
+  - docker exec buildx  /bin/sh -c 'cd /hvl-lightdm-greeter/build; cmake ..; make'
+  - docker exec buildx  /bin/sh -c 'cmake ..'
+  - docker exec buildx  /bin/sh -c 'make'
