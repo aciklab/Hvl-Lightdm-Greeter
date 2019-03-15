@@ -4,7 +4,7 @@
 #include <QtWebEngineCore/QtWebEngineCore>
 #include <QtWebEngineWidgets/QtWebEngineWidgets>
 #include <QQmlApplicationEngine>
-#include <qtwebengineglobal.h>
+
 
 
 #include "mainwindow.h"

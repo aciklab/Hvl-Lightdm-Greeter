@@ -1,0 +1,19 @@
+language: cpp
+dist: trusty
+compiler: g++
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t pardus/Hvl-Lightdm-Greeter .
+  - docker run -d --name build pardus/Hvl-Lightdm-Greeter tail -f /dev/null
+
+install:
+  - docker exec build  /bin/sh -c 'cd /Hvl-Lightdm-Greeter; mkdir build'
+
+script:
+  - docker exec build  /bin/sh -c 'cd build'
+  - docker exec build  /bin/sh -c 'cmake ..'
+  - docker exec build  /bin/sh -c 'make'

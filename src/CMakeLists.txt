@@ -28,7 +28,6 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 
 add_definitions(-DUNIX)
-add_definitions(-DGVZRECOGNIZER_NOSPEC)
 add_definitions(-D_LIB)
 add_definitions(-DNDEBUG)
 

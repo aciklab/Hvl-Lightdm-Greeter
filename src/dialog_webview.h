@@ -6,7 +6,6 @@
 #include <QtWebEngineCore/QtWebEngineCore>
 #include <QtWebEngineWidgets/QtWebEngineWidgets>
 #include <QQmlApplicationEngine>
-#include <qtwebengineglobal.h>
 
 namespace Ui {
 class Dialog_webview;
