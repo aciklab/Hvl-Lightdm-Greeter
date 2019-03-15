@@ -16,5 +16,3 @@ install:
 
 script:
   - docker exec buildx  /bin/sh -c 'cd /hvl-lightdm-greeter/build; cmake ..; make'
-  - docker exec buildx  /bin/sh -c 'cmake ..'
-  - docker exec buildx  /bin/sh -c 'make'
