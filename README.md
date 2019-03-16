@@ -49,6 +49,11 @@ cmake ..
 make 
 sudo make install
 ```
+ `/etc/lightdm/lightdm.conf`, dosyası içinde, `SeatDefaults` bölümü altına aşağıdaki satırı ekleyin ya da başka bir değere atanmışsa güncelleyin:
+
+    greeter-session=hvl-lightdm-greeter
+
+Eğer böyle bir dosya mevcut değilse oluşturun.	
 
 ### Pardus Onyedi üzerine kurulum
 
@@ -58,14 +63,6 @@ sudo apt update
 sudo apt install lightdm-hvl-greeter
 ```
 
-## hvl-lightdm greeter'ı aktif hale getirmek için;
-
- `/etc/lightdm/lightdm.conf`, dosyası içinde, `SeatDefaults` bölümü altına aşağıdaki satırı ekleyin ya da başka bir değere atanmışsa güncelleyin:
-
-    greeter-session=hvl-lightdm-greeter
-
-Eğer böyle bir dosya mevcut değilse oluşturun.	
-	
 ## Yapılandırma
 
 `/usr/share/lightdm/lightdm-hvl-greeter.conf.d/hvl-lightdm-greeter.conf` dosyası içinde kullanılabilecek çeşitli konfigürasyon seçenekleri bulunmaktadır. Örnek olarak: 
