@@ -28,6 +28,8 @@ Tested on Pardus 17.4 and Xubuntu 18.04
 
 ## Installing
 
+### Compile
+
 For building, make sure you have cmake, gcc, qt5, qtwebengine5-dev, qt5LinguistTools, qt5X11Extras-dev, libxcursor-dev installed on your system
 
 For running, dependencies are : lightdm, libqt5webenginewidgets5, liblightdm-qt5-3-0, libqt5webengine5, libx11-6, libxcursor1, libqt5x11extras5
@@ -44,13 +46,19 @@ make
 sudo make install
 ```
 
-## How to enable hvl-lightdm greeter
-
 Update or insert in(to) your `/etc/lightdm/lightdm.conf`, in the `SeatDefaults` section, this line:
 
     greeter-session=hvl-lightdm-greeter
 
 If this file is not exist create new one.	
+
+### on Pardus Onyedi
+
+```sudo echo "deb [arch=amd64] http://acikdepo.github.io/ onyedi main" > /etc/apt/sources.list.d/acikdepo.list
+sudo wget -qO - https://raw.githubusercontent.com/acikdepo/acikdepo.github.io/master/public.key | sudo apt-key add -
+sudo apt update
+sudo apt install lightdm-hvl-greeter
+```
 	
 ## Configuration
 
