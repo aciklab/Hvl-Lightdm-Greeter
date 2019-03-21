@@ -40,7 +40,17 @@ Giriş ekranı Pardus 17.4 ve Xubuntu 18.04'de test edilmiştir.
 
 ### Derleme
 
-Kodu derlemek için, cmake, gcc, qt5, lightdm, qtwebengine5-dev, qt5LinguistTools, qt5X11Extras-dev, libxcursor-dev paketlerinin sisteminizde kurulu olduğuna emin olun
+Kodu derlemek için, 
+- qt5-default
+- cmake
+- qtwebengine5-dev 
+- libqt5x11extras5-dev
+- liblightdm-qt5-3-dev
+- libxcursor-dev
+- libxrandr-dev 
+- lightdm
+
+paketlerinin sisteminizde kurulu olduğuna emin olun
 
 Çalıştırmak için bağımlılıklar şunlardır: lightdm, libqt5webenginewidgets5, liblightdm-qt5-3-0, libqt5webengine5, libx11-6, libxcursor1, libqt5x11extras5
 
