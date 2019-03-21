@@ -30,7 +30,16 @@ Tested on Pardus 17.4 and Xubuntu 18.04
 
 ### Compile
 
-For building, make sure you have cmake, gcc, qt5, qtwebengine5-dev, qt5LinguistTools, qt5X11Extras-dev, libxcursor-dev installed on your system
+For building, make sure you have; 
+- qt5-default
+- cmake
+- qtwebengine5-dev 
+- libqt5x11extras5-dev
+- liblightdm-qt5-3-dev
+- libxcursor-dev
+- libxrandr-dev 
+- lightdm
+installed on your system
 
 For running, dependencies are : lightdm, libqt5webenginewidgets5, liblightdm-qt5-3-0, libqt5webengine5, libx11-6, libxcursor1, libqt5x11extras5
 
