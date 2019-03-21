@@ -39,6 +39,8 @@ For building, make sure you have;
 - libxcursor-dev
 - libxrandr-dev 
 - lightdm
+- qttools5-dev-tools
+
 installed on your system
 
 For running, dependencies are : lightdm, libqt5webenginewidgets5, liblightdm-qt5-3-0, libqt5webengine5, libx11-6, libxcursor1, libqt5x11extras5
