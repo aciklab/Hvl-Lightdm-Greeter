@@ -49,6 +49,7 @@ Kodu derlemek için,
 - libxcursor-dev
 - libxrandr-dev 
 - lightdm
+- qttools5-dev-tools
 
 paketlerinin sisteminizde kurulu olduğuna emin olun
 
