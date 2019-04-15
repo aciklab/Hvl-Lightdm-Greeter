@@ -12,19 +12,19 @@ Tested on Pardus 17.4 and Xubuntu 18.04
 
 `Login screen`
 
-<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/loginpage_tr.jpg" width="300" height="300">
+<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/loginpage_tr.jpg">
 
 `Users screen`
 
-<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/userspage_en.jpg" width="400" height="300">
+<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/userspage_en.jpg">
 
 `Prompt screen`
 
-<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/prompt_en.jpg" width="300" height="300">
+<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/prompt_en.jpg">
 
 `Password reset screen`
 
-<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/reset_en.jpg" width="300" height="300">
+<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/reset_en.jpg">
 
 ## Installing
 
