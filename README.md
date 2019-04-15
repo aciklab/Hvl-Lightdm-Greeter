@@ -22,19 +22,19 @@ Giriş ekranı Pardus 17.4 ve Xubuntu 18.04'de test edilmiştir.
 
 `Giriş ekranı`
 
-<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/loginpage_tr.jpg" width="300" height="300">
+<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/loginpage_tr.jpg">
 
 `Kullanıcı seçimi`
 
-<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/userspage_tr.jpg" width="400" height="300">
+<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/userspage_tr.jpg">
 
 `Parola sıfırlama uyarısı`
 
-<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/prompt_tr.jpg" width="300" height="300">
+<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/prompt_tr.jpg">
 
 `Parola sıfırlama Sayfası`
 
-<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/reset_tr.jpg" width="300" height="300">
+<img src="https://github.com/aciklab/Hvl-Lightdm-Greeter/raw/master/ss/reset_tr.jpg">
 
 ## Kurulum
 
