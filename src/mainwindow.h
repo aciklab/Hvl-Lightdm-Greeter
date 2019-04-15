@@ -8,6 +8,7 @@
 #include "loginform.h"
 #include "settingsform.h"
 #include "clockform.h"
+#include "powerform.h"
 
 #include "main.h"
 
@@ -65,6 +66,7 @@ private:
     LoginForm* m_LoginForm;
     clockForm *m_ClockForm;
     SettingsForm *m_SettingsForm;
+    PowerForm *m_PowerForm;
     static int image_index;
     static bool selectflag;
 

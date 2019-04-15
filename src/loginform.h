@@ -56,7 +56,6 @@ public:
     explicit LoginForm(QWidget *parent = 0);
     ~LoginForm();
     virtual void setFocus(Qt::FocusReason reason);
-    void setGreeter();
 
 
 public slots:
@@ -157,10 +156,10 @@ private:
 
 
 
-    QString userList[5];
-    QToolButton *toolButtons[6];
-
-    QPropertyAnimation *anim1[6];
+    QString userList[6];
+    QPropertyAnimation *anim1[3];
+    QPropertyAnimation *anim2[3];
+    QToolButton *toolButtons[3];
 
     QParallelAnimationGroup *animGroup;
 
@@ -184,9 +183,21 @@ private:
     bool timeoutFlag;
     bool networkOK;
     int animationTimerState;
+    int useroffset;
+    int olduseroffset;
+    bool animationprogress;
+    int lastuserindex;
+    int lastkey;
 
     bool loginprompt;
     int nwcheckcount;
+    QRect left = QRect(50,25,100,110);
+    QRect center = QRect(155,10,120,140);
+    QRect right = QRect(280,25,100,110);
+    QPixmap iconPassive = QPixmap(":/resources/login_1_1.png");
+    QPixmap iconActive = QPixmap(":/resources/login_1.png");
+    QPixmap iconEmptyPassive = QPixmap(":/resources/login_1_1_bos.png");
+    QPixmap iconEmptyActive = QPixmap(":/resources/login_1_bos.png");
 
 
 

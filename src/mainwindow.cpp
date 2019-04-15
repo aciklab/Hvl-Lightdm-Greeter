@@ -12,6 +12,7 @@
 #include "settings.h"
 #include "settingsform.h"
 #include "clockform.h"
+#include "powerform.h"
 
 #include "stdlib.h"
 
@@ -22,7 +23,7 @@
 #include <X11/Xcursor/Xcursor.h>
 #include <X11/Xutil.h>
 #include <X11/Xos.h>
-#include<X11/extensions/Xrandr.h>
+#include <X11/extensions/Xrandr.h>
 
 
 #ifdef SCREENKEYBOARD
@@ -43,15 +44,10 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
     QWidget(parent),
     m_Screen(screen)
 {
-
-
     setObjectName(QString("MainWindow_%1").arg(screen));
 
     QRect screenRect = QApplication::desktop()->screenGeometry(screen);
     setGeometry(screenRect);
-
-
-
 
 
     if(mainWindowsList != NULL)
@@ -69,8 +65,6 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         if(QApplication::desktop()->screenCount() > 1){
             mainWindowsList = (MainWindow**)malloc(sizeof(MainWindow*) * QApplication::desktop()->screenCount());
             mainWindowsList[m_Screen] = this;
-
-
         }
 
         qApp->installEventFilter(this);
@@ -96,7 +90,7 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
 
         maxX = screenRect.width() - m_SettingsForm->width();
         maxY = screenRect.height() - m_SettingsForm->height();
-        defaultX = 50*maxX/100;
+        defaultX = 100*maxX/100;
         defaultY = 80*maxY/100;
         offsetX = getOffset(Settings().offsetX_settingsform(), maxX, defaultX);
         offsetY = getOffset(Settings().offsetY_settingsform(), maxY, defaultY);
@@ -105,21 +99,25 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         m_SettingsForm->move(offsetX, offsetY);
         m_SettingsForm->show();
 
+        m_PowerForm = new PowerForm(this);
+
+        maxX = screenRect.width() - m_PowerForm->width();
+        maxY = screenRect.height() - m_PowerForm->height();
+
+        defaultX = 50*maxX/100;
+        defaultY = 80*maxY/100;
+        offsetX = getOffset(Settings().offsetX_powerform(), maxX, defaultX);
+        offsetY = getOffset(Settings().offsetY_powerform(), maxY, defaultY);
+
+        m_PowerForm->move(offsetX, offsetY);
+        m_PowerForm->show();
+
 
         m_ClockForm = new clockForm(this);
 
         maxX = screenRect.width();
         maxY = screenRect.height();
 
-        int sizex = getOffset(Settings().sizeX_clockform(), maxX, (20 * maxX) / 100);
-        int sizey = getOffset(Settings().sizeY_clockform(), maxY, (20 * maxY) / 100);
-
-#if 0
-        if(sizex != 0 && sizey != 0){
-            m_ClockForm->setFixedHeight(sizey);
-            m_ClockForm->setFixedWidth(sizex);
-        }
-#endif
         maxX = screenRect.width() - m_ClockForm->width();
         maxY = screenRect.height() - m_ClockForm->height();
         defaultX = 5*maxX/100;
@@ -142,9 +140,7 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         QObject::connect(m_SettingsForm, &SettingsForm::sendNWStatusSignal, this, &MainWindow::receiveNetworkStatus);
         QObject::connect(this, &MainWindow::sendNetworkStatustoChilds, m_LoginForm, &LoginForm::stopWaitOperation);
 
-
         keyboardInit();
-
 
     }
 
@@ -161,12 +157,6 @@ bool MainWindow::showLoginForm()
 
 void MainWindow::setFocus(Qt::FocusReason reason)
 {
-    if (m_LoginForm) {
-        m_LoginForm->setFocus(reason);
-    }
-    else  {
-        QWidget::setFocus(reason);
-    }
 }
 
 int MainWindow::getOffset(QString settingsOffset, int maxVal, int defaultVal)
@@ -311,9 +301,7 @@ void MainWindow::setRootBackground(QImage img){
 
     GC gc = XCreateGC(dis, pix, 0, NULL);
 
-
     XPutImage(dis, pix, gc, image, 0, 0, 0, 0, width, height);
-
 
     XSetWindowBackgroundPixmap(dis, win, pix);
 
@@ -352,7 +340,7 @@ void MainWindow::moveForms(int screen_number){
 
     maxX = screenRect.width() - m_SettingsForm->width();
     maxY = screenRect.height() - m_SettingsForm->height();
-    defaultX = 50*maxX/100;
+    defaultX = 100*maxX/100;
     defaultY = 80*maxY/100;
     offsetX = getOffset(Settings().offsetX_settingsform(), maxX, defaultX);
     offsetY = getOffset(Settings().offsetY_settingsform(), maxY, defaultY);
@@ -361,31 +349,16 @@ void MainWindow::moveForms(int screen_number){
     m_SettingsForm->move(offsetX, offsetY);
     m_SettingsForm->show();
 
-    maxX = screenRect.width();
-    maxY = screenRect.height();
+    maxX = screenRect.width() - m_PowerForm->width();
+    maxY = screenRect.height() - m_PowerForm->height();
+    defaultX = 50*maxX/100;
+    defaultY = 80*maxY/100;
+    offsetX = getOffset(Settings().offsetX_powerform(), maxX, defaultX);
+    offsetY = getOffset(Settings().offsetY_powerform(), maxY, defaultY);
 
-    int sizex = getOffset(Settings().sizeX_clockform(), maxX, (20 * maxX) / 100);
-    int sizey = getOffset(Settings().sizeY_clockform(), maxY, (20 * maxY) / 100);
 
-
-    delete m_ClockForm;
-    m_ClockForm = new clockForm(this);
-
-    if(sizex != 0 && sizey != 0){
-        m_ClockForm->setFixedHeight(sizey);
-        m_ClockForm->setFixedWidth(sizex);
-    }
-
-    maxX = screenRect.width() - m_ClockForm->width();
-    maxY = screenRect.height() - m_ClockForm->height();
-    defaultX = 5*maxX/100;
-    defaultY = 5*maxY/100;
-    offsetX = getOffset(Settings().offsetX_clockform(), maxX, defaultX);
-    offsetY = getOffset(Settings().offsetY_clockform(), maxY, defaultY);
-
-    m_ClockForm->move(offsetX, offsetY);
-    // m_ClockForm->resized = false;
-    m_ClockForm->show();
+    m_PowerForm->move(offsetX, offsetY);
+    m_PowerForm->show();
 
 
 }

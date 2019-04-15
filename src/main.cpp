@@ -15,7 +15,7 @@
 
 #include <iostream>
 
-
+#include <sys/mman.h>
 
 
 #include "settings.h"
@@ -45,6 +45,10 @@ int main(int argc, char *argv[])
 {
 
     QLightDM::Greeter m_Greeter;
+
+    /* Prevent memory from being swapped out, as we are dealing with passwords */
+    mlockall (MCL_CURRENT | MCL_FUTURE);
+
 #if 0
     if (m_Greeter.connectSync()) {
 
@@ -120,7 +124,6 @@ int main(int argc, char *argv[])
 
     syncX();
 
-
     qInfo() << "greeeter return value:  " << ret;
 
     //return ret;
@@ -135,7 +138,7 @@ int main(int argc, char *argv[])
 #include <X11/Xcursor/Xcursor.h>
 #include <X11/Xutil.h>
 #include <X11/Xos.h>
-
+#include<X11/extensions/Xrandr.h>
 
 void syncX(){
 #if 0
@@ -186,14 +189,6 @@ void catchUnixSignals(std::initializer_list<int> quitSignals) {
 }
 
 
-
-#include <X11/Xatom.h>
-#include <X11/Xlib.h>
-#include <QtX11Extras/QX11Info>
-#include <X11/Xcursor/Xcursor.h>
-#include <X11/Xutil.h>
-#include <X11/Xos.h>
-#include<X11/extensions/Xrandr.h>
 
 
 void changeResolution(){

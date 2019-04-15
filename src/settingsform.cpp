@@ -38,10 +38,6 @@ SettingsForm::SettingsForm(QWidget *parent) :
 
     timer = new QTimer();
 
-
-    layout = new QVBoxLayout;
-    popupLabel = new QLabel();
-
     nwDialog = new NetworkDialog();
     nwDialog->setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
 
@@ -51,9 +47,6 @@ SettingsForm::SettingsForm(QWidget *parent) :
 
     connect(nwDialog, &NetworkDialog::servicereset, this, &SettingsForm::networkCheckSlot);
 
-    dialog = new QDialog(0, Qt::Popup | Qt::FramelessWindowHint);
-    layout = new QVBoxLayout;
-    popupLabel = new QLabel();
 
     networkOK = true;
     network_check_counter = 0;
@@ -69,9 +62,6 @@ SettingsForm::SettingsForm(QWidget *parent) :
     timer->start();
     connect(timer, SIGNAL(timeout()), this, SLOT(timer_finished()));
 
-    rce = new rightClickEnabler(ui->NwpushButton);
-
-    connect(rce, &rightClickEnabler::rightclicksignal, this, &SettingsForm::on_NwpushButton_Right_Clicked);
 
 
 }
@@ -87,13 +77,6 @@ SettingsForm::~SettingsForm()
 
 void SettingsForm::initialize(){
 
-    addLeaveEntry(power.canShutdown(), "system-shutdown", tr("Shutdown"), "shutdown");
-    addLeaveEntry(power.canRestart(), "system-reboot", tr("Restart"), "restart");
-    addLeaveEntry(power.canHibernate(), "system-suspend-hibernate", tr("Hibernate"), "hibernate");
-    addLeaveEntry(power.canSuspend(), "system-suspend", tr("Suspend"), "suspend");
-    ui->leaveComboBox->setDisabled(ui->leaveComboBox->count() <= 1);
-
-    connect(ui->leaveComboBox, SIGNAL(activated(int)), this, SLOT(leaveDropDownActivated(int)));
 
     serviceList = Settings().getservices();
 
@@ -101,62 +84,6 @@ void SettingsForm::initialize(){
     ui->kybrdcomboBox->setCurrentText("tr");
     connect(ui->kybrdcomboBox, SIGNAL(activated(int)), this, SLOT(setKeyboardLayout(int)));
     nwButtonPressed = false;
-}
-
-void SettingsForm::addLeaveEntry(bool canDo, QString iconName, QString text, QString actionName)
-{
-    if (canDo) {
-        ui->leaveComboBox->addItem(QIcon::fromTheme(iconName), text, actionName);
-    }
-}
-
-
-void SettingsForm::leaveDropDownActivated(int index)
-{
-
-    QMessageBox msgbox;
-
-    if(index == 0)
-        return;
-
-    QString actionName = ui->leaveComboBox->itemData(index).toString();
-    QString text;
-
-    if      (actionName == "shutdown") text = tr("Go to Shutdown?");
-    else if (actionName == "restart") text = tr("Go to Restart?");
-    else if (actionName == "hibernate") text = tr("Go to Hibernate?");
-    else if (actionName == "suspend") text = tr("Go to Suspend?");
-
-    msgbox.addButton(tr("Ok"), QMessageBox::YesRole);
-    msgbox.addButton(tr("Cancel"), QMessageBox::NoRole);
-
-
-    //msgbox.setStyleSheet("\nQWidget {\nbackground-color: rgba(200,200,200,1);\ncolor: white;\nfont:bold;\nborder: 1px solid silver;\nfont-size:14px;\n}\nQLabel{\nborder: 0px\n}\nQPushButton{\nmin-width: 250px\ncolor:white;\nfont-size:14px;\nfont:bold;\nbackground-color:rgba(80, 80, 80,1.0);\n}\n");
-
-    //msgbox.setProperty("background-color", qRgba(80,80,80,1));
-    msgbox.setText(text);
-    QFont font("DejaVu Sans Book");
-    font.setPointSize(12); //gm_edition 24
-    msgbox.setFont(font);
-
-    QList<QAbstractButton *> buttons = msgbox.buttons();
-
-    foreach (QAbstractButton *btn, buttons) {
-        btn->setGeometry(btn->x(), btn->y(), 700, 60);
-    }
-
-
-    if (!msgbox.exec()) {
-
-        qInfo() << "System is going to " + actionName + "now";
-
-        if      (actionName == "shutdown") power.shutdown();
-        else if (actionName == "restart") power.restart();
-        else if (actionName == "hibernate") power.hibernate();
-        else if (actionName == "suspend") power.suspend();
-    }
-
-    ui->leaveComboBox->setCurrentIndex(-1);
 }
 
 
@@ -313,10 +240,12 @@ void SettingsForm::checkNetwork(){
     }
 
 
-    popupLabel->setText(networkInfoString);
     nwDialog->SetText(networkInfoString);
 
     network_check_counter++;
+
+    ui->textEdit->setText(ip_string);
+
 }
 
 
@@ -335,36 +264,7 @@ void SettingsForm::timer_finished(){
 
 void SettingsForm::on_NwpushButton_clicked()
 {
-    uint line_count = 0;
 
-    for(int i=0; i<networkInfoString.length() ; i++){
-        if(networkInfoString[i] == '\n')
-            line_count++;
-    }
-
-    dialog->setFixedHeight((line_count + 1) * 20);
-    dialog->setFixedWidth(this->width());
-    QPoint pt_g = QWidget::mapToGlobal(this->pos());
-    QPoint pt = this->pos();
-
-    uint labelx = ((pt_g.x() - pt.x())+ this->width()/2) - (dialog->width() / 2);
-
-    layout->addWidget(popupLabel);
-    popupLabel->setText(networkInfoString);
-    dialog->setLayout(layout);
-    dialog->setGeometry(labelx, (pt_g.y() - pt.y()) - ((line_count + 1) * 20), 0, 0);
-    dialog->setFixedHeight((line_count + 1) * 20);
-    dialog->setFixedWidth(this->width());
-    QFont font("DejaVu Sans Book");
-    font.setPointSize(10);//gm_edition 20
-    dialog->setFont(font);
-    dialog->exec();
-
-}
-
-
-void SettingsForm::on_NwpushButton_Right_Clicked(void)
-{
     uint line_count = 0;
 
     for(int i=0; i<networkInfoString.length() ; i++)
@@ -374,7 +274,7 @@ void SettingsForm::on_NwpushButton_Right_Clicked(void)
 
     }
 
-    nwDialog->setFixedHeight((line_count + 1) * 20 +100);
+    nwDialog->setFixedHeight((line_count + 1) * 20);
     nwDialog->setFixedWidth(this->width());
     QPoint pt_g = QWidget::mapToGlobal(this->pos());
     QPoint pt = this->pos();
@@ -384,15 +284,14 @@ void SettingsForm::on_NwpushButton_Right_Clicked(void)
     nwDialog->logButtonClicked = false;
     nwDialog->SetText(networkInfoString);
 
-    nwDialog->setGeometry(labelx, (pt_g.y() - pt.y()) - ((line_count + 1) * 20 + 100), 0, 0);
-    nwDialog->setFixedHeight((line_count + 1) * 20 + 100);
+    nwDialog->setGeometry(labelx, (pt_g.y() - pt.y()) - ((line_count + 1) * 20), 0, 0);
+    nwDialog->setFixedHeight((line_count + 1) * 20);
     nwDialog->setFixedWidth(this->width());
 
     nwDialog->exec();
     nwDialog->clearFocus();
 
 }
-
 
 
 void SettingsForm::getKeyboardLayouts(){
@@ -540,13 +439,13 @@ void SettingsForm::keyPressEvent(QKeyEvent *event)
 
     if (event->key() == Qt::Key_Up || event->key() == Qt::Key_Down) {
 
-        if(ui->kybrdcomboBox->isActiveWindow() || ui->leaveComboBox->isActiveWindow()){
+        if(ui->kybrdcomboBox->isActiveWindow()){
 
         }
         else
         {
             clearFocus();
-            ui->leaveComboBox->clearFocus();
+
             ui->kybrdcomboBox->clearFocus();
             ui->NwpushButton->clearFocus();
             QWidget::keyPressEvent(event);
@@ -554,7 +453,7 @@ void SettingsForm::keyPressEvent(QKeyEvent *event)
     }else if(event->key() == Qt::Key_Escape){
 
         clearFocus();
-        ui->leaveComboBox->clearFocus();
+
         ui->kybrdcomboBox->clearFocus();
         ui->NwpushButton->clearFocus();
 

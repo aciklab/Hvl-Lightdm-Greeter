@@ -21,7 +21,7 @@
 #include <QShortcut>
 #include <QBoxLayout>
 #include "networkdialog.h"
-#include "rightclickenabler.h"
+
 
 namespace Ui
 {
@@ -45,8 +45,6 @@ protected slots:
 
 private slots:
 
-    void leaveDropDownActivated(int index);
-
     void timer_finished();
 
     void setKeyboardLayout(int index);
@@ -55,7 +53,6 @@ private slots:
 
 public slots:
 
-    void on_NwpushButton_Right_Clicked(void);
     void networkCheckSlot(void);
 
 
@@ -70,7 +67,6 @@ private:
     Ui::SettingsForm *ui;
 
     void initialize();
-    void addLeaveEntry(bool canDo, QString iconName, QString text, QString actionName);
     void checkNetwork();
     void getKeyboardLayouts();
     void sendNWStatus(bool nwstatus);
@@ -93,10 +89,6 @@ private:
 
     QTimer *timer;
 
-    QVBoxLayout *layout;
-    QLabel *popupLabel;
-
-
     QString *keyboardList;
     int m_Screen;
     QStringList serviceList;
@@ -104,8 +96,6 @@ private:
     bool nwButtonPressed;
     bool networkOK;
     NetworkDialog *nwDialog;
-    QDialog *dialog;
-    rightClickEnabler *rce;
 
 #define MAX_NETWORK_CHECK_COUNT 3
     int network_check_counter;

@@ -46,7 +46,7 @@ void clockForm::updateClock(){
 
 
     tempstring = qdt->currentDateTime().toString("dddd");
-    ui->dayLabel->setText(tempstring);
+    ui->dayLabel->setText(tempstring.toUpper());
 
     tempstring = qdt->currentDateTime().toString(Qt::SystemLocaleShortDate);
     //tempstring = qdt->currentDateTime().toString("dd.MM.yyyy");
@@ -54,6 +54,7 @@ void clockForm::updateClock(){
 
     timer->setInterval(1000);
     timer->start();
+#if 0
     QFont font("Source Code Pro");
     font.setPointSize(50);//gm_edition 100
     ui->clockLabel->setFont(font);
@@ -63,6 +64,7 @@ void clockForm::updateClock(){
 
     font.setPointSize(30);  //gm_edition 60
     ui->dateLabel->setFont(font);
+#endif
 
 #if 0
     if(!resized){

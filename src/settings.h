@@ -48,6 +48,8 @@ public:
     QString offsetY_clockform() { return value("clockform-offset-y").toString(); }
     QString sizeX_clockform() { return value("clockform-size-x").toString(); }
     QString sizeY_clockform() { return value("clockform-size-y").toString(); }
+    QString offsetX_powerform() { return value("powerform-offset-x").toString(); }
+    QString offsetY_powerform() { return value("powerform-offset-y").toString(); }
     QStringList getservices() { return value("services-to-check").toStringList(); }
     QString logopath() { return value("greeter-loginform-logo-image").toString(); }
     int waittimeout() { return value("wait-timeout").toInt(); }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>309</width>
-    <height>221</height>
+    <width>324</width>
+    <height>264</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -67,10 +67,13 @@
       <enum>QFrame::Plain</enum>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="5,2,3">
+      <property name="spacing">
+       <number>15</number>
+      </property>
       <item>
        <widget class="QLabel" name="clockLabel">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -78,7 +81,7 @@
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>0</height>
+          <height>80</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -89,8 +92,8 @@
         </property>
         <property name="font">
          <font>
-          <family>Source Code Pro</family>
-          <pointsize>50</pointsize>
+          <family>Nimbus Sans L</family>
+          <pointsize>75</pointsize>
           <weight>50</weight>
           <bold>false</bold>
          </font>
@@ -107,17 +110,17 @@
        <widget class="QLabel" name="dayLabel">
         <property name="font">
          <font>
-          <family>Source Code Pro</family>
-          <pointsize>20</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
+          <family>Nimbus Sans L</family>
+          <pointsize>35</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
          </font>
         </property>
         <property name="frameShadow">
          <enum>QFrame::Plain</enum>
         </property>
         <property name="text">
-         <string>Cumartesi</string>
+         <string>CUMARTESİ</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -128,10 +131,10 @@
        <widget class="QLabel" name="dateLabel">
         <property name="font">
          <font>
-          <family>Source Code Pro</family>
-          <pointsize>30</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
+          <family>Nimbus Sans L</family>
+          <pointsize>35</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
          </font>
         </property>
         <property name="text">
