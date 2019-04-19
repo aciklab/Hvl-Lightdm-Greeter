@@ -17,6 +17,18 @@ hvl-lightdm-greeter, lightdm yüklü sistemlerde kullanılabilecek bir giriş ek
 Bu giriş ekranı, süresi dolmuş parolaları sıfırlama imkanı verebilmektedir (Windows aktif dizin hesapları ve yerel kullanıcı hesapları ile test edilmiştir). 
 Eğer bir parolanın değiştirlmesi gerekiyorsa giriş sırasında kullanıcının parolasını sıfırlaması istenir. Arkasından parola sıfırlama sayfası açılarak kullanıcının parolasını sıfırlaması sağlanır.
 
+## Özellikler 
+
+* Oturum açmadan ağ bağlantısı gerçekleşmesi durumunda IP adresi ve istenilen servislerin durumunun gözükebilmesi, istenildiği taktirde logların izlenebilmesi.
+* Bir web servis aracılığı ile selfservis parola sıfırlama uygulaması varsa ona qtwebengine ile bağlantı eklenebilmesi.
+* Etki alanı veya yerel kullanıcının parola süresi dolduğunda yeni bir popup açılarak düzgün şekilde parola değiştirmeyi sağlamakta.
+* PAM'dan dönen promtlar daha doğru şekilde ekrana uyarı göstermekte. (pam_unix ve pam_sssd üzerinde çalışılmıştır, winbind üzerinde cache gibi işlemlerde dönen içeriklerde uyarı metni konusunda eksiklik olabilir)
+* Ağ bağlantısı gerçekleşmeden giriş yapılabilecek ekranın gözükmemesi sağlanabilmektedir. (yavaş ağlar için belirli timeout değerine göre)
+* İstenilen sayıda kişi ikonu gözükebilmesi. Makine etki alanında ise tüm listeyi çekme yavaşlığının önüne geçilmesi.
+* Klasör bazlı arkaplan gösterim modu.
+* Maddeler konfigüre edilebilir dosya üzerinde tutulması.
+* Dokunmatik ekranlar için Ekran klavyesi seçeneği.
+
 Giriş ekranı Pardus 17.4 ve Xubuntu 18.04'de test edilmiştir.
 
 
