@@ -189,10 +189,14 @@ void MainWindow::setBackground()
     QSettings greeterSettings(CONFIG_FILE, QSettings::IniFormat);
 
     QPalette palette;
-    QRect rect = QApplication::desktop()->screenGeometry(QApplication::desktop()->screenNumber());
+    QRect rect;
 
+
+    this->setStyleSheet("background-position: center;");
+
+    rect = QApplication::desktop()->screenGeometry(m_Screen);
+    //QRect rect = QApplication::desktop()->screenGeometry(m_Screen);
     QString pathToBackgroundImageDir = greeterSettings.value(BACKGROUND_IMAGE_DIR_KEY).toString();
-
 
     if(!pathToBackgroundImageDir.isNull()){
 
@@ -246,7 +250,7 @@ void MainWindow::setBackground()
         palette.setColor(QPalette::Background, qRgb(255, 203, 80));
     }
     else {
-        QBrush brush(backgroundImage.scaled(rect.width(), rect.height(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+        QBrush brush(backgroundImage.scaled(rect.width(), rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         palette.setBrush(this->backgroundRole(), brush);
     }
     this->setPalette(palette);
@@ -255,7 +259,7 @@ void MainWindow::setBackground()
     /* We are painting x root background with current greeter background */
     if(m_Screen == QApplication::desktop()->primaryScreen()){
         if(!backgroundImage.isNull()){
-            QImage tmpimage = backgroundImage.scaled(rect.width(), rect.height(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+            QImage tmpimage = backgroundImage.scaled(rect.width(), rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
             setRootBackground(tmpimage);
         }else{
             QImage tmpimage(rect.width(), rect.height(), QImage::Format_ARGB32_Premultiplied) ;
@@ -371,6 +375,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
     {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
         QPoint globalCursorPos = QCursor::pos();
+
         int mousescreen = qApp->desktop()->screenNumber(globalCursorPos);
 
         if(mousescreen != currentScreen){
@@ -387,6 +392,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
                     mainWindowsList[i]->hide();
                     mainWindowsList[i]->setGeometry(curScreenRect);
                     mainWindowsList[i]->move(QPoint(curScreenRect.x(), curScreenRect.y()));
+                    mainWindowsList[i]->m_Screen = currentScreen;
                     mainWindowsList[i]->setBackground();
                     mainWindowsList[i]->show();
 
@@ -396,6 +402,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
                     mainWindowsList[i]->hide();
                     mainWindowsList[i]->setGeometry(prvScreenRect);
                     mainWindowsList[i]->move(QPoint(prvScreenRect.x(), prvScreenRect.y()));
+                    mainWindowsList[i]->m_Screen = previousScreen;
                     mainWindowsList[i]->setBackground();
                     moveForms(currentScreen);
                     mainWindowsList[i]->show();
@@ -403,7 +410,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
                 }
 
             }
-
 
         }
 

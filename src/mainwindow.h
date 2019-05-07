@@ -31,6 +31,7 @@ public:
     void setFocus(Qt::FocusReason reason);
 
     bool showLoginForm();
+    int m_Screen;
 
     LoginForm* loginForm() { return m_LoginForm;}
 
@@ -62,7 +63,7 @@ private:
 
 
 
-    int m_Screen;
+
     LoginForm* m_LoginForm;
     clockForm *m_ClockForm;
     SettingsForm *m_SettingsForm;
@@ -75,6 +76,7 @@ private:
     static int widgetScreen;
     int screenCount;
     static MainWindow **mainWindowsList;
+    QPoint mouseppos;
 
 #ifdef SCREENKEYBOARD
     Keyboard *screenKeyboard;
