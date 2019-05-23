@@ -158,7 +158,7 @@ void LoginForm::initialize()
 
     if(Settings().waittimeout() == 0){
 
-        ui->userInput->show();
+        //ui->userInput->show();
         ui->userLabel->hide();
         ui->userInput->setFocus();
 
@@ -906,10 +906,10 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
 
         if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->loginpage)){
 
-            needPasswordChange = 0;
-            cancelLogin();
-
-            usersbuttonReposition();
+            on_backButton_clicked();
+            //needPasswordChange = 0;
+            //cancelLogin();
+            //usersbuttonReposition();
 
         }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->resetpage) && !resetStartFlag){
             on_cancelResetButton_clicked();
