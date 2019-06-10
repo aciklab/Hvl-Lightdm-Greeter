@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/onurkepenek/Hvl-Lightdm-Greeter.svg?branch=master)](https://travis-ci.org/onurkepenek/Hvl-Lightdm-Greeter)
+[![Build Status](https://travis-ci.org/aciklab/Hvl-Lightdm-Greeter.svg?branch=master)](https://travis-ci.org/onurkepenek/Hvl-Lightdm-Greeter)
 ![GitHub All Releases](https://img.shields.io/github/downloads/aciklab/Hvl-Lightdm-Greeter/total.svg)
 ![GitHub release](https://img.shields.io/github/release/aciklab/Hvl-Lightdm-Greeter.svg)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/aciklab/Hvl-Lightdm-Greeter.svg)
