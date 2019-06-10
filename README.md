@@ -61,6 +61,7 @@ Kodu derlemek için,
 - libxcursor-dev
 - libxrandr-dev 
 - lightdm
+- qttools5-dev
 - qttools5-dev-tools
 
 paketlerinin sisteminizde kurulu olduğuna emin olun
@@ -72,8 +73,7 @@ Kurulum için, aşağıdaki komutları çalıştırın:
 ```shell
 git clone https://github.com/mertcelen/Hvl-Lightdm-Greeter.git
 cd Hvl-Lightdm-Greeter
-mkdir build
-cd build
+mkdir build && cd build
 cmake ..
 make 
 sudo make install
@@ -86,10 +86,13 @@ Eğer böyle bir dosya mevcut değilse oluşturun.
 
 ### Pardus Onyedi üzerine kurulum
 
-```sudo echo "deb [arch=amd64] http://acikdepo.github.io/ onyedi main" > /etc/apt/sources.list.d/acikdepo.list
+```
+
+sudo echo "deb [arch=amd64] http://acikdepo.github.io/ onyedi main" > /etc/apt/sources.list.d/acikdepo.list
 sudo wget -qO - https://raw.githubusercontent.com/acikdepo/acikdepo.github.io/master/public.key | sudo apt-key add -
 sudo apt update
 sudo apt install lightdm-hvl-greeter
+
 ```
 
 ## Yapılandırma
