@@ -435,8 +435,7 @@ void MainWindow::moveForms(int screen_number){
     m_LoginForm->move(offsetX , offsetY);
     m_LoginForm->show();
 
-    if(hostNameLabel)
-        hostNameLabel->setGeometry(screenRect.width() - 160 ,0, 150, 30);
+
 
     maxX = screenRect.width() - m_SettingsForm->width();
     maxY = screenRect.height() - m_SettingsForm->height();
