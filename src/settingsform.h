@@ -36,6 +36,7 @@ public:
     explicit SettingsForm(QWidget *parent = 0);
     ~SettingsForm();
     static QString current_layout;
+    void updateHostName(QString hostname);
 
 
 

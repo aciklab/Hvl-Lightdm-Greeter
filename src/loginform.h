@@ -40,6 +40,7 @@
 #define LOGO_LABEL_SIZE     TOOL_BUTTON_ICON_SIZE
 #define TOOL_BUTTON_FONT_SIZE  12
 
+#define ANIMATION_TIME 200
 
 namespace Ui
 {
@@ -56,6 +57,7 @@ public:
     explicit LoginForm(QWidget *parent = 0);
     ~LoginForm();
     virtual void setFocus(Qt::FocusReason reason);
+    QString getHostname();
 
 
 public slots:
@@ -113,6 +115,8 @@ private slots:
 
     void on_cancelResetButton_clicked();
 
+    void userPasswordResetRequest();
+
 
 #ifdef SCREENKEYBOARD
     void focusChanged(QWidget *old, QWidget *now);
@@ -137,6 +141,7 @@ private:
     void loginPageTransition();
     void preparetoLogin();
 
+
     Ui::LoginForm *ui;
 
     QLightDM::Greeter m_Greeter;
@@ -149,6 +154,7 @@ private:
     QFrame *user_frame;
     QTimer *resetTimer;
     QTimer *loginTimer;
+    QTimer *userRequestResetTimer;
     QTimer *animationTimer;
     QMovie *mv;
     QShortcut *shortcut;
@@ -173,6 +179,7 @@ private:
     QString tmpPassword;
     int resetTimerState;
     int loginTimerState;
+    int userRequestTimerState;
     QString lastPrompt;
     QString lastMessage;
     bool loginStartFlag;
@@ -190,7 +197,10 @@ private:
     int lastkey;
 
     bool loginprompt;
+    bool userResetRequest;
+    bool passwordChangeError;
     int nwcheckcount;
+
     QRect left = QRect(50,25,100,110);
     QRect center = QRect(155,10,120,140);
     QRect right = QRect(280,25,100,110);

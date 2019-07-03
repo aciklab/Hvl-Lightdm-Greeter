@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>324</width>
-    <height>264</height>
+    <width>285</width>
+    <height>255</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -42,6 +42,12 @@
 </string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QFrame" name="frame">
      <property name="sizePolicy">
@@ -70,6 +76,12 @@
       <property name="spacing">
        <number>15</number>
       </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QLabel" name="clockLabel">
         <property name="sizePolicy">
@@ -81,7 +93,7 @@
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>80</height>
+          <height>0</height>
          </size>
         </property>
         <property name="maximumSize">

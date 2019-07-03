@@ -25,271 +25,271 @@
 <context>
     <name>Keyboard</name>
     <message>
-        <location filename="../src/keyboard.ui" line="116"/>
+        <location filename="../src/keyboard.ui" line="115"/>
         <source>Back</source>
         <translation>Geri</translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="138"/>
+        <location filename="../src/keyboard.ui" line="137"/>
         <source>Clear</source>
         <translation>Temizle</translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="204"/>
+        <location filename="../src/keyboard.ui" line="203"/>
         <source>1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="226"/>
+        <location filename="../src/keyboard.ui" line="225"/>
         <source>2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="248"/>
+        <location filename="../src/keyboard.ui" line="247"/>
         <source>3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="270"/>
+        <location filename="../src/keyboard.ui" line="269"/>
         <source>4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="292"/>
+        <location filename="../src/keyboard.ui" line="291"/>
         <source>5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="314"/>
+        <location filename="../src/keyboard.ui" line="313"/>
         <source>6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="336"/>
+        <location filename="../src/keyboard.ui" line="335"/>
         <source>7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="358"/>
+        <location filename="../src/keyboard.ui" line="357"/>
         <source>8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="380"/>
+        <location filename="../src/keyboard.ui" line="379"/>
         <source>9</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="402"/>
+        <location filename="../src/keyboard.ui" line="401"/>
         <source>0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="453"/>
+        <location filename="../src/keyboard.ui" line="452"/>
         <source>&lt;-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="495"/>
+        <location filename="../src/keyboard.ui" line="494"/>
         <source>Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="517"/>
+        <location filename="../src/keyboard.ui" line="516"/>
         <source>q</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="539"/>
+        <location filename="../src/keyboard.ui" line="538"/>
         <source>w</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="561"/>
+        <location filename="../src/keyboard.ui" line="560"/>
         <source>e</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="583"/>
+        <location filename="../src/keyboard.ui" line="582"/>
         <source>r</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="605"/>
+        <location filename="../src/keyboard.ui" line="604"/>
         <source>t</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="627"/>
+        <location filename="../src/keyboard.ui" line="626"/>
         <source>y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="649"/>
+        <location filename="../src/keyboard.ui" line="648"/>
         <source>u</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="671"/>
-        <location filename="../src/keyboard.ui" line="1031"/>
+        <location filename="../src/keyboard.ui" line="670"/>
+        <location filename="../src/keyboard.ui" line="1030"/>
         <source>i</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="693"/>
+        <location filename="../src/keyboard.ui" line="692"/>
         <source>o</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="715"/>
+        <location filename="../src/keyboard.ui" line="714"/>
         <source>p</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="734"/>
+        <location filename="../src/keyboard.ui" line="733"/>
         <source>ğ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="753"/>
+        <location filename="../src/keyboard.ui" line="752"/>
         <source>ü</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="792"/>
+        <location filename="../src/keyboard.ui" line="791"/>
         <source>Caps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="817"/>
+        <location filename="../src/keyboard.ui" line="816"/>
         <source>a</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="839"/>
+        <location filename="../src/keyboard.ui" line="838"/>
         <source>s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="861"/>
+        <location filename="../src/keyboard.ui" line="860"/>
         <source>d</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="883"/>
+        <location filename="../src/keyboard.ui" line="882"/>
         <source>f</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="905"/>
+        <location filename="../src/keyboard.ui" line="904"/>
         <source>g</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="927"/>
+        <location filename="../src/keyboard.ui" line="926"/>
         <source>h</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="949"/>
+        <location filename="../src/keyboard.ui" line="948"/>
         <source>j</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="971"/>
+        <location filename="../src/keyboard.ui" line="970"/>
         <source>k</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="993"/>
+        <location filename="../src/keyboard.ui" line="992"/>
         <source>l</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1012"/>
+        <location filename="../src/keyboard.ui" line="1011"/>
         <source>ş</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1044"/>
-        <location filename="../src/keyboard.ui" line="1322"/>
+        <location filename="../src/keyboard.ui" line="1043"/>
+        <location filename="../src/keyboard.ui" line="1321"/>
         <source>aa</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1070"/>
+        <location filename="../src/keyboard.ui" line="1069"/>
         <source>Enter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1111"/>
-        <location filename="../src/keyboard.ui" line="1335"/>
+        <location filename="../src/keyboard.ui" line="1110"/>
+        <location filename="../src/keyboard.ui" line="1334"/>
         <source>Shift</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1139"/>
+        <location filename="../src/keyboard.ui" line="1138"/>
         <source>z</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1161"/>
+        <location filename="../src/keyboard.ui" line="1160"/>
         <source>x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1183"/>
+        <location filename="../src/keyboard.ui" line="1182"/>
         <source>c</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1205"/>
+        <location filename="../src/keyboard.ui" line="1204"/>
         <source>v</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1227"/>
+        <location filename="../src/keyboard.ui" line="1226"/>
         <source>b</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1249"/>
+        <location filename="../src/keyboard.ui" line="1248"/>
         <source>n</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1271"/>
+        <location filename="../src/keyboard.ui" line="1270"/>
         <source>m</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1290"/>
+        <location filename="../src/keyboard.ui" line="1289"/>
         <source>ö</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1309"/>
+        <location filename="../src/keyboard.ui" line="1308"/>
         <source>ç</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1373"/>
-        <location filename="../src/keyboard.ui" line="1486"/>
+        <location filename="../src/keyboard.ui" line="1372"/>
+        <location filename="../src/keyboard.ui" line="1485"/>
         <source>Ctrl</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1395"/>
+        <location filename="../src/keyboard.ui" line="1394"/>
         <source>Alt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1417"/>
+        <location filename="../src/keyboard.ui" line="1416"/>
         <source>Space</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/keyboard.ui" line="1436"/>
+        <location filename="../src/keyboard.ui" line="1435"/>
         <source>AltGr</source>
         <translation type="unfinished"></translation>
     </message>
@@ -313,12 +313,12 @@
     </message>
     <message>
         <location filename="../src/loginform.ui" line="906"/>
-        <location filename="../src/loginform.ui" line="1405"/>
+        <location filename="../src/loginform.ui" line="1419"/>
         <source>Cancel</source>
         <translation>İptal</translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="1433"/>
+        <location filename="../src/loginform.ui" line="1447"/>
         <source>Reset Password</source>
         <translation>Parola Sıfırla</translation>
     </message>
@@ -334,7 +334,7 @@
     </message>
     <message>
         <location filename="../src/loginform.ui" line="136"/>
-        <location filename="../src/loginform.cpp" line="1324"/>
+        <location filename="../src/loginform.cpp" line="1683"/>
         <source>Waiting for Network and Services</source>
         <translation>Ağ ve Servisler Bekleniyor</translation>
     </message>
@@ -371,84 +371,146 @@ Sıfırla</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="1369"/>
+        <location filename="../src/loginform.ui" line="1383"/>
         <source>Confirm New Password</source>
         <translation>Yeni Parola Onayla</translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="1307"/>
+        <location filename="../src/loginform.ui" line="1321"/>
         <source>Old Password</source>
         <translation>Eski Parola</translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="1335"/>
+        <location filename="../src/loginform.ui" line="1349"/>
         <source>New Password</source>
         <translation>Yeni Parola</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="242"/>
+        <location filename="../src/loginform.cpp" line="250"/>
         <source>Your Password is Expired. You have to change it</source>
         <translation>Parolanızın Süresi Doldu. Değiştirmeniz gerekmektedir.</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="279"/>
+        <location filename="../src/loginform.cpp" line="288"/>
         <source>Error</source>
         <translation>Hata</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="282"/>
+        <location filename="../src/loginform.cpp" line="291"/>
         <source>Info</source>
         <translation>Bilgi</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="353"/>
-        <location filename="../src/loginform.cpp" line="357"/>
-        <location filename="../src/loginform.cpp" line="375"/>
-        <location filename="../src/loginform.cpp" line="379"/>
+        <location filename="../src/loginform.cpp" line="362"/>
+        <location filename="../src/loginform.cpp" line="366"/>
+        <location filename="../src/loginform.cpp" line="384"/>
+        <location filename="../src/loginform.cpp" line="388"/>
         <source>Error : Login Incorrect</source>
         <translation>Giriş Bilgileri Hatalı</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="203"/>
-        <location filename="../src/loginform.cpp" line="430"/>
-        <location filename="../src/loginform.cpp" line="471"/>
-        <location filename="../src/loginform.cpp" line="529"/>
-        <location filename="../src/loginform.cpp" line="545"/>
-        <location filename="../src/loginform.cpp" line="590"/>
-        <location filename="../src/loginform.cpp" line="614"/>
-        <location filename="../src/loginform.cpp" line="797"/>
-        <location filename="../src/loginform.cpp" line="862"/>
-        <location filename="../src/loginform.cpp" line="1010"/>
-        <location filename="../src/loginform.cpp" line="1459"/>
+        <location filename="../src/loginform.cpp" line="211"/>
+        <location filename="../src/loginform.cpp" line="440"/>
+        <location filename="../src/loginform.cpp" line="481"/>
+        <location filename="../src/loginform.cpp" line="497"/>
+        <location filename="../src/loginform.cpp" line="535"/>
+        <location filename="../src/loginform.cpp" line="586"/>
+        <location filename="../src/loginform.cpp" line="602"/>
+        <location filename="../src/loginform.cpp" line="647"/>
+        <location filename="../src/loginform.cpp" line="671"/>
+        <location filename="../src/loginform.cpp" line="775"/>
+        <location filename="../src/loginform.cpp" line="791"/>
+        <location filename="../src/loginform.cpp" line="810"/>
+        <location filename="../src/loginform.cpp" line="822"/>
+        <location filename="../src/loginform.cpp" line="840"/>
+        <location filename="../src/loginform.cpp" line="882"/>
+        <location filename="../src/loginform.cpp" line="947"/>
+        <location filename="../src/loginform.cpp" line="1089"/>
+        <location filename="../src/loginform.cpp" line="1151"/>
+        <location filename="../src/loginform.cpp" line="1256"/>
+        <location filename="../src/loginform.cpp" line="1824"/>
         <source>Other User</source>
         <translation>Başka Kullanıcı</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="926"/>
-        <location filename="../src/loginform.cpp" line="937"/>
+        <location filename="../src/loginform.cpp" line="541"/>
+        <source>Password Change Operation for: </source>
+        <translation>Parola değiştirme operasyonu yapılan kullanıcı: </translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1017"/>
+        <location filename="../src/loginform.cpp" line="1028"/>
         <source>Old password is wrong</source>
         <translation>Eski parola hatalı</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="931"/>
-        <location filename="../src/loginform.cpp" line="941"/>
+        <location filename="../src/loginform.cpp" line="1022"/>
+        <location filename="../src/loginform.cpp" line="1032"/>
+        <location filename="../src/loginform.cpp" line="1076"/>
+        <location filename="../src/loginform.cpp" line="1082"/>
         <source>New passwords are not same</source>
         <translation>Girilen yeni parolalar aynı değil</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="991"/>
+        <location filename="../src/loginform.cpp" line="1108"/>
+        <source>Password is Updating</source>
+        <translation>Parola Güncelleniyor</translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1132"/>
         <source>Authenticating</source>
         <translation>Giriş Yapılıyor</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1056"/>
+        <location filename="../src/loginform.cpp" line="1197"/>
         <source>Error : User is unknown</source>
         <translation>Hata : Kullanıcı Bilinmiyor</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1058"/>
+        <location filename="../src/loginform.cpp" line="1199"/>
         <source>Error : Network is not connected</source>
         <translation>Hata : Ağ bağlı değil</translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1354"/>
+        <source>System is offline, password change not possible</source>
+        <translation>Sistem Çevirimdışı. Parola değiştirilemiyor</translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1358"/>
+        <source>Password change rejected</source>
+        <translation>Daha güçlü bir parola seçmelisiniz</translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1362"/>
+        <source>You must choose a longer password</source>
+        <translation>Daha uzun bir parola seçmelisiniz</translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1366"/>
+        <location filename="../src/loginform.cpp" line="1374"/>
+        <source>password is too similar</source>
+        <translation>Eski parolanıza benzer parola kullanmayınız</translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1370"/>
+        <source>Old password not accepted</source>
+        <translation>Eski parola yanlış girildi</translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1378"/>
+        <source>Authentication token manipulation error</source>
+        <translation>Eski parola yanlış girildi</translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1382"/>
+        <source>Password change successfull</source>
+        <translation>Parola güncelleme başarılı</translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1387"/>
+        <source>Password change error</source>
+        <translation>Parola değiştirme hatası</translation>
     </message>
     <message>
         <source>Unable to open capslock status
@@ -456,10 +518,10 @@ Sıfırla</translation>
         <translation type="vanished">Capslock durumu okunamadı</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1269"/>
-        <location filename="../src/loginform.cpp" line="1271"/>
-        <location filename="../src/loginform.cpp" line="1276"/>
-        <location filename="../src/loginform.cpp" line="1279"/>
+        <location filename="../src/loginform.cpp" line="1628"/>
+        <location filename="../src/loginform.cpp" line="1630"/>
+        <location filename="../src/loginform.cpp" line="1635"/>
+        <location filename="../src/loginform.cpp" line="1638"/>
         <source>Caps Lock is on</source>
         <translation>Caps lock açık</translation>
     </message>
@@ -467,37 +529,37 @@ Sıfırla</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="194"/>
+        <location filename="../src/mainwindow.cpp" line="196"/>
         <source>Could not understand </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="195"/>
+        <location filename="../src/mainwindow.cpp" line="197"/>
         <source>- must be of form &lt;positivenumber&gt;px or &lt;positivenumber&gt;%, e.g. 35px or 25%</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="241"/>
+        <location filename="../src/mainwindow.cpp" line="248"/>
         <source>Not able to read image at index: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="241"/>
+        <location filename="../src/mainwindow.cpp" line="248"/>
         <source> as image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="255"/>
+        <location filename="../src/mainwindow.cpp" line="262"/>
         <source> is set as an image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="253"/>
+        <location filename="../src/mainwindow.cpp" line="260"/>
         <source>Not able to read</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="253"/>
+        <location filename="../src/mainwindow.cpp" line="260"/>
         <source>as default image</source>
         <translation type="unfinished"></translation>
     </message>
@@ -637,7 +699,7 @@ Başlat</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settingsform.ui" line="394"/>
+        <location filename="../src/settingsform.ui" line="399"/>
         <source>Ctrl+N</source>
         <translation type="unfinished"></translation>
     </message>
@@ -740,17 +802,17 @@ Başlat</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/clockform.ui" line="102"/>
+        <location filename="../src/clockform.ui" line="114"/>
         <source>13:56</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/clockform.ui" line="123"/>
-        <source>Cumartesi</source>
+        <location filename="../src/clockform.ui" line="135"/>
+        <source>CUMARTESİ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/clockform.ui" line="141"/>
+        <location filename="../src/clockform.ui" line="153"/>
         <source>21.15.18</source>
         <translation type="unfinished"></translation>
     </message>

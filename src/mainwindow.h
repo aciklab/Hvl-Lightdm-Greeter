@@ -60,6 +60,7 @@ private:
 
     void keyboardInit();
     void checkNetwork();
+    QImage resizeImage(QRect screen_rect, QImage input_image);
 
 
 
@@ -77,6 +78,7 @@ private:
     int screenCount;
     static MainWindow **mainWindowsList;
     QPoint mouseppos;
+    QLabel *hostNameLabel;
 
 #ifdef SCREENKEYBOARD
     Keyboard *screenKeyboard;

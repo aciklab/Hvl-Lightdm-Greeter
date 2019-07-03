@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>394</width>
-    <height>166</height>
+    <width>347</width>
+    <height>100</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -38,6 +38,11 @@
     border-radius: 5px;
 }
 
+#hostnamelabel {
+	color: white;
+	font-size:14px;
+    font:bold italic;
+}
 
 QComboBox,
 QPushButton {
@@ -125,7 +130,7 @@ QComboBox::down-arrow {
       <property name="geometry">
        <rect>
         <x>140</x>
-        <y>120</y>
+        <y>50</y>
         <width>130</width>
         <height>45</height>
        </rect>
@@ -357,7 +362,7 @@ QComboBox::down-arrow {
       <property name="geometry">
        <rect>
         <x>280</x>
-        <y>120</y>
+        <y>50</y>
         <width>60</width>
         <height>45</height>
        </rect>
@@ -400,20 +405,17 @@ QComboBox::down-arrow {
        <number>100</number>
       </property>
      </widget>
-     <widget class="QTextEdit" name="textEdit">
+     <widget class="QLabel" name="hostnamelabel">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>140</x>
         <y>10</y>
-        <width>331</width>
-        <height>101</height>
+        <width>201</width>
+        <height>31</height>
        </rect>
       </property>
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="textInteractionFlags">
-       <set>Qt::NoTextInteraction</set>
+      <property name="text">
+       <string/>
       </property>
      </widget>
     </widget>

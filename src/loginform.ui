@@ -513,9 +513,9 @@ QLineEdit{
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>300</y>
+            <y>290</y>
             <width>411</width>
-            <height>51</height>
+            <height>31</height>
            </rect>
           </property>
           <property name="font">
@@ -1199,7 +1199,8 @@ QPushButton {
        <string notr="true">#resetframe{
 	background-color: rgba(255,255,255, 0.0);
 }
-#rstpwdmessagelabel {
+#rstpwdmessagelabel,
+#usernameLabel {
 	color: white;
 	font-size:12px;
     font: &quot;Nimbus Sans L Regular&quot;
@@ -1272,8 +1273,21 @@ QLineEdit{
            <number>20</number>
           </property>
           <property name="topMargin">
-           <number>60</number>
+           <number>0</number>
           </property>
+          <item>
+           <widget class="QLabel" name="usernameLabel">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
           <item alignment="Qt::AlignHCenter">
            <widget class="QLineEdit" name="oldpasswordinput">
             <property name="sizePolicy">

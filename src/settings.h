@@ -56,6 +56,8 @@ public:
     int  network_ok_timeout() { return value("network-ok-timeout").toInt(); }
     int cachedusercount(){return value("cached-user-count").toInt();}
     QString screenkeyboardenabled(){return value("screen_keyboard").toString(); }
+    QString passwordresetenabled(){return value("password-reset-button").toString();}
+    QString passwordresetwebpageurl(){return value("password-web-reset-webpage").toString();}
 
 };
 

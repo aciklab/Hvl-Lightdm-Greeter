@@ -85,6 +85,14 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         m_LoginForm->move(offsetX, offsetY);
         m_LoginForm->show();
 
+#if 0
+        hostNameLabel = new QLabel(this);
+        hostNameLabel->setGeometry(screenRect.width() - 160 ,0, 150, 30);
+        hostNameLabel->setText(m_LoginForm->getHostname());
+
+        hostNameLabel->setStyleSheet("	color: white;\nfont-size:16px;\nfont:bold italic;");
+        hostNameLabel->setAlignment(Qt::AlignRight);
+#endif
         m_SettingsForm = new SettingsForm(this);
 
 
@@ -98,6 +106,8 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
 
         m_SettingsForm->move(offsetX, offsetY);
         m_SettingsForm->show();
+
+        m_SettingsForm->updateHostName(m_LoginForm->getHostname());
 
         m_PowerForm = new PowerForm(this);
 
@@ -125,8 +135,16 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         offsetX = getOffset(Settings().offsetX_clockform(), maxX, defaultX);
         offsetY = getOffset(Settings().offsetY_clockform(), maxY, defaultY);
 
-        m_ClockForm->move(offsetX, offsetY);
+        if(screenRect.width() <= 800){
+            m_ClockForm->move(0, 0);
+
+        }else{
+            m_ClockForm->move(offsetX, offsetY);
+        }
         m_ClockForm->show();
+
+
+
 
         // This hack ensures that the primary screen will have focus
         // if there are more screens (move the mouse cursor in the center
@@ -190,6 +208,7 @@ void MainWindow::setBackground()
 
     QPalette palette;
     QRect rect;
+    QImage finalImage;
 
 
     this->setStyleSheet("background-position: center;");
@@ -250,7 +269,14 @@ void MainWindow::setBackground()
         palette.setColor(QPalette::Background, qRgb(255, 203, 80));
     }
     else {
-        QBrush brush(backgroundImage.scaled(rect.width(), rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+
+        //resizeImage(rect, backgroundImage);//todo:test
+
+        finalImage = resizeImage(rect, backgroundImage);
+
+        QBrush brush(finalImage);
+
+        //QBrush brush(backgroundImage.scaled(rect.width(), rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         palette.setBrush(this->backgroundRole(), brush);
     }
     this->setPalette(palette);
@@ -258,9 +284,8 @@ void MainWindow::setBackground()
 
     /* We are painting x root background with current greeter background */
     if(m_Screen == QApplication::desktop()->primaryScreen()){
-        if(!backgroundImage.isNull()){
-            QImage tmpimage = backgroundImage.scaled(rect.width(), rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-            setRootBackground(tmpimage);
+        if(!finalImage.isNull()){
+            setRootBackground(finalImage);
         }else{
             QImage tmpimage(rect.width(), rect.height(), QImage::Format_ARGB32_Premultiplied) ;
             tmpimage.fill(qRgb(255,203,80));
@@ -321,6 +346,74 @@ void MainWindow::setRootBackground(QImage img){
 }
 
 
+QImage MainWindow::resizeImage(QRect screen_rect, QImage input_image){
+
+    int image_width;
+    int image_height;
+    QImage new_image;
+    QImage final_image(screen_rect.width(), screen_rect.height(), input_image.format());
+    int i;
+    int j;
+
+    qreal screen_aspect_ratio = (qreal)screen_rect.width() / (qreal)screen_rect.height();
+
+    qreal image_aspect_ratio = (qreal)input_image.width() / (qreal)input_image.height();
+
+    if(image_aspect_ratio <= 1){
+
+        image_height = screen_rect.width() / image_aspect_ratio;
+
+        new_image = input_image.scaled(image_width, screen_rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        //todo check this
+
+    }else{//> 1
+
+
+        if(screen_aspect_ratio > image_aspect_ratio){
+
+            image_height = screen_rect.width() / image_aspect_ratio;
+            image_width =screen_rect.width();
+            new_image = input_image.scaled(image_width, image_height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
+            int pixeloffset = (image_height - screen_rect.height()) / 2;
+
+            for(j = 0; j < image_width; j++){
+
+                for(i = 0; i < screen_rect.height(); i++){
+
+                    final_image.setPixelColor(j,i,new_image.pixelColor(j,i + pixeloffset));
+
+                }
+            }
+
+
+
+
+        }else if(screen_aspect_ratio <= image_aspect_ratio){
+            //norrower
+
+            image_width = screen_rect.height() * image_aspect_ratio;
+            image_height = screen_rect.height();
+            new_image = input_image.scaled(image_width, image_height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
+            int pixeloffset = (image_width - screen_rect.width()) / 2;
+
+            for(j = 0; j < image_height; j++){
+
+                for(i = 0; i < screen_rect.width(); i++){
+
+                    final_image.setPixelColor(i,j,new_image.pixelColor(i + pixeloffset, j));
+
+                }
+            }
+
+        }
+
+    }
+
+    return final_image;
+
+}
 
 
 
@@ -341,6 +434,9 @@ void MainWindow::moveForms(int screen_number){
 
     m_LoginForm->move(offsetX , offsetY);
     m_LoginForm->show();
+
+    if(hostNameLabel)
+        hostNameLabel->setGeometry(screenRect.width() - 160 ,0, 150, 30);
 
     maxX = screenRect.width() - m_SettingsForm->width();
     maxY = screenRect.height() - m_SettingsForm->height();
@@ -430,20 +526,25 @@ void MainWindow::receiveKeyboardRequest(QPoint from, int width){
 
     if(screenRect.width() <= 640){
 
-        keyboard_width = 640;
-        keyboard_height = 240;
+        keyboard_width = 400;
+        keyboard_height = 170;
 
     }else if(screenRect.width() <= 800){
 
+        keyboard_width = 600;
+        keyboard_height = 210;
+
+    }else if(screenRect.width() <= 1024){
+
         keyboard_width = 800;
-        keyboard_height = 300;
+        keyboard_height = 270;
 
     }
 
     screenKeyboard->setGeometry(middlepoint - (keyboard_width / 2), from.y() + 150,  keyboard_width, keyboard_height);
 
     from.setX(middlepoint -  (keyboard_width / 2));
-    from.setY( from.y() + 150);
+    from.setY(from.y() + 150);
 
 
     if(from.y() + keyboard_height > screenRect.height() ){
@@ -470,7 +571,6 @@ void MainWindow::sendKeyPress(QString key){
     emit sendKeytoChilds(key);
 
 }
-
 
 
 void MainWindow::checkNetwork(){

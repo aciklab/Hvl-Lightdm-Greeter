@@ -24,7 +24,9 @@
 #include <QPropertyAnimation>
 #include <QProcess>
 #include <qcoreevent.h>
-
+#include <unistd.h>
+#include <signal.h>
+#include<sys/wait.h>
 
 
 #include "loginform.h"
@@ -94,6 +96,8 @@ void LoginForm::initialize()
     // ui->pushButton_sr->hide();
 
     ui->hostnameLabel->setText(m_Greeter.hostname());
+    ui->hostnameLabel->hide();
+
     mv = new QMovie(":/resources/load1.gif");
     mv->setScaledSize(QSize(ui->giflabel->width(), ui->giflabel->height()));
 
@@ -139,14 +143,21 @@ void LoginForm::initialize()
     networkOK = false;
     loginprompt = false;
     nwcheckcount = 0;
+    userResetRequest = false;
 
     loginTimer = new QTimer();
     resetTimer = new QTimer();
     animationTimer = new QTimer();
+    userRequestResetTimer = new QTimer();
+
 
     connect(loginTimer, SIGNAL(timeout()), this, SLOT(LoginTimerFinished()));
     connect(resetTimer, SIGNAL(timeout()), this, SLOT(passwordResetTimerFinished()));
     connect(animationTimer, SIGNAL(timeout()), this, SLOT(animationTimerFinished()));
+    connect(userRequestResetTimer, SIGNAL(timeout()), this, SLOT(userPasswordResetRequest()));
+
+
+
 
     ui->giflabel->setAttribute(Qt::WA_NoSystemBackground);
     ui->giflabel->setMovie(mv);
@@ -251,6 +262,7 @@ void LoginForm::onPrompt(QString prompt, QLightDM::Greeter::PromptType promptTyp
 
         needPasswordChange = true;
         pageTransition(ui->resetpage);
+        userResetRequest = false;
         ui->oldpasswordinput->setEnabled(true);
         ui->newpasswordinput->setEnabled(true);
         ui->newpasswordconfirminput->setEnabled(true);
@@ -389,9 +401,10 @@ void LoginForm::preparetoLogin(){
     if(loginStartFlag)
         pageTransition(ui->loginpage);
 
-    if(resetStartFlag)
+    if(resetStartFlag){
+        userResetRequest = false;
         pageTransition(ui->resetpage);
-
+    }
     ui->passwordInput->clear();
 
     if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->loginpage)){
@@ -472,27 +485,74 @@ void LoginForm::addUsertoCache(QString user_name){
 
 void LoginForm::on_pushButton_resetpwd_clicked()
 {
-    qInfo() << "Password reset webpage is opening";
 
-    Dialog_webview dwview;
-    dwview.setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
+    QString userid;
 
-    dwview.exec();
+
+
+    if(toolButtons[(lastuserindex + 1) % 3]->text().isEmpty())
+        return;
+
+
+    if(toolButtons[(lastuserindex + 1) % 3]->text().compare(tr("Other User")) == 0 && ui->userInput->text().isEmpty())
+        return;
+
+
+
+
+    QString str;
+
+    str = Settings().passwordresetenabled();
+
+
+
+    if(!Settings().passwordresetwebpageurl().isNull() && !Settings().passwordresetwebpageurl().isEmpty() && (str.compare("y") == 0 || str.compare("Y") == 0)){
+        Dialog_webview dwview;
+        dwview.setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
+        qInfo() << "Password reset webpage is opening";
+        dwview.exec();
+    }else if(str.compare("y") == 0 || str.compare("Y") == 0){
+
+        pageTransition(ui->resetpage);
+        userResetRequest = true;
+        ui->rstpwdmessagelabel->clear();
+
+
+        ui->oldpasswordinput->clear();
+        ui->newpasswordinput->clear();
+        ui->newpasswordconfirminput->clear();
+
+        ui->newpasswordinput->setEnabled(true);
+        ui->newpasswordconfirminput->setEnabled(true);
+        ui->oldpasswordinput->setEnabled(true);
+
+        if(!ui->passwordInput->text().isEmpty() && !ui->passwordInput->text().isNull()){
+            ui->oldpasswordinput->setText(ui->passwordInput->text());
+        }
+
+
+
+        if(toolButtons[(lastuserindex+ 1) % 3]->text().compare(tr("Other User")) == 0){
+            userid = ui->userInput->text();
+        } else{
+            userid = toolButtons[(lastuserindex+ 1) % 3]->text();
+        }
+
+        ui->usernameLabel->setText(tr("Password Change Operation for: ") + userid);
+
+    }
+
+
 }
 
 
 void LoginForm::checkPasswordResetButton(){
 
-    uint password_key_selection = 0;
+    QString str;
 
-    QSettings greeterSettings(CONFIG_FILE, QSettings::IniFormat);
+    str = Settings().passwordresetenabled();
 
-    if (greeterSettings.contains(PASSWORD_WEB_RESET_KEY)) {
-        password_key_selection = greeterSettings.value(PASSWORD_WEB_RESET_KEY).toUInt();
-
-    }
-
-    if(!password_key_selection)
+    if(str.compare("y")!= 0 && str.compare("Y") != 0)
     {
         ui->pushButton_resetpwd->setVisible(false);
         ui->pushButton_resetpwd->setEnabled(false);
@@ -642,7 +702,7 @@ void LoginForm::animationTimerFinished(){
 
         animationTimerState++;
         animationTimer->stop();
-        animationTimer->setInterval(500);
+        animationTimer->setInterval(ANIMATION_TIME);
         animationTimer->start();
 
         if(lastuserindex > 0){
@@ -659,7 +719,7 @@ void LoginForm::animationTimerFinished(){
 
             anim1[0] = new QPropertyAnimation(toolButtons[(lastuserindex) % 3], "geometry");
 
-            anim1[0]->setDuration(500);
+            anim1[0]->setDuration(ANIMATION_TIME);
 
             anim1[0]->setStartValue(center);
 
@@ -678,7 +738,7 @@ void LoginForm::animationTimerFinished(){
             anim1[1] = new QPropertyAnimation(toolButtons[(lastuserindex + 1)  % 3], "geometry");
 
 
-            anim1[1]->setDuration(500);
+            anim1[1]->setDuration(ANIMATION_TIME);
 
 
             anim1[1]->setStartValue(right);
@@ -697,7 +757,7 @@ void LoginForm::animationTimerFinished(){
             anim1[0] = new QPropertyAnimation(toolButtons[(lastuserindex + 1) % 3], "geometry");
 
 
-            anim1[0]->setDuration(500);
+            anim1[0]->setDuration(ANIMATION_TIME);
 
             anim1[0]->setStartValue(left);
 
@@ -706,7 +766,7 @@ void LoginForm::animationTimerFinished(){
 
             anim1[1] = new QPropertyAnimation(toolButtons[(lastuserindex + 2)  % 3], "geometry");
 
-            anim1[1]->setDuration(500);
+            anim1[1]->setDuration(ANIMATION_TIME);
 
             anim1[1]->setStartValue(center);
 
@@ -945,57 +1005,113 @@ void LoginForm::keyReleaseEvent(QKeyEvent *event){
 
 void LoginForm::on_resetpasswordButton_clicked()
 {
-    ui->rstpwdmessagelabel->clear();
 
-    if(ui->oldpasswordinput->text().isEmpty()){
-        ui->rstpwdmessagelabel->setText(tr("Old password is wrong"));
-        return;
-    }
+    QString userid;
 
-    if(ui->newpasswordinput->text().isEmpty() || ui->newpasswordconfirminput->text().isEmpty()){
-        ui->rstpwdmessagelabel->setText(tr("New passwords are not same"));
-        return;
-    }
-
-    if(ui->oldpasswordinput->text().compare(oldPassword)){
-
-        ui->rstpwdmessagelabel->setText(tr("Old password is wrong"));
-
-    }else if(ui->newpasswordconfirminput->text().compare(ui->newpasswordinput->text())){
-
-        ui->rstpwdmessagelabel->setText(tr("New passwords are not same"));
-
-    }else{
-        /* everything is ok */
-        resetTimer->setTimerType(Qt::TimerType::CoarseTimer);
-
-        resetTimer->setSingleShot(false);
-
-        if(needPasswordChange == false){
-            cancelLogin();
-            needPasswordChange = true;
-            resetTimerState = 0;
-            resetTimer->setInterval(10);
-            qInfo() << "Reset password operation started again for " + ui->userInput->text().trimmed();
+    if(!userResetRequest){
 
 
-        }else if(needReenterOldPassword){
-            //needReenterOldPassword = 0;
-            resetTimerState = 3;
-            resetTimer->setInterval(10);
-            qInfo() << "Reset password operation started for " + ui->userInput->text().trimmed();
-        }else{
+        ui->rstpwdmessagelabel->clear();
 
-            resetTimerState = 4;
-            qInfo() <<  "Reset password operation started for " + ui->userInput->text().trimmed();
+        if(ui->oldpasswordinput->text().isEmpty()){
+            ui->rstpwdmessagelabel->setText(tr("Old password is wrong"));
+            return;
         }
 
-        resetTimer->start();
+        if(ui->newpasswordinput->text().isEmpty() || ui->newpasswordconfirminput->text().isEmpty()){
+            ui->rstpwdmessagelabel->setText(tr("New passwords are not same"));
+            return;
+        }
 
-        promptFlag = 0;
-        ui->newpasswordinput->setEnabled(false);
-        ui->newpasswordconfirminput->setEnabled(false);
-        ui->oldpasswordinput->setEnabled(false);
+        if(ui->oldpasswordinput->text().compare(oldPassword)){
+
+            ui->rstpwdmessagelabel->setText(tr("Old password is wrong"));
+
+        }else if(ui->newpasswordconfirminput->text().compare(ui->newpasswordinput->text())){
+
+            ui->rstpwdmessagelabel->setText(tr("New passwords are not same"));
+
+        }else{
+            /* everything is ok */
+            resetTimer->setTimerType(Qt::TimerType::CoarseTimer);
+
+            resetTimer->setSingleShot(false);
+
+            if(needPasswordChange == false){
+                cancelLogin();
+                needPasswordChange = true;
+                resetTimerState = 0;
+                resetTimer->setInterval(10);
+                qInfo() << "Reset password operation started again for " + ui->userInput->text().trimmed();
+
+
+            }else if(needReenterOldPassword){
+                //needReenterOldPassword = 0;
+                resetTimerState = 3;
+                resetTimer->setInterval(10);
+                qInfo() << "Reset password operation started for " + ui->userInput->text().trimmed();
+            }else{
+
+                resetTimerState = 4;
+                qInfo() <<  "Reset password operation started for " + ui->userInput->text().trimmed();
+            }
+
+            resetTimer->start();
+
+            promptFlag = 0;
+            ui->newpasswordinput->setEnabled(false);
+            ui->newpasswordconfirminput->setEnabled(false);
+            ui->oldpasswordinput->setEnabled(false);
+
+
+        }
+
+    }else{
+
+        //user requested reset her/his password
+
+        ui->rstpwdmessagelabel->clear();
+
+        if(ui->newpasswordinput->text().isEmpty() || ui->newpasswordconfirminput->text().isEmpty()){
+            ui->rstpwdmessagelabel->setText(tr("New passwords are not same"));
+            return;
+        }
+
+        if(ui->newpasswordconfirminput->text().compare(ui->newpasswordinput->text())){
+
+            ui->rstpwdmessagelabel->setText(tr("New passwords are not same"));
+
+        }else{
+
+            /* everything is ok */
+            cancelLogin();
+
+            if(toolButtons[(lastuserindex+ 1) % 3]->text().compare(tr("Other User")) == 0){
+                userid = ui->userInput->text();
+            } else{
+                userid = toolButtons[(lastuserindex+ 1) % 3]->text();
+            }
+
+            userRequestResetTimer->setTimerType(Qt::TimerType::CoarseTimer);
+
+            userRequestResetTimer->setSingleShot(false);
+
+            userRequestTimerState = 0;
+
+            userRequestResetTimer->setInterval(10);
+
+            qInfo() << "Reset password operation started for " + userid;
+            userRequestResetTimer->start();
+            ui->resetpasswordButton->setEnabled(false);
+            ui->cancelResetButton->setEnabled(false);
+
+            ui->waitlabel->setText(tr("Password is Updating"));
+            pageTransition(ui->waitpage);
+            passwordChangeError = false;
+
+        }
+
+
     }
 }
 
@@ -1043,7 +1159,7 @@ void LoginForm::LoginTimerFinished(){
         loginTimerState = 2;
         promptCheckCounter = 0;
         lastPrompt.clear();
-        loginTimer->setInterval(500);
+        loginTimer->setInterval(100);
         break;
 
     case 2:
@@ -1109,6 +1225,207 @@ void LoginForm::LoginTimerFinished(){
         promptFlag = false;
     }
 }
+
+
+void LoginForm::userPasswordResetRequest(){
+
+    bool endFlag = 0;
+
+    QString userid;
+
+
+    char data[512] = {};
+    QString result;
+    QString received;
+
+
+    char *user_data;
+    char *pass_data;
+
+
+    static pid_t pid = 0;
+    static int inpipefd[2];
+    static int outpipefd[2];
+    int status;
+
+
+    switch(userRequestTimerState){
+
+    case 0:
+
+        if(toolButtons[(lastuserindex+ 1) % 3]->text().compare(tr("Other User")) == 0){
+            userid = ui->userInput->text();
+        } else{
+            userid = toolButtons[(lastuserindex+ 1) % 3]->text();
+        }
+
+
+        //command = "whoami";
+
+        //send user id
+        user_data = userid.toLocal8Bit().data();
+
+
+        pipe(inpipefd);
+        pipe(outpipefd);
+        pid = fork();
+        if (pid == 0)
+        {
+            // Child
+            dup2(outpipefd[0], STDIN_FILENO);
+            dup2(inpipefd[1], STDOUT_FILENO);
+            dup2(inpipefd[1], STDERR_FILENO);
+
+            //ask kernel to deliver SIGTERM in case the parent dies
+            //prctl(PR_SET_PDEATHSIG, SIGTERM);
+
+            //replace tee with your process
+            execl("/usr/bin/passwd", "passwd", user_data,  (char*) NULL);
+            exit(1);
+        }
+
+        ::close(outpipefd[0]);
+        ::close(inpipefd[1]);
+
+        userRequestTimerState++;
+        break;
+
+    case 1:
+        //fwrite()
+
+        read(inpipefd[0], data, 512);
+
+        qWarning() << QString::fromUtf8(data);
+
+        received = QString::fromUtf8(data);
+
+        if(!strcmp(data, "Current Password: ") || !strcmp(data, "(current) UNIX password: ") || !strcmp(data, "(geçerli) parola: ") || !strcmp(data, "Current Kerberos password:")
+                || !strcmp(data, "Current Kerberos password: ")){
+
+            memset(data, 0, 512);
+
+            pass_data = ui->oldpasswordinput->text().toLocal8Bit().data();
+            write(outpipefd[1], pass_data, strlen(pass_data));
+            write(outpipefd[1], "\n", 1);
+
+        }else{
+            memset(data, 0, 512);
+        }
+
+        userRequestTimerState++;
+        break;
+
+    case 2:
+
+        pass_data = ui->newpasswordinput->text().toLocal8Bit().data();
+        write(outpipefd[1], pass_data, strlen(pass_data));
+        write(outpipefd[1], "\n", 1);
+
+        userRequestTimerState++;
+        break;
+
+    case 3:
+        pass_data = ui->newpasswordinput->text().toLocal8Bit().data();
+        write(outpipefd[1], pass_data, strlen(pass_data));
+        write(outpipefd[1], "\n", 1);
+
+        userRequestTimerState++;
+        break;
+
+    case 4:
+
+        memset(data, 0, 512);
+        read(inpipefd[0], data, 512);
+        received = QString::fromUtf8(data);
+
+        qWarning() << QString::fromUtf8(data);
+
+
+
+        kill(pid, SIGKILL); //send SIGKILL signal to the child process
+        waitpid(pid, &status, 0);
+
+        userRequestTimerState = 0;
+        endFlag = true;
+        passwordChangeError = true;
+
+        if(strstr(data, "System is offline, password change not possible")){
+
+            result = tr("System is offline, password change not possible");
+
+        }else if(strstr(data, "Password change rejected") || strstr(data, "Please make sure the password meets the complexity constraints")){
+
+            result = tr("Password change rejected");
+
+        }else if(strstr(data, "You must choose a longer password") || strstr(data,"Daha uzun bir parola girmelisiniz") ||  strstr(data, "The password is shorter than 8 characters")){
+
+            result = tr("You must choose a longer password");
+
+        }else if(strstr(data, "password is too similar")){
+
+            result = tr("password is too similar");
+
+        }else if(strstr(data, "Old password not accepted")){
+
+            result = tr("Old password not accepted");
+
+        }else if(strstr(data, "The password is just rotated old one")){
+
+            result = tr("password is too similar");
+
+        }else if(strstr(data, "Authentication token manipulation error") || strstr(data, "Yetkilendirme anahtarı manipülasyon hatası")){
+
+            result = tr("Authentication token manipulation error");
+
+        }else if(strstr(data, "password changed for") || strstr(data, "şifre başarıyla güncellendi") ||  strstr(data, "şifre başarıyla değiştirildi") || strstr(data, "password updated successfully") ){
+
+            result = tr("Password change successfull");
+            passwordChangeError = false;
+
+        }else{
+
+            result = tr("Password change error");
+        }
+
+
+
+        ui->oldpasswordinput->clear();
+        ui->newpasswordinput->clear();
+        ui->newpasswordconfirminput->clear();
+        ui->oldpasswordinput->clearFocus();
+        ui->newpasswordinput->clearFocus();
+        ui->newpasswordconfirminput->clearFocus();
+#ifdef SCREENKEYBOARD
+        emit sendKeyboardCloseRequest();
+#endif
+
+        //ui->rstpwdmessagelabel->setText(result);
+        ui->warninglabel->setText(result);
+
+        break;
+
+
+    }
+
+    if(endFlag == 1){
+        userRequestTimerState = 0;
+        userRequestResetTimer->stop();
+        ui->resetpasswordButton->setEnabled(true);
+        ui->cancelResetButton->setEnabled(true);
+
+        //ui->waitlabel->setText(tr("Password is Updating"));
+        pageTransition(ui->warningpage);
+
+    }else{
+        userRequestResetTimer->stop();
+        userRequestResetTimer->setInterval(500);
+        userRequestResetTimer->start();
+    }
+
+
+
+}
+
 
 void LoginForm::passwordResetTimerFinished(){
 
@@ -1197,7 +1514,24 @@ void LoginForm::passwordResetTimerFinished(){
 
 void LoginForm::on_acceptbutton_clicked()
 {
-    pageTransition(ui->resetpage);
+    if(userResetRequest){
+
+        if(passwordChangeError){
+            pageTransition(ui->resetpage);
+            userResetRequest = true;
+
+        } else{
+            pageTransition(ui->loginpage);
+            userResetRequest = true;
+        }
+
+        passwordChangeError = false;
+
+    }else{
+        pageTransition(ui->resetpage);
+    }
+
+
     // ui->newpasswordinput->setFocus();
 
 }
@@ -1508,6 +1842,8 @@ void LoginForm::usersbuttonReposition(){
 void LoginForm::on_cancelResetButton_clicked()
 {
 
+    userResetRequest = false;
+
     if(!resetStartFlag){
         needPasswordChange = 0;
         cancelLogin();
@@ -1682,3 +2018,6 @@ void LoginForm::resetRequest(){
     qWarning() << "reset requested";
 }
 
+QString LoginForm::getHostname(){
+    return m_Greeter.hostname();
+}
