@@ -32,11 +32,7 @@
 #include "keyboard.h"
 #endif
 
-#define TOOL_BUTTON_Y        100
-#define TOOL_BUTTON_HEIGHT   150
-#define TOOL_BUTTON_WIDTH    114
-#define MAX_TOOL_BUTTON_COUNT   6
-#define TOOL_BUTTON_ICON_SIZE   100
+
 #define LOGO_LABEL_SIZE     TOOL_BUTTON_ICON_SIZE
 #define TOOL_BUTTON_FONT_SIZE  12
 
@@ -124,6 +120,19 @@ private slots:
 #endif
 
 
+
+    void on_showoldPwdButton_pressed();
+
+    void on_showoldPwdButton_released();
+
+    void on_shownewPwdButton_pressed();
+
+    void on_shownewPwdButton_released();
+
+    void on_showconfirmPwdButton_pressed();
+
+    void on_showconfirmPwdButton_released();
+
 private:
     void initialize();
     QString currentSession();
@@ -140,7 +149,9 @@ private:
     void usersbuttonReposition();
     void loginPageTransition();
     void preparetoLogin();
-
+    QString readRealm();
+    bool ifLocalUser(QString username);
+    QString getUserRealm(QString username);
 
     Ui::LoginForm *ui;
 
@@ -201,15 +212,21 @@ private:
     bool passwordChangeError;
     int nwcheckcount;
 
-    QRect left = QRect(50,25,100,110);
-    QRect center = QRect(155,10,120,140);
-    QRect right = QRect(280,25,100,110);
+
+    QRect left = QRect(52,25,100,110);
+    QRect center = QRect(157,10,120,140);
+    QRect right = QRect(282,25,100,110);
     QPixmap iconPassive = QPixmap(":/resources/login_1_1.png");
     QPixmap iconActive = QPixmap(":/resources/login_1.png");
     QPixmap iconEmptyPassive = QPixmap(":/resources/login_1_1_bos.png");
     QPixmap iconEmptyActive = QPixmap(":/resources/login_1_bos.png");
 
+#if 0
 
+    QRect left = QRect(52,25,100,110);
+    QRect center = QRect(157,10,120,140);
+    QRect right = QRect(282,25,100,110);
+#endif
 
 
 };

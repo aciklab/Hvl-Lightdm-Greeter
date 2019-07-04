@@ -95,9 +95,6 @@ void LoginForm::initialize()
 
     // ui->pushButton_sr->hide();
 
-    ui->hostnameLabel->setText(m_Greeter.hostname());
-    ui->hostnameLabel->hide();
-
     mv = new QMovie(":/resources/load1.gif");
     mv->setScaledSize(QSize(ui->giflabel->width(), ui->giflabel->height()));
 
@@ -219,7 +216,7 @@ void LoginForm::startLogin()
 
     loginTimer->setTimerType(Qt::TimerType::CoarseTimer);
     loginTimer->setSingleShot(true);
-    loginTimer->setInterval(500);
+    loginTimer->setInterval(100);
     loginTimerState = 0;
     loginTimer->start();
 
@@ -528,6 +525,9 @@ void LoginForm::on_pushButton_resetpwd_clicked()
 
         if(!ui->passwordInput->text().isEmpty() && !ui->passwordInput->text().isNull()){
             ui->oldpasswordinput->setText(ui->passwordInput->text());
+            ui->newpasswordinput->setFocus();
+        }else{
+            ui->oldpasswordinput->setFocus();
         }
 
 
@@ -664,7 +664,7 @@ void LoginForm::userButtonClicked(){
 
         if(senderObjName.compare(toolButtons[(lastuserindex + 0) % 3]->objectName()) == 0){//left
 
-            userSelectStateMachine(Qt::Key_Right, -1);
+            userSelectStateMachine(Qt::Key_Left, -1);
 
         }else if(senderObjName.compare(toolButtons[(lastuserindex + 1) % 3]->objectName()) == 0){//center
 
@@ -682,7 +682,7 @@ void LoginForm::userButtonClicked(){
 
 
         }else{
-            userSelectStateMachine(Qt::Key_Left, -1);
+            userSelectStateMachine(Qt::Key_Right, -1);
         }//toolButtonright
 
     }
@@ -702,7 +702,7 @@ void LoginForm::animationTimerFinished(){
 
         animationTimerState++;
         animationTimer->stop();
-        animationTimer->setInterval(ANIMATION_TIME);
+        animationTimer->setInterval(ANIMATION_TIME + 30);
         animationTimer->start();
 
         if(lastuserindex > 0){
@@ -715,7 +715,7 @@ void LoginForm::animationTimerFinished(){
             toolButtons[(lastuserindex + 2) % 3]->setText(userList[lastuserindex + 1]);
         }
 
-        if(lastkey == Qt::Key_Left){
+        if(lastkey == Qt::Key_Right){
 
             anim1[0] = new QPropertyAnimation(toolButtons[(lastuserindex) % 3], "geometry");
 
@@ -798,7 +798,7 @@ void LoginForm::animationTimerFinished(){
         break;
 
     case 1:
-        if(lastkey == Qt::Key_Left){
+        if(lastkey == Qt::Key_Right){
 
 
 
@@ -879,17 +879,20 @@ void LoginForm::animationTimerFinished(){
         animationTimerState = 0;
 
 
+
         if( toolButtons[(lastuserindex + 1) % 3]->text().compare(tr("Other User")) == 0){
 
             ui->userLabel->hide();
             ui->userInput->show();
             ui->userInput->setText("");
+            ui->domainnameLabel->setText("");
 
 
         }else{
             ui->userLabel->show();
             ui->userLabel->setText("");
             ui->userInput->hide();
+            ui->domainnameLabel->setText(getUserRealm(toolButtons[(lastuserindex + 1) % 3]->text()));
         }
 
 
@@ -905,9 +908,9 @@ void LoginForm::userSelectStateMachine(int key, int button){
         return;
 
 
-    if(key == Qt::Key_Left){
+    if(key == Qt::Key_Right){
         lastuserindex++;
-    }else if(key == Qt::Key_Right){
+    }else if(key == Qt::Key_Left){
 
         if(lastuserindex <= 0)
             return;
@@ -946,10 +949,10 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
 
             if (ui->userInput->text().isEmpty() && (toolButtons[(lastuserindex + 1) % 3]->text().isEmpty() || toolButtons[(lastuserindex + 1) % 3]->text().compare(tr("Other User")) == 0)){
                 ui->userInput->setFocus();
-            }else if( !ui->passwordInput->hasFocus() && ui->userInput->isHidden()){
-                ui->passwordInput->setFocus();
             }else if(!ui->userInput->hasFocus() && !ui->userInput->isHidden() && ui->userInput->text().isEmpty()){
                 ui->userInput->setFocus();
+            }else if(ui->userInput->isHidden() && !ui->passwordInput->hasFocus() && ui->passwordInput->text().isEmpty()){
+                ui->passwordInput->setFocus();
             } else if(ui->userInput->hasFocus() && !ui->userInput->isHidden() && ui->passwordInput->text().isEmpty()){
                 ui->passwordInput->setFocus();
             }else{
@@ -972,7 +975,9 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
             //usersbuttonReposition();
 
         }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->resetpage) && !resetStartFlag){
-            on_cancelResetButton_clicked();
+            // on_cancelResetButton_clicked();
+
+            keyboardCloseEvent();
         }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->waitpage) &&
                  loginStartFlag && !resetStartFlag){
             // m_Greeter.cancelAuthentication();
@@ -1280,7 +1285,9 @@ void LoginForm::userPasswordResetRequest(){
             //prctl(PR_SET_PDEATHSIG, SIGTERM);
 
             //replace tee with your process
-            execl("/usr/bin/passwd", "passwd", user_data,  (char*) NULL);
+            //execl("/usr/bin/passwd", "passwd", user_data,  (char*) NULL);
+
+            execl("/sbin/runuser", "runuser","-l", user_data, "-c", "passwd", (char*) NULL);
             exit(1);
         }
 
@@ -1522,7 +1529,7 @@ void LoginForm::on_acceptbutton_clicked()
 
         } else{
             pageTransition(ui->loginpage);
-            userResetRequest = true;
+            userResetRequest = false;
         }
 
         passwordChangeError = false;
@@ -1653,7 +1660,7 @@ void LoginForm::stopWaitOperation(const bool& networkstatus){
 
     networkOK = networkstatus;
 
-    if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->waitpage) && !loginStartFlag && !resetStartFlag){
+    if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->waitpage) && !loginStartFlag && !resetStartFlag && !userResetRequest){
 
         if(networkstatus == false && loginTimeot < Settings().waittimeout()){
             loginTimeot += 5;
@@ -1748,21 +1755,6 @@ void LoginForm::pageTransition(QWidget *Page){
 }
 
 
-void LoginForm::on_pwShowbutton_pressed()
-{
-    ui->passwordInput->setEchoMode(QLineEdit::EchoMode::Normal);
-    ui->passwordInput->setDisabled(true);
-}
-
-void LoginForm::on_pwShowbutton_released()
-{
-    ui->passwordInput->setEchoMode(QLineEdit::EchoMode::Password);
-    ui->passwordInput->setDisabled(false);
-    //ui->pwShowbutton->clearFocus();
-    //  ui->passwordInput->setFocus();
-
-}
-
 void LoginForm::on_backButton_clicked()
 {
     needPasswordChange = 0;
@@ -1812,6 +1804,8 @@ void LoginForm::usersbuttonReposition(){
     ui->toolButtonright->setIcon(iconPassive);
     ui->toolButtoncenter->setIcon(iconActive);
 
+
+    ui->domainnameLabel->setText(getUserRealm(userList[0]));
 
     ui->toolButtonleft->hide();
     ui->toolButtoncenter->setText(userList[0]);
@@ -2019,5 +2013,169 @@ void LoginForm::resetRequest(){
 }
 
 QString LoginForm::getHostname(){
+
+    QString realm = readRealm();
+
+    if(!realm.isNull() && !realm.isEmpty())
+        return realm + " / "+ m_Greeter.hostname();
+
     return m_Greeter.hostname();
+}
+
+QString LoginForm::readRealm(){
+
+    FILE *fp;
+    char data[512];
+    bool readerror = false;
+    QString  tmpstring;
+    QString outstr = NULL;
+    int read_size;
+
+    fp = popen("net ads info", "r");
+    if (fp == NULL) {
+        qWarning() << "Realm can not be read" ;
+        readerror = true;
+    }
+
+    if(readerror == false){
+
+        read_size = fread(data, 1, sizeof(data), fp);
+
+        if( read_size < 1){
+            qDebug() << tr("Realm can not be read\n") ;
+        }else{
+            outstr = getValueOfString(QString::fromLocal8Bit(data, read_size), QString("Realm"));
+        }
+
+
+    }
+
+    /* close */
+    pclose(fp);
+
+
+    return outstr;
+
+}
+
+
+QString LoginForm::getUserRealm(QString username){
+
+
+    if(username.isNull() || username.isEmpty() || !username.compare(tr("Other User")))
+        return QString("");
+
+    if(ifLocalUser(username))
+        return QString("");
+    else
+        return readRealm() + "/";
+}
+
+
+bool LoginForm::ifLocalUser(QString username){
+
+
+    FILE *fp;
+    char data[512];
+    bool readerror = false;
+    QString  tmpstring;
+    QString outstr = NULL;
+    int read_size;
+    QString command;
+    QString compare;
+
+
+    command = QString(" cat /etc/passwd | grep ") + username;
+
+    fp = popen(command.toLocal8Bit().data(), "r");
+    if (fp == NULL) {
+        qWarning() << "username can not be read from passwd" ;
+        readerror = true;
+    }
+
+
+    if(readerror == false){
+
+        read_size = fread(data, 1, sizeof(data), fp);
+
+        if( read_size < 5){
+            qDebug() << tr("Realm can not be read\n") ;
+            readerror = true;
+        }else{
+            outstr = QString(data);
+        }
+
+
+    }
+    pclose(fp);
+
+    if(readerror){
+        return false;
+    }else{
+
+        compare = username +":";
+
+        if(!outstr.left(compare.length()).compare(compare)){
+
+            return true;
+        }
+
+        return false;
+
+    }
+
+    return false;
+}
+
+
+void LoginForm::on_pwShowbutton_pressed()
+{
+    ui->passwordInput->setEchoMode(QLineEdit::EchoMode::Normal);
+    ui->passwordInput->setDisabled(true);
+}
+
+void LoginForm::on_pwShowbutton_released()
+{
+    ui->passwordInput->setEchoMode(QLineEdit::EchoMode::Password);
+    ui->passwordInput->setDisabled(false);
+    //ui->pwShowbutton->clearFocus();
+    //  ui->passwordInput->setFocus();
+
+}
+
+void LoginForm::on_showoldPwdButton_pressed()
+{
+    ui->oldpasswordinput->setEchoMode(QLineEdit::EchoMode::Normal);
+    ui->oldpasswordinput->setDisabled(true);
+}
+
+void LoginForm::on_showoldPwdButton_released()
+{
+    ui->oldpasswordinput->setEchoMode(QLineEdit::EchoMode::Password);
+    ui->oldpasswordinput->setDisabled(false);
+
+}
+
+void LoginForm::on_shownewPwdButton_pressed()
+{
+    ui->newpasswordinput->setEchoMode(QLineEdit::EchoMode::Normal);
+    ui->newpasswordinput->setDisabled(true);
+}
+
+void LoginForm::on_shownewPwdButton_released()
+{
+    ui->newpasswordinput->setEchoMode(QLineEdit::EchoMode::Password);
+    ui->newpasswordinput->setDisabled(false);
+}
+
+void LoginForm::on_showconfirmPwdButton_pressed()
+{
+    ui->newpasswordconfirminput->setEchoMode(QLineEdit::EchoMode::Normal);
+    ui->newpasswordconfirminput->setDisabled(true);
+}
+
+void LoginForm::on_showconfirmPwdButton_released()
+{
+    ui->newpasswordconfirminput->setEchoMode(QLineEdit::EchoMode::Password);
+    ui->newpasswordconfirminput->setDisabled(false);
 }

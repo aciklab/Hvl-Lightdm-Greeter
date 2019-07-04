@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>347</width>
-    <height>100</height>
+    <height>109</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -130,8 +130,8 @@ QComboBox::down-arrow {
       <property name="geometry">
        <rect>
         <x>140</x>
-        <y>50</y>
-        <width>130</width>
+        <y>60</y>
+        <width>135</width>
         <height>45</height>
        </rect>
       </property>
@@ -362,7 +362,7 @@ QComboBox::down-arrow {
       <property name="geometry">
        <rect>
         <x>280</x>
-        <y>50</y>
+        <y>60</y>
         <width>60</width>
         <height>45</height>
        </rect>
@@ -411,11 +411,14 @@ QComboBox::down-arrow {
         <x>140</x>
         <y>10</y>
         <width>201</width>
-        <height>31</height>
+        <height>41</height>
        </rect>
       </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
       </property>
      </widget>
     </widget>

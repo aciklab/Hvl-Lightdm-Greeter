@@ -55,7 +55,6 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
 
 
     previousScreen = 1;
-
     setBackground();
 
     // display login dialog only in the main screen
@@ -276,11 +275,11 @@ void MainWindow::setBackground()
 
         QBrush brush(finalImage);
 
+
         //QBrush brush(backgroundImage.scaled(rect.width(), rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         palette.setBrush(this->backgroundRole(), brush);
     }
     this->setPalette(palette);
-
 
     /* We are painting x root background with current greeter background */
     if(m_Screen == QApplication::desktop()->primaryScreen()){
@@ -366,6 +365,9 @@ QImage MainWindow::resizeImage(QRect screen_rect, QImage input_image){
         new_image = input_image.scaled(image_width, screen_rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
         //todo check this
 
+        final_image = input_image.scaled(screen_rect.width(), screen_rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        //todo check
+
     }else{//> 1
 
 
@@ -391,7 +393,6 @@ QImage MainWindow::resizeImage(QRect screen_rect, QImage input_image){
 
         }else if(screen_aspect_ratio <= image_aspect_ratio){
             //norrower
-
             image_width = screen_rect.height() * image_aspect_ratio;
             image_height = screen_rect.height();
             new_image = input_image.scaled(image_width, image_height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
@@ -406,6 +407,8 @@ QImage MainWindow::resizeImage(QRect screen_rect, QImage input_image){
 
                 }
             }
+
+
 
         }
 
@@ -434,7 +437,6 @@ void MainWindow::moveForms(int screen_number){
 
     m_LoginForm->move(offsetX , offsetY);
     m_LoginForm->show();
-
 
 
     maxX = screenRect.width() - m_SettingsForm->width();
@@ -500,6 +502,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
                     mainWindowsList[i]->m_Screen = previousScreen;
                     mainWindowsList[i]->setBackground();
                     moveForms(currentScreen);
+
                     mainWindowsList[i]->show();
 
                 }
@@ -530,13 +533,13 @@ void MainWindow::receiveKeyboardRequest(QPoint from, int width){
 
     }else if(screenRect.width() <= 800){
 
-        keyboard_width = 600;
-        keyboard_height = 210;
+        keyboard_width = 500;
+        keyboard_height = 190;
 
     }else if(screenRect.width() <= 1024){
 
-        keyboard_width = 800;
-        keyboard_height = 270;
+        keyboard_width = 600;
+        keyboard_height = 250;
 
     }
 
