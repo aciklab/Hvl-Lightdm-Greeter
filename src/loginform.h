@@ -152,6 +152,8 @@ private:
     QString readRealm();
     bool ifLocalUser(QString username);
     QString getUserRealm(QString username);
+    void debugBox(QString mes);
+    QString translateResetPwdMessage(QString message);
 
     Ui::LoginForm *ui;
 
@@ -209,6 +211,7 @@ private:
 
     bool loginprompt;
     bool userResetRequest;
+    bool systemResetRequest;
     bool passwordChangeError;
     int nwcheckcount;
 

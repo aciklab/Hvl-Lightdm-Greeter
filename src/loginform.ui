@@ -48,7 +48,7 @@
       <enum>QFrame::Raised</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="waitpage">
       <property name="font">
@@ -551,9 +551,9 @@ QPushButton:hover{
          <widget class="QLabel" name="domainnameLabel">
           <property name="geometry">
            <rect>
-            <x>140</x>
+            <x>85</x>
             <y>-10</y>
-            <width>150</width>
+            <width>260</width>
             <height>31</height>
            </rect>
           </property>
@@ -916,30 +916,6 @@ Password</string>
           </property>
           <property name="text">
            <string>Cancel</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="userLabel">
-          <property name="geometry">
-           <rect>
-            <x>70</x>
-            <y>150</y>
-            <width>291</width>
-            <height>41</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>-1</pointsize>
-            <weight>50</weight>
-            <italic>false</italic>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>userLabel</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
           </property>
          </widget>
          <widget class="QToolButton" name="toolButtonleft">

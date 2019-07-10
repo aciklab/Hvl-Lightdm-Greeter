@@ -92,7 +92,6 @@ void LoginForm::initialize()
 #ifdef SCREENKEYBOARD
     connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), this, SLOT(focusChanged(QWidget*, QWidget*)));
 #endif
-
     // ui->pushButton_sr->hide();
 
     mv = new QMovie(":/resources/load1.gif");
@@ -141,6 +140,7 @@ void LoginForm::initialize()
     loginprompt = false;
     nwcheckcount = 0;
     userResetRequest = false;
+    systemResetRequest = false;
 
     loginTimer = new QTimer();
     resetTimer = new QTimer();
@@ -167,7 +167,6 @@ void LoginForm::initialize()
     if(Settings().waittimeout() == 0){
 
         //ui->userInput->show();
-        ui->userLabel->hide();
         ui->userInput->setFocus();
 
         pageTransition(ui->loginpage);
@@ -232,7 +231,7 @@ void LoginForm::onPrompt(QString prompt, QLightDM::Greeter::PromptType promptTyp
     //"Enter new password: "
     //"Enter it again: "
 
-    qInfo() << "Received Prompt: " + prompt + " type: " + QString::number(promptType);
+    qInfo() << "Received Prompt: " << prompt << " type: " << QString::number(promptType);
 
     if((prompt.compare("Enter new password: ") == 0 || prompt.compare("New password: ") == 0 ||
         prompt.compare("(current) UNIX password: ") == 0 || prompt.compare("Current Password: ") == 0)
@@ -279,7 +278,7 @@ void LoginForm::onPrompt(QString prompt, QLightDM::Greeter::PromptType promptTyp
 void LoginForm::onMessage(QString prompt, QLightDM::Greeter::MessageType messageType){
     QString type = NULL;
 
-    qInfo() << "Received Message: " + prompt + " type: " + QString::number(messageType);
+    qInfo() << "Received Message: " << prompt << " type: " << QString::number(messageType);
 
     if(messageType == QLightDM::Greeter::MessageTypeError){
         type = tr("Error");
@@ -291,8 +290,10 @@ void LoginForm::onMessage(QString prompt, QLightDM::Greeter::MessageType message
         type = " ";
     }
 
+    messageReceived = true;
+
     if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->loginpage)){
-        messageReceived = true;
+
         ui->messagelabel->setText(type + " : " + prompt);
         ui->warninglabel->setText(type + " : " + prompt);
     }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->warningpage)){
@@ -384,7 +385,19 @@ void LoginForm::authenticationComplete()
         else
             ui->messagelabel->setText(tr("Error : Login Incorrect"));
 
-        preparetoLogin();
+        if(resetStartFlag){
+
+            pageTransition(ui->warningpage);
+            ui->warninglabel->setText(translateResetPwdMessage(lastMessage));
+            resetStartFlag = true;
+            userResetRequest = false;
+            needPasswordChange = false;
+            needReenterOldPassword = true;
+        }else{
+            preparetoLogin();
+        }
+
+
     }
 
     messageReceived = false;
@@ -603,7 +616,6 @@ void LoginForm::initializeUserList(){
         ui->toolButtonright->hide();
         ui->userInput->setText("");
         ui->userInput->show();
-        ui->userLabel->hide();
         useroffset = 0;
         olduseroffset = 0;
         return;
@@ -631,8 +643,6 @@ void LoginForm::initializeUserList(){
         }
     }
 
-    ui->userLabel->setText("");
-    ui->userLabel->show();
     ui->userInput->hide();
 
 
@@ -670,13 +680,11 @@ void LoginForm::userButtonClicked(){
 
             if(toolButtons[(lastuserindex + 1) % 3]->text().compare(tr("Other User")) == 0){
                 ui->userInput->show();
-                ui->userLabel->hide();
                 ui->userInput->setText("");
 
             }else{
                 ui->userInput->hide();
                 ui->userInput->setText(toolButtons[(lastuserindex + 1) % 3]->text());
-                ui->userLabel->setText("");
             }
 
 
@@ -882,15 +890,12 @@ void LoginForm::animationTimerFinished(){
 
         if( toolButtons[(lastuserindex + 1) % 3]->text().compare(tr("Other User")) == 0){
 
-            ui->userLabel->hide();
             ui->userInput->show();
             ui->userInput->setText("");
             ui->domainnameLabel->setText("");
 
 
         }else{
-            ui->userLabel->show();
-            ui->userLabel->setText("");
             ui->userInput->hide();
             ui->domainnameLabel->setText(getUserRealm(toolButtons[(lastuserindex + 1) % 3]->text()));
         }
@@ -985,7 +990,7 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
 
         }
     }
-    else if (event->key() == Qt::Key_Left || event->key() == Qt::Key_Right &&
+    else if ((event->key() == Qt::Key_Left || event->key() == Qt::Key_Right) &&
              ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->loginpage)) {
 
         userSelectStateMachine(event->key(), -1);
@@ -1126,6 +1131,7 @@ void LoginForm::LoginTimerFinished(){
     static int promptCheckCounter;
     static int userCheckCounter;
     QString userid;
+    static int opcheckcounter;
 
 
     switch(loginTimerState){
@@ -1140,6 +1146,7 @@ void LoginForm::LoginTimerFinished(){
         userCheckCounter = 0;
         loginTimerState = 1;
         lastPrompt.clear();
+
 
         loginTimer->setInterval(100);
 
@@ -1162,6 +1169,7 @@ void LoginForm::LoginTimerFinished(){
         qInfo() << "User name is sending";
         m_Greeter.authenticate(userid.trimmed());
         loginTimerState = 2;
+        messageReceived = false;
         promptCheckCounter = 0;
         lastPrompt.clear();
         loginTimer->setInterval(100);
@@ -1210,18 +1218,29 @@ void LoginForm::LoginTimerFinished(){
                 qWarning() << "Authentication is canceled";
 
             }else{
-                promptCheckCounter++;
-                loginTimer->setInterval(100);
 
+                if(!messageReceived){
+
+                    promptCheckCounter++;
+                    loginTimer->setInterval(100);
+                }else{
+
+                    loginStartFlag = false;
+                    endFlag = 1;
+                }
             }
 
         }
+        break;
+
+    case 3:
         break;
     }
 
     if(endFlag == 1){
         loginTimerState = 0;
         loginTimer->stop();
+        messageReceived = 0;
     }else{
         loginTimer->stop();
 
@@ -1264,8 +1283,6 @@ void LoginForm::userPasswordResetRequest(){
             userid = toolButtons[(lastuserindex+ 1) % 3]->text();
         }
 
-
-        //command = "whoami";
 
         //send user id
         user_data = userid.toLocal8Bit().data();
@@ -1362,7 +1379,7 @@ void LoginForm::userPasswordResetRequest(){
 
         }else if(strstr(data, "Password change rejected") || strstr(data, "Please make sure the password meets the complexity constraints")){
 
-            result = tr("Password change rejected");
+            result = tr("Password change rejected: Please make sure the password meets the complexity constraints and don't use old passwords");
 
         }else if(strstr(data, "You must choose a longer password") || strstr(data,"Daha uzun bir parola girmelisiniz") ||  strstr(data, "The password is shorter than 8 characters")){
 
@@ -1384,11 +1401,14 @@ void LoginForm::userPasswordResetRequest(){
 
             result = tr("Authentication token manipulation error");
 
-        }else if(strstr(data, "password changed for") || strstr(data, "şifre başarıyla güncellendi") ||  strstr(data, "şifre başarıyla değiştirildi") || strstr(data, "password updated successfully") ){
+        }else if(strstr(data, "BAD PASSWORD: The password fails the dictionary check - it is based on a dictionary word")){
+            result = tr("Password change rejected: it is based on a dictionary word");
+
+        }
+        else if(strstr(data, "password changed for") || strstr(data, "şifre başarıyla güncellendi") ||  strstr(data, "şifre başarıyla değiştirildi") || strstr(data, "password updated successfully") ){
 
             result = tr("Password change successfull");
             passwordChangeError = false;
-
         }else{
 
             result = tr("Password change error");
@@ -1396,7 +1416,7 @@ void LoginForm::userPasswordResetRequest(){
 
 
 
-        ui->oldpasswordinput->clear();
+        // ui->oldpasswordinput->clear();
         ui->newpasswordinput->clear();
         ui->newpasswordconfirminput->clear();
         ui->oldpasswordinput->clearFocus();
@@ -1438,6 +1458,8 @@ void LoginForm::passwordResetTimerFinished(){
 
     bool endFlag = 0;
     static int opcheckcounter;
+    bool errorflag = false;
+    static QString userx;
 
     switch(resetTimerState){
 
@@ -1450,7 +1472,15 @@ void LoginForm::passwordResetTimerFinished(){
 
     case 1:
         //enter user
-        m_Greeter.authenticate(ui->userInput->text().trimmed());
+
+
+        if(toolButtons[(lastuserindex+ 1) % 3]->text().compare(tr("Other User")) == 0){
+            userx = ui->userInput->text().trimmed();
+        } else{
+            userx = toolButtons[(lastuserindex+ 1) % 3]->text();
+        }
+
+        m_Greeter.authenticate(userx);
         resetTimerState = 2;
         break;
 
@@ -1464,7 +1494,19 @@ void LoginForm::passwordResetTimerFinished(){
         //old password
         ui->resetpasswordButton->setEnabled(false);
         pageTransition(ui->waitpage);
-        if(lastPrompt.compare("(current) UNIX password: ") == 0 || lastPrompt.compare("Current Password: ") == 0)
+        if(lastPrompt.compare("(current) UNIX password: ") == 0 || lastPrompt.compare("Current Password: ") == 0|| lastPrompt.compare("Password: ") == 0)
+            m_Greeter.respond(oldPassword);
+
+        lastPrompt.clear();
+        resetTimerState = 35;
+        break;
+
+
+    case 35:
+        //old password
+        ui->resetpasswordButton->setEnabled(false);
+        pageTransition(ui->waitpage);
+        if(lastPrompt.compare("(current) UNIX password: ") == 0 || lastPrompt.compare("Current Password: ") == 0|| lastPrompt.compare("Password: ") == 0)
             m_Greeter.respond(oldPassword);
 
         resetTimerState = 4;
@@ -1478,35 +1520,75 @@ void LoginForm::passwordResetTimerFinished(){
         resetTimerState = 5;
         break;
 
+
     case 5:
+        if(lastPrompt.compare("Enter new password: ") == 0 || lastPrompt.compare("New password: ") == 0){
+            cancelLogin();
+            resetStartFlag = false;
+            loginStartFlag = false;
+            errorflag = true;
+            endFlag = true;
+
+
+        }else{
+            resetTimerState = 6;
+        }
+
+        break;
+
+    case 6:
         //"Enter it again: "
         m_Greeter.respond(ui->newpasswordinput->text());
         //resetTimerState = 0;
-        resetTimerState = 6;
+        resetTimerState = 7;
         opcheckcounter = 0;
 
         // endFlag = 1;
         break;
 
-    case 6:
-        if(opcheckcounter < 6){
+    case 7:
+        if(opcheckcounter < 2){
 
             opcheckcounter++;
-            resetTimerState = 6;
+            resetTimerState = 7;
 
         }else{
-            opcheckcounter = 0;
-            endFlag = true;
-            resetStartFlag = false;
-            loginStartFlag = false;
+
+
+            resetTimerState = 8;
+
             //pageTransition(ui->loginpage);
         }
+        break;
+
+    case 8:
+        if(lastPrompt.compare("Enter new password: ") == 0 || lastPrompt.compare("New password: ") == 0){
+            cancelLogin();
+            resetStartFlag = false;
+            loginStartFlag = false;
+            errorflag = true;
+
+        }
+        endFlag = true;
+
         break;
 
     }
 
     if(endFlag == true){
 
+        if(errorflag){//login timeout
+            cancelLogin();
+            //pageTransition(ui->resetpage);
+
+            pageTransition(ui->warningpage);
+            ui->warninglabel->setText(translateResetPwdMessage(lastMessage));
+            resetStartFlag = true;
+            userResetRequest = false;
+            needPasswordChange = false;
+            needReenterOldPassword = true;
+            opcheckcounter = 0;
+        }
         ui->resetpasswordButton->setEnabled(true);
         resetTimerState = 0;
         resetTimer->stop();
@@ -1519,6 +1601,39 @@ void LoginForm::passwordResetTimerFinished(){
 
 }
 
+QString LoginForm::translateResetPwdMessage(QString message){
+
+
+    QString res;
+
+    if(message.contains("The password fails the dictionary check - it is based on a dictionary word")){
+
+        res = tr("Error: The password fails the dictionary check - it is based on a dictionary word");
+
+    }else if(message.contains("The password is shorter than 8 characters")){
+
+        res = tr("Error: The password is shorter than 8 characters");
+
+    }else if(message.contains("Please make sure the password meets the complexity constraints")){
+
+        res = tr("Error: Please make sure the password meets the complexity constraints and don't use old passwords");
+
+    }else if(message.contains("The password is the same as the old one")){
+
+        res = tr("Error: The password is the same as the old one");
+
+    }else if(message.contains("The password fails the dictionary check - it is too simplistic/systematic")){
+
+        res = tr("Error: The password fails the dictionary check - it is too simplistic/systematic");
+
+    }else{
+        res = message;
+    }
+
+    return res;
+}
+
+
 void LoginForm::on_acceptbutton_clicked()
 {
     if(userResetRequest){
@@ -1526,16 +1641,31 @@ void LoginForm::on_acceptbutton_clicked()
         if(passwordChangeError){
             pageTransition(ui->resetpage);
             userResetRequest = true;
+            systemResetRequest = false;
 
         } else{
             pageTransition(ui->loginpage);
             userResetRequest = false;
+            systemResetRequest = false;
         }
 
         passwordChangeError = false;
 
     }else{
         pageTransition(ui->resetpage);
+        systemResetRequest = true;
+        userResetRequest = false;
+
+        ui->oldpasswordinput->setEnabled(true);
+        ui->newpasswordinput->setEnabled(true);
+        ui->newpasswordconfirminput->setEnabled(true);
+
+        // ui->oldpasswordinput->clear();
+        ui->newpasswordinput->clear();
+        ui->newpasswordconfirminput->clear();
+        ui->newpasswordinput->setFocus();
+
+
     }
 
 
@@ -1660,7 +1790,7 @@ void LoginForm::stopWaitOperation(const bool& networkstatus){
 
     networkOK = networkstatus;
 
-    if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->waitpage) && !loginStartFlag && !resetStartFlag && !userResetRequest){
+    if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->waitpage) && !loginStartFlag && !resetStartFlag && !userResetRequest && !systemResetRequest){
 
         if(networkstatus == false && loginTimeot < Settings().waittimeout()){
             loginTimeot += 5;
@@ -1676,9 +1806,9 @@ void LoginForm::stopWaitOperation(const bool& networkstatus){
                 else
                     timeoutFlag = false;
 
-                ui->userLabel->hide();
 
                 pageTransition(ui->loginpage);
+                cancelLogin();
                 loginTimeot = 0;
             }
         }
@@ -1736,6 +1866,9 @@ void LoginForm::pageTransition(QWidget *Page){
     }
     else if(Page == ui->warningpage){
 
+#ifdef SCREENKEYBOARD
+        emit sendKeyboardCloseRequest();
+#endif
         ui->userInput->clearFocus();
         ui->passwordInput->clearFocus();
         mv->stop();
@@ -1774,9 +1907,6 @@ void LoginForm::usersbuttonReposition(){
 
     ui->userInput->clear();
     ui->userInput->hide();
-    ui->userLabel->show();
-    ui->userLabel->setText("");
-
     ui->toolButtonleft->setGeometry(left);
     ui->toolButtoncenter->setGeometry(center);
     ui->toolButtonright->setGeometry(right);
@@ -1823,12 +1953,7 @@ void LoginForm::usersbuttonReposition(){
         ui->toolButtonright->hide();
     }
 
-
     ui->toolButtonleft->hide();
-
-
-
-
     toolButtons[1]->setFocus();
 }
 
@@ -1837,30 +1962,39 @@ void LoginForm::on_cancelResetButton_clicked()
 {
 
     userResetRequest = false;
+    systemResetRequest = false;
 
-    if(!resetStartFlag){
-        needPasswordChange = 0;
-        cancelLogin();
-        pageTransition(ui->loginpage);
-        ui->newpasswordconfirminput->clear();
-        ui->newpasswordinput->clear();
-        ui->oldpasswordinput->clear();
-        ui->userInput->setEnabled(true);
-        ui->passwordInput->setEnabled(true);
-        ui->passwordInput->clear();
+    needPasswordChange = false;
+    needReenterOldPassword = false;
+    loginStartFlag = false;
+    resetStartFlag = false;
+
+    needPasswordChange = 0;
+    cancelLogin();
+    pageTransition(ui->loginpage);
+    ui->newpasswordconfirminput->clear();
+    ui->newpasswordinput->clear();
+    ui->oldpasswordinput->clear();
+    ui->userInput->setEnabled(true);
+    ui->passwordInput->setEnabled(true);
+    ui->passwordInput->clear();
 
 #if 0
-        if(ui->userInput->isHidden())
-            ui->passwordInput->setFocus();
-        else if(!ui->userInput->text().isEmpty())
-            ui->passwordInput->setFocus();
-        else
-            ui->userInput->setFocus();
+    if(ui->userInput->isHidden())
+        ui->passwordInput->setFocus();
+    else if(!ui->userInput->text().isEmpty())
+        ui->passwordInput->setFocus();
+    else
+        ui->userInput->setFocus();
 #endif
-        capsLockCheck();
-        ui->rstpwdmessagelabel->clear();
+    capsLockCheck();
+    ui->rstpwdmessagelabel->clear();
 
-    }
+#ifdef SCREENKEYBOARD
+    emit sendKeyboardCloseRequest();
+#endif
+
+
 }
 
 #ifdef SCREENKEYBOARD
@@ -2068,7 +2202,7 @@ QString LoginForm::getUserRealm(QString username){
     if(ifLocalUser(username))
         return QString("");
     else
-        return readRealm() + "/";
+        return readRealm();
 }
 
 
@@ -2178,4 +2312,19 @@ void LoginForm::on_showconfirmPwdButton_released()
 {
     ui->newpasswordconfirminput->setEchoMode(QLineEdit::EchoMode::Password);
     ui->newpasswordconfirminput->setDisabled(false);
+}
+
+
+void LoginForm::debugBox(QString mes){
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("title");
+    msgBox.setText(mes);
+    msgBox.setStandardButtons(QMessageBox::Yes);
+    msgBox.addButton(QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::No);
+    if(msgBox.exec() == QMessageBox::Yes){
+        // do something
+    }else {
+        // do something else
+    }
 }

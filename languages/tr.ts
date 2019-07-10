@@ -297,33 +297,28 @@
 <context>
     <name>LoginForm</name>
     <message>
-        <location filename="../src/loginform.ui" line="461"/>
+        <location filename="../src/loginform.ui" line="473"/>
         <source>password</source>
         <translation>Parola</translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="509"/>
+        <location filename="../src/loginform.ui" line="521"/>
         <source>user id</source>
         <translation>Kullanıcı Adı</translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="575"/>
-        <source>Hostname</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/loginform.ui" line="906"/>
-        <location filename="../src/loginform.ui" line="1419"/>
+        <location filename="../src/loginform.ui" line="918"/>
+        <location filename="../src/loginform.ui" line="1606"/>
         <source>Cancel</source>
         <translation>İptal</translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="1447"/>
+        <location filename="../src/loginform.ui" line="1634"/>
         <source>Reset Password</source>
         <translation>Parola Sıfırla</translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="1172"/>
+        <location filename="../src/loginform.ui" line="1253"/>
         <source>OK</source>
         <translation>Tamam</translation>
     </message>
@@ -333,182 +328,228 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="136"/>
-        <location filename="../src/loginform.cpp" line="1683"/>
+        <location filename="../src/loginform.ui" line="138"/>
+        <location filename="../src/loginform.cpp" line="1820"/>
         <source>Waiting for Network and Services</source>
         <translation>Ağ ve Servisler Bekleniyor</translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="289"/>
+        <location filename="../src/loginform.ui" line="295"/>
         <source>Speech Recognize</source>
         <translation>Ses ile kontrol</translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="530"/>
+        <location filename="../src/loginform.ui" line="542"/>
         <source>message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="813"/>
+        <location filename="../src/loginform.ui" line="825"/>
         <source>Reset
 Password</source>
         <translation>Parola
 Sıfırla</translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="838"/>
+        <location filename="../src/loginform.ui" line="850"/>
         <source>Login</source>
         <translation>Giriş</translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="927"/>
-        <source>userLabel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/loginform.ui" line="1139"/>
+        <location filename="../src/loginform.ui" line="1220"/>
         <source>Warning for password reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="1383"/>
+        <location filename="../src/loginform.ui" line="1496"/>
         <source>Confirm New Password</source>
         <translation>Yeni Parola Onayla</translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="1321"/>
+        <location filename="../src/loginform.ui" line="1422"/>
         <source>Old Password</source>
         <translation>Eski Parola</translation>
     </message>
     <message>
-        <location filename="../src/loginform.ui" line="1349"/>
+        <location filename="../src/loginform.ui" line="1456"/>
         <source>New Password</source>
         <translation>Yeni Parola</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="250"/>
+        <location filename="../src/loginform.cpp" line="246"/>
         <source>Your Password is Expired. You have to change it</source>
         <translation>Parolanızın Süresi Doldu. Değiştirmeniz gerekmektedir.</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="288"/>
+        <location filename="../src/loginform.cpp" line="284"/>
         <source>Error</source>
         <translation>Hata</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="291"/>
+        <location filename="../src/loginform.cpp" line="287"/>
         <source>Info</source>
         <translation>Bilgi</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="362"/>
-        <location filename="../src/loginform.cpp" line="366"/>
-        <location filename="../src/loginform.cpp" line="384"/>
-        <location filename="../src/loginform.cpp" line="388"/>
+        <location filename="../src/loginform.cpp" line="360"/>
+        <location filename="../src/loginform.cpp" line="364"/>
+        <location filename="../src/loginform.cpp" line="382"/>
+        <location filename="../src/loginform.cpp" line="386"/>
         <source>Error : Login Incorrect</source>
         <translation>Giriş Bilgileri Hatalı</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="211"/>
-        <location filename="../src/loginform.cpp" line="440"/>
-        <location filename="../src/loginform.cpp" line="481"/>
-        <location filename="../src/loginform.cpp" line="497"/>
-        <location filename="../src/loginform.cpp" line="535"/>
-        <location filename="../src/loginform.cpp" line="586"/>
-        <location filename="../src/loginform.cpp" line="602"/>
-        <location filename="../src/loginform.cpp" line="647"/>
-        <location filename="../src/loginform.cpp" line="671"/>
-        <location filename="../src/loginform.cpp" line="775"/>
-        <location filename="../src/loginform.cpp" line="791"/>
-        <location filename="../src/loginform.cpp" line="810"/>
-        <location filename="../src/loginform.cpp" line="822"/>
-        <location filename="../src/loginform.cpp" line="840"/>
-        <location filename="../src/loginform.cpp" line="882"/>
-        <location filename="../src/loginform.cpp" line="947"/>
-        <location filename="../src/loginform.cpp" line="1089"/>
-        <location filename="../src/loginform.cpp" line="1151"/>
-        <location filename="../src/loginform.cpp" line="1256"/>
-        <location filename="../src/loginform.cpp" line="1824"/>
+        <location filename="../src/loginform.cpp" line="207"/>
+        <location filename="../src/loginform.cpp" line="450"/>
+        <location filename="../src/loginform.cpp" line="491"/>
+        <location filename="../src/loginform.cpp" line="507"/>
+        <location filename="../src/loginform.cpp" line="548"/>
+        <location filename="../src/loginform.cpp" line="599"/>
+        <location filename="../src/loginform.cpp" line="615"/>
+        <location filename="../src/loginform.cpp" line="657"/>
+        <location filename="../src/loginform.cpp" line="681"/>
+        <location filename="../src/loginform.cpp" line="783"/>
+        <location filename="../src/loginform.cpp" line="799"/>
+        <location filename="../src/loginform.cpp" line="818"/>
+        <location filename="../src/loginform.cpp" line="830"/>
+        <location filename="../src/loginform.cpp" line="848"/>
+        <location filename="../src/loginform.cpp" line="891"/>
+        <location filename="../src/loginform.cpp" line="955"/>
+        <location filename="../src/loginform.cpp" line="1099"/>
+        <location filename="../src/loginform.cpp" line="1163"/>
+        <location filename="../src/loginform.cpp" line="1280"/>
+        <location filename="../src/loginform.cpp" line="1477"/>
+        <location filename="../src/loginform.cpp" line="1948"/>
+        <location filename="../src/loginform.cpp" line="2199"/>
         <source>Other User</source>
         <translation>Başka Kullanıcı</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="541"/>
+        <location filename="../src/loginform.cpp" line="554"/>
         <source>Password Change Operation for: </source>
         <translation>Parola değiştirme operasyonu yapılan kullanıcı: </translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1017"/>
-        <location filename="../src/loginform.cpp" line="1028"/>
+        <location filename="../src/loginform.cpp" line="1027"/>
+        <location filename="../src/loginform.cpp" line="1038"/>
         <source>Old password is wrong</source>
         <translation>Eski parola hatalı</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1022"/>
         <location filename="../src/loginform.cpp" line="1032"/>
-        <location filename="../src/loginform.cpp" line="1076"/>
-        <location filename="../src/loginform.cpp" line="1082"/>
+        <location filename="../src/loginform.cpp" line="1042"/>
+        <location filename="../src/loginform.cpp" line="1086"/>
+        <location filename="../src/loginform.cpp" line="1092"/>
         <source>New passwords are not same</source>
         <translation>Girilen yeni parolalar aynı değil</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1108"/>
+        <location filename="../src/loginform.cpp" line="1118"/>
         <source>Password is Updating</source>
         <translation>Parola Güncelleniyor</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1132"/>
+        <location filename="../src/loginform.cpp" line="1143"/>
         <source>Authenticating</source>
         <translation>Giriş Yapılıyor</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1197"/>
+        <location filename="../src/loginform.cpp" line="1210"/>
         <source>Error : User is unknown</source>
         <translation>Hata : Kullanıcı Bilinmiyor</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1199"/>
+        <location filename="../src/loginform.cpp" line="1212"/>
         <source>Error : Network is not connected</source>
         <translation>Hata : Ağ bağlı değil</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1354"/>
+        <location filename="../src/loginform.cpp" line="1378"/>
         <source>System is offline, password change not possible</source>
         <translation>Sistem Çevirimdışı. Parola değiştirilemiyor</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1358"/>
-        <source>Password change rejected</source>
-        <translation>Daha güçlü bir parola seçmelisiniz</translation>
+        <location filename="../src/loginform.cpp" line="1382"/>
+        <source>Password change rejected: Please make sure the password meets the complexity constraints and don&apos;t use old passwords</source>
+        <translation>Yeni parola kabul edilmedi. Lütfen daha güçlü bir parola seçiniz ve eski parolaları kullanmayınız</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1362"/>
+        <location filename="../src/loginform.cpp" line="1619"/>
+        <source>Error: Please make sure the password meets the complexity constraints and don&apos;t use old passwords</source>
+        <translation>Hata: Lütfen daha güçlü bir parola seçiniz ve eski parolaları kullanmayınız</translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1623"/>
+        <source>Error: The password is the same as the old one</source>
+        <translation>Hata: Yeni parola eski parola ile aynı olamaz</translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1627"/>
+        <source>Error: The password fails the dictionary check - it is too simplistic/systematic</source>
+        <translation>Hata: Yeni parola kabul edilmedi. Lütfen daha güçlü bir parola seçiniz</translation>
+    </message>
+    <message>
+        <source>Password change rejected: Please make sure the password meets the complexity constraints</source>
+        <translation type="vanished">Yeni parola kabul edilmedi. Lütfen daha güçlü bir parola seçiniz</translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1611"/>
+        <source>Error: The password fails the dictionary check - it is based on a dictionary word</source>
+        <translation>Hata: Parola tahmin edilmesi kolay kelimeler içermemeli</translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1615"/>
+        <source>Error: The password is shorter than 8 characters</source>
+        <translation>Hata: Parola 8 karakterden kısa</translation>
+    </message>
+    <message>
+        <source>Error: Please make sure the password meets the complexity constraints</source>
+        <translation type="vanished">Hata: Parolanızın yeterince güçlü olduğundan emin olun</translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="2179"/>
+        <location filename="../src/loginform.cpp" line="2236"/>
+        <source>Realm can not be read
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password change rejected</source>
+        <translation type="vanished">Daha güçlü bir parola seçmelisiniz</translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1386"/>
         <source>You must choose a longer password</source>
         <translation>Daha uzun bir parola seçmelisiniz</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1366"/>
-        <location filename="../src/loginform.cpp" line="1374"/>
+        <location filename="../src/loginform.cpp" line="1390"/>
+        <location filename="../src/loginform.cpp" line="1398"/>
         <source>password is too similar</source>
         <translation>Eski parolanıza benzer parola kullanmayınız</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1370"/>
+        <location filename="../src/loginform.cpp" line="1394"/>
         <source>Old password not accepted</source>
         <translation>Eski parola yanlış girildi</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1378"/>
+        <location filename="../src/loginform.cpp" line="1402"/>
         <source>Authentication token manipulation error</source>
         <translation>Eski parola yanlış girildi</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1382"/>
+        <location filename="../src/loginform.cpp" line="1405"/>
+        <source>Password change rejected: it is based on a dictionary word</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/loginform.cpp" line="1410"/>
         <source>Password change successfull</source>
         <translation>Parola güncelleme başarılı</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1387"/>
+        <location filename="../src/loginform.cpp" line="1414"/>
         <source>Password change error</source>
         <translation>Parola değiştirme hatası</translation>
     </message>
@@ -518,10 +559,10 @@ Sıfırla</translation>
         <translation type="vanished">Capslock durumu okunamadı</translation>
     </message>
     <message>
-        <location filename="../src/loginform.cpp" line="1628"/>
-        <location filename="../src/loginform.cpp" line="1630"/>
-        <location filename="../src/loginform.cpp" line="1635"/>
-        <location filename="../src/loginform.cpp" line="1638"/>
+        <location filename="../src/loginform.cpp" line="1765"/>
+        <location filename="../src/loginform.cpp" line="1767"/>
+        <location filename="../src/loginform.cpp" line="1772"/>
+        <location filename="../src/loginform.cpp" line="1775"/>
         <source>Caps Lock is on</source>
         <translation>Caps lock açık</translation>
     </message>
@@ -529,37 +570,37 @@ Sıfırla</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="196"/>
+        <location filename="../src/mainwindow.cpp" line="195"/>
         <source>Could not understand </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="197"/>
+        <location filename="../src/mainwindow.cpp" line="196"/>
         <source>- must be of form &lt;positivenumber&gt;px or &lt;positivenumber&gt;%, e.g. 35px or 25%</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="248"/>
+        <location filename="../src/mainwindow.cpp" line="247"/>
         <source>Not able to read image at index: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="248"/>
+        <location filename="../src/mainwindow.cpp" line="247"/>
         <source> as image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="262"/>
+        <location filename="../src/mainwindow.cpp" line="261"/>
         <source> is set as an image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="260"/>
+        <location filename="../src/mainwindow.cpp" line="259"/>
         <source>Not able to read</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="260"/>
+        <location filename="../src/mainwindow.cpp" line="259"/>
         <source>as default image</source>
         <translation type="unfinished"></translation>
     </message>
