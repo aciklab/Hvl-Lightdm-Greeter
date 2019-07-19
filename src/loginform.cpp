@@ -1324,7 +1324,7 @@ void LoginForm::userPasswordResetRequest(){
         received = QString::fromUtf8(data);
 
         if(!strcmp(data, "Current Password: ") || !strcmp(data, "(current) UNIX password: ") || !strcmp(data, "(geçerli) parola: ") || !strcmp(data, "Current Kerberos password:")
-                || !strcmp(data, "Current Kerberos password: ")){
+                || !strcmp(data, "Current Kerberos password: ") || !strcmp(data, "Enter login(LDAP) password: ")){
 
             memset(data, 0, 512);
 
@@ -1381,15 +1381,16 @@ void LoginForm::userPasswordResetRequest(){
 
             result = tr("Password change rejected: Please make sure the password meets the complexity constraints and don't use old passwords");
 
-        }else if(strstr(data, "You must choose a longer password") || strstr(data,"Daha uzun bir parola girmelisiniz") ||  strstr(data, "The password is shorter than 8 characters")){
+        }else if(strstr(data, "You must choose a longer password") || strstr(data,"Daha uzun bir parola girmelisiniz") ||  strstr(data, "The password is shorter than 8 characters")
+                 || strstr(data, "Password too short")){
 
             result = tr("You must choose a longer password");
 
-        }else if(strstr(data, "password is too similar")){
+        }else if(strstr(data, "password is too similar") || strstr(data, "Passwords must differ")){
 
             result = tr("password is too similar");
 
-        }else if(strstr(data, "Old password not accepted")){
+        }else if(strstr(data, "Old password not accepted") || strstr(data, "LDAP Password incorrect")){
 
             result = tr("Old password not accepted");
 
@@ -1405,7 +1406,8 @@ void LoginForm::userPasswordResetRequest(){
             result = tr("Password change rejected: it is based on a dictionary word");
 
         }
-        else if(strstr(data, "password changed for") || strstr(data, "şifre başarıyla güncellendi") ||  strstr(data, "şifre başarıyla değiştirildi") || strstr(data, "password updated successfully") ){
+        else if(strstr(data, "password changed for") || strstr(data, "şifre başarıyla güncellendi") ||  strstr(data, "şifre başarıyla değiştirildi") || strstr(data, "password updated successfully")
+                || strstr(data, "LDAP password information changed") ){
 
             result = tr("Password change successfull");
             passwordChangeError = false;
