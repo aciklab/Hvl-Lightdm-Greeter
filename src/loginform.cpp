@@ -68,6 +68,7 @@ LoginForm::LoginForm(QWidget *parent) :
 
     ui->setupUi(this);
     initialize();
+    ctrlClicked = false;
 
 }
 
@@ -104,7 +105,7 @@ void LoginForm::initialize()
     connect(&m_Greeter, SIGNAL(authenticationComplete()), this, SLOT(authenticationComplete()));
     connect(&m_Greeter, SIGNAL(reset()), this, SLOT(resetRequest()));
 
-
+    realM = readRealm();
     ui->passwordInput->clear();
 
     initializeUserList();
@@ -174,9 +175,10 @@ void LoginForm::initialize()
 
     }
     else{
-        pageTransition(ui->waitpage);
-        qInfo() << "Waiting for network and services";
-
+        if(!networkOK){
+            pageTransition(ui->waitpage);
+            qInfo() << "Waiting for network and services";
+        }
     }
 
     QWidget::setTabOrder(ui->userInput, ui->passwordInput);
@@ -944,7 +946,10 @@ void LoginForm::userSelectStateMachine(int key, int button){
 
 void LoginForm::keyPressEvent(QKeyEvent *event)
 {
+
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
+
+        ctrlClicked = false;
         if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->resetpage))
             on_resetpasswordButton_clicked();
         else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->warningpage)){
@@ -968,6 +973,7 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_Escape) {
 
+        ctrlClicked = false;
 #ifdef SCREENKEYBOARD
         emit sendKeyboardCloseRequest();
 #endif
@@ -992,14 +998,24 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
     }
     else if ((event->key() == Qt::Key_Left || event->key() == Qt::Key_Right) &&
              ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->loginpage)) {
-
+        ctrlClicked = false;
         userSelectStateMachine(event->key(), -1);
-    }else {
+    }else if (event->key() == Qt::Key_Control){
+        ctrlClicked = true;
+    }else if (event->key() == Qt::Key_Shift){
+
+        if(ctrlClicked)
+            emit selectKeyboard();
+
+        ctrlClicked = false;
+    }
+    else {
+        ctrlClicked = false;
         QWidget::keyPressEvent(event);
     }
 
-}
 
+}
 
 void LoginForm::keyReleaseEvent(QKeyEvent *event){
 
@@ -1178,7 +1194,7 @@ void LoginForm::LoginTimerFinished(){
     case 2:
 
         if(loginprompt){
-            loginTimer->setInterval(500);
+            loginTimer->setInterval(100);
             loginprompt = false;
         }else{
 
@@ -1786,7 +1802,7 @@ void LoginForm::stopWaitOperation(const bool& networkstatus){
 
     int tm = Settings().network_ok_timeout();
     if(tm == 0)
-        tm = 1;
+        tm = 0;
     else
         tm = tm /5;
 
@@ -2150,7 +2166,7 @@ void LoginForm::resetRequest(){
 
 QString LoginForm::getHostname(){
 
-    QString realm = readRealm();
+    QString realm = realM;
 
     if(!realm.isNull() && !realm.isEmpty())
         return realm + " / "+ m_Greeter.hostname();
@@ -2164,7 +2180,7 @@ QString LoginForm::readRealm(){
     char data[512];
     bool readerror = false;
     QString  tmpstring;
-    QString outstr = NULL;
+    QString outstr;
     int read_size;
 
     fp = popen("net ads info", "r");
@@ -2204,7 +2220,7 @@ QString LoginForm::getUserRealm(QString username){
     if(ifLocalUser(username))
         return QString("");
     else
-        return readRealm();
+        return realM;
 }
 
 

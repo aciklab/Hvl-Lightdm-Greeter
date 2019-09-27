@@ -33,6 +33,7 @@ SettingsForm::SettingsForm(QWidget *parent) :
     ui->setupUi(this);
 
     initialize();
+    ctrlClicked = false;
 
     qDebug() << tr("SettingsForm is initializing");
 
@@ -63,7 +64,10 @@ SettingsForm::SettingsForm(QWidget *parent) :
     connect(timer, SIGNAL(timeout()), this, SLOT(timer_finished()));
 
 
+    connect(this, SIGNAL(selectKeyboard(int)), this, SLOT(setKeyboardLayout(int)));
 
+
+    checkNetwork();
 }
 
 SettingsForm::~SettingsForm()
@@ -438,7 +442,7 @@ void SettingsForm::keyPressEvent(QKeyEvent *event)
 {
 
     if (event->key() == Qt::Key_Up || event->key() == Qt::Key_Down) {
-
+        ctrlClicked = false;
         if(ui->kybrdcomboBox->isActiveWindow()){
 
         }
@@ -452,15 +456,27 @@ void SettingsForm::keyPressEvent(QKeyEvent *event)
         }
     }else if(event->key() == Qt::Key_Escape){
 
+        ctrlClicked = false;
         clearFocus();
 
         ui->kybrdcomboBox->clearFocus();
         ui->NwpushButton->clearFocus();
 
 
+    } else if(event->key() == Qt::Key_Control){
+
+        ctrlClicked = true;
+
+
+    }else if(event->key() == Qt::Key_Shift){
+
+        if(ctrlClicked)
+            keyboardSelect();
+        ctrlClicked = false;
+
     }else{
 
-
+        ctrlClicked = false;
         QWidget::keyPressEvent(event);
     }
 
@@ -481,4 +497,21 @@ void SettingsForm::networkCheckSlot(){
 void SettingsForm::updateHostName(QString hostname){
 
     ui->hostnamelabel->setText(hostname);
+}
+
+
+void SettingsForm::keyboardSelectSlot(void){
+    keyboardSelect();
+}
+
+
+void SettingsForm::keyboardSelect(void){
+
+    if(ui->kybrdcomboBox->currentIndex() == 0){
+        ui->kybrdcomboBox->setCurrentIndex(1);
+        emit selectKeyboard(1);
+    }else if(ui->kybrdcomboBox->currentIndex() == 1){
+        emit selectKeyboard(0);
+        ui->kybrdcomboBox->setCurrentIndex(0);
+    }
 }

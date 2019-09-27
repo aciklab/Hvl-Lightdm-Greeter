@@ -80,6 +80,7 @@ protected:
 Q_SIGNALS:
     void sendKeyboardRequest(QPoint from, int width);
     void sendKeyboardCloseRequest();
+    void selectKeyboard(void);
 
 
 
@@ -214,6 +215,8 @@ private:
     bool systemResetRequest;
     bool passwordChangeError;
     int nwcheckcount;
+    QString realM;
+    bool ctrlClicked;
 
 
     QRect left = QRect(52,25,100,110);

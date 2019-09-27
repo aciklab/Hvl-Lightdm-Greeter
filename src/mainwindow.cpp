@@ -55,7 +55,7 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
 
 
     previousScreen = 1;
-    setBackground();
+    setBackground(true);
 
     // display login dialog only in the main screen
     
@@ -156,7 +156,7 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
 
         QObject::connect(m_SettingsForm, &SettingsForm::sendNWStatusSignal, this, &MainWindow::receiveNetworkStatus);
         QObject::connect(this, &MainWindow::sendNetworkStatustoChilds, m_LoginForm, &LoginForm::stopWaitOperation);
-
+        QObject::connect(m_LoginForm, &LoginForm::selectKeyboard, m_SettingsForm, &SettingsForm::keyboardSelectSlot);
         keyboardInit();
 
     }
@@ -200,7 +200,7 @@ int MainWindow::getOffset(QString settingsOffset, int maxVal, int defaultVal)
     return offset;
 }
 
-void MainWindow::setBackground()
+void MainWindow::setBackground(bool start)
 {
     QImage backgroundImage;
     QSettings greeterSettings(CONFIG_FILE, QSettings::IniFormat);
@@ -284,11 +284,13 @@ void MainWindow::setBackground()
     /* We are painting x root background with current greeter background */
     if(m_Screen == QApplication::desktop()->primaryScreen()){
         if(!finalImage.isNull()){
-            setRootBackground(finalImage);
+            if(start)
+                setRootBackground(finalImage);
         }else{
             QImage tmpimage(rect.width(), rect.height(), QImage::Format_ARGB32_Premultiplied) ;
             tmpimage.fill(qRgb(255,203,80));
-            setRootBackground(tmpimage);
+            if(start)
+                setRootBackground(tmpimage);
 
         }
     }
@@ -490,7 +492,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
                     mainWindowsList[i]->setGeometry(curScreenRect);
                     mainWindowsList[i]->move(QPoint(curScreenRect.x(), curScreenRect.y()));
                     mainWindowsList[i]->m_Screen = currentScreen;
-                    mainWindowsList[i]->setBackground();
+                    mainWindowsList[i]->setBackground(false);
                     mainWindowsList[i]->show();
 
 
@@ -500,7 +502,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
                     mainWindowsList[i]->setGeometry(prvScreenRect);
                     mainWindowsList[i]->move(QPoint(prvScreenRect.x(), prvScreenRect.y()));
                     mainWindowsList[i]->m_Screen = previousScreen;
-                    mainWindowsList[i]->setBackground();
+                    mainWindowsList[i]->setBackground(false);
                     moveForms(currentScreen);
 
                     mainWindowsList[i]->show();

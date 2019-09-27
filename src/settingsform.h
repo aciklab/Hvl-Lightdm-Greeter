@@ -52,16 +52,20 @@ private slots:
 
     void on_NwpushButton_clicked();
 
+
+
 public slots:
 
     void networkCheckSlot(void);
 
+    void keyboardSelectSlot(void);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
 Q_SIGNALS:
      void sendNWStatusSignal(bool status);
      void sendKeyboardLayout(QString &layout);
+     void  selectKeyboard(int);
 
 private:
 
@@ -72,6 +76,7 @@ private:
     void getKeyboardLayouts();
     void sendNWStatus(bool nwstatus);
     QString getValueOfString(QString data, QString value);
+    void keyboardSelect(void);
 
 #define SERVICE_WORKING 0
 #define SERVICE_NOT_WORKING -1
@@ -97,6 +102,9 @@ private:
     bool nwButtonPressed;
     bool networkOK;
     NetworkDialog *nwDialog;
+    bool ctrlClicked;
+
+
 
 #define MAX_NETWORK_CHECK_COUNT 3
     int network_check_counter;

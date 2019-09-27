@@ -34,6 +34,7 @@ void changeResolution();
 void setScreensaver();
 void restoreScreensaver();
 bool lockhint = false;
+void openNumlock(void);
 
 
 void messageHandler(QtMsgType type, const QMessageLogContext&, const QString& msg)
@@ -64,9 +65,9 @@ int main(int argc, char *argv[])
 
     }
 #endif
-
+    openNumlock();
     m_Screen = 0;
-   // changeResolution();//gm_edition
+    // changeResolution();//gm_edition
 
     // use std::cerr for logs
     qInstallMessageHandler(messageHandler);
@@ -139,6 +140,7 @@ int main(int argc, char *argv[])
 #include <X11/Xutil.h>
 #include <X11/Xos.h>
 #include<X11/extensions/Xrandr.h>
+#include <X11/XKBlib.h>
 
 void syncX(){
 #if 0
@@ -292,4 +294,90 @@ void restoreScreensaver(){
 
     Display *display = QX11Info::display();
     XSetScreenSaver (display, timeout, interval, prefer_blanking, allow_exposures);
+}
+
+
+
+#include <X11/Xlib.h>
+
+
+
+
+
+Display* dpy;
+
+int xkb_init()
+{
+    int xkb_opcode, xkb_event, xkb_error;
+    int xkb_lmaj = XkbMajorVersion;
+    int xkb_lmin = XkbMinorVersion;
+    return XkbLibraryVersion( &xkb_lmaj, &xkb_lmin )
+            && XkbQueryExtension( dpy, &xkb_opcode, &xkb_event, &xkb_error,
+                                  &xkb_lmaj, &xkb_lmin );
+}
+
+unsigned int xkb_mask_modifier( XkbDescPtr xkb, const char *name )
+{
+    int i;
+    if( !xkb || !xkb->names )
+        return 0;
+    for( i = 0;
+         i < XkbNumVirtualMods;
+         i++ )
+    {
+        char* modStr = XGetAtomName( xkb->dpy, xkb->names->vmods[i] );
+        if( modStr != NULL && strcmp(name, modStr) == 0 )
+        {
+            unsigned int mask;
+            XkbVirtualModsToReal( xkb, 1 << i, &mask );
+            return mask;
+        }
+    }
+    return 0;
+}
+
+unsigned int xkb_numlock_mask()
+{
+    XkbDescPtr xkb;
+    if(( xkb = XkbGetKeyboard( dpy, XkbAllComponentsMask, XkbUseCoreKbd )) != NULL )
+    {
+        unsigned int mask = xkb_mask_modifier( xkb, "NumLock" );
+        XkbFreeKeyboard( xkb, 0, True );
+        return mask;
+    }
+    return 0;
+}
+
+int xkb_set_on()
+{
+    unsigned int mask;
+    if( !xkb_init())
+        return 0;
+    mask = xkb_numlock_mask();
+    if( mask == 0 )
+        return 0;
+    XkbLockModifiers ( dpy, XkbUseCoreKbd, mask, mask);
+    return 1;
+}
+
+void numlock_set_on()
+{
+    xkb_set_on();
+}
+
+
+void openNumlock(void){
+
+    dpy = XOpenDisplay( NULL );
+    if( dpy == NULL )
+    {
+
+        return;
+    }
+
+    numlock_set_on();
+
+
+    XCloseDisplay( dpy );
+
 }

@@ -54,7 +54,7 @@ protected:
 
 private:
     int getOffset(QString offset, int maxVal, int defaultVal);
-    void setBackground();
+    void setBackground(bool start);
     void setRootBackground(QImage img);
     void moveForms(int screen_number);
 
