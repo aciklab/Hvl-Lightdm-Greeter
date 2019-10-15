@@ -2183,7 +2183,8 @@ QString LoginForm::readRealm(){
     QString outstr;
     int read_size;
 
-    fp = popen("net ads info", "r");
+   // fp = popen("net ads info", "r");
+    fp = popen("realm list", "r");
     if (fp == NULL) {
         qWarning() << "Realm can not be read" ;
         readerror = true;
@@ -2196,7 +2197,7 @@ QString LoginForm::readRealm(){
         if( read_size < 1){
             qDebug() << tr("Realm can not be read\n") ;
         }else{
-            outstr = getValueOfString(QString::fromLocal8Bit(data, read_size), QString("Realm"));
+            outstr = getValueOfString(QString::fromLocal8Bit(data, read_size), QString("realm-name"));
         }
 
 
