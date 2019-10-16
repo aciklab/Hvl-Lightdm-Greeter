@@ -105,6 +105,7 @@ void LoginForm::initialize()
     connect(&m_Greeter, SIGNAL(authenticationComplete()), this, SLOT(authenticationComplete()));
     connect(&m_Greeter, SIGNAL(reset()), this, SLOT(resetRequest()));
 
+
     realM = readRealm();
     ui->passwordInput->clear();
 
@@ -2177,25 +2178,29 @@ QString LoginForm::getHostname(){
 QString LoginForm::readRealm(){
 
     FILE *fp;
-    char data[512];
+    char data[512] = {0};
     bool readerror = false;
     QString  tmpstring;
     QString outstr;
     int read_size;
 
-   // fp = popen("net ads info", "r");
-    fp = popen("realm list", "r");
+    // fp = popen("net ads info", "r");
+    fp = popen("/usr/sbin/realm list", "r");
     if (fp == NULL) {
-        qWarning() << "Realm can not be read" ;
+        qWarning() << "Realm can not be read 1" ;
         readerror = true;
     }
 
-    if(readerror == false){
 
+
+
+
+    if(readerror == false){
+ 
         read_size = fread(data, 1, sizeof(data), fp);
 
         if( read_size < 1){
-            qDebug() << tr("Realm can not be read\n") ;
+            qDebug() << tr("Realm can not be read") ;
         }else{
             outstr = getValueOfString(QString::fromLocal8Bit(data, read_size), QString("realm-name"));
         }
@@ -2252,7 +2257,7 @@ bool LoginForm::ifLocalUser(QString username){
         read_size = fread(data, 1, sizeof(data), fp);
 
         if( read_size < 5){
-            qDebug() << tr("Realm can not be read\n") ;
+            //  qDebug() << tr("Realm can not be read 2") ;
             readerror = true;
         }else{
             outstr = QString(data);
