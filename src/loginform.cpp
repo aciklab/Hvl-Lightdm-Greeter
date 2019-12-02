@@ -98,7 +98,10 @@ void LoginForm::initialize()
     mv = new QMovie(":/resources/load1.gif");
     mv->setScaledSize(QSize(ui->giflabel->width(), ui->giflabel->height()));
 
-    setCurrentSession(m_Greeter.defaultSessionHint());
+
+
+
+
 
     connect(&m_Greeter, SIGNAL(showPrompt(QString, QLightDM::Greeter::PromptType)), this, SLOT(onPrompt(QString, QLightDM::Greeter::PromptType)));
     connect(&m_Greeter, SIGNAL(showMessage(QString, QLightDM::Greeter::MessageType)), this, SLOT(onMessage(QString, QLightDM::Greeter::MessageType)));
@@ -126,9 +129,18 @@ void LoginForm::initialize()
 
     QString user = Cache().getLastUser();
 
-    if (user.isEmpty()) {
+    if (user.isEmpty() || user.isNull()) {
         user = m_Greeter.selectUserHint();
+        currentSessionStr = m_Greeter.defaultSessionHint();
+    }else{
+        currentSessionStr = Cache().getLastSession(user);
     }
+
+
+
+
+
+
 
     // cancelLogin();
 
@@ -312,7 +324,7 @@ void LoginForm::onMessage(QString prompt, QLightDM::Greeter::MessageType message
 
 }
 
-
+#if 0
 QString LoginForm::currentSession()
 {
     return m_Greeter.defaultSessionHint();
@@ -320,10 +332,13 @@ QString LoginForm::currentSession()
     // QModelIndex index = sessionsModel.index(0, 0, QModelIndex());
     //return sessionsModel.data(index, QLightDM::SessionsModel::KeyRole).toString();
 }
+#endif
 
-
-void LoginForm::setCurrentSession(QString session)
+void LoginForm::setCurrentSession(QString &session)
 {
+
+    currentSessionStr = session;
+
 #if 0
     for (int i = 0; i < ui->sessionCombo->count(); i++) {
         if (session == sessionsModel.data(sessionsModel.index(i, 0), KeyRole).toString()) {
@@ -338,21 +353,32 @@ void LoginForm::setCurrentSession(QString session)
 void LoginForm::authenticationComplete()
 {
 
+    QString lastuser;
+
+
+    lastuser = ui->userInput->text().trimmed();
+
+    if(lastuser.isNull() || lastuser.isEmpty())
+        lastuser = toolButtons[(lastuserindex + 1) % 3]->text();
+
     if (m_Greeter.isAuthenticated()) {
 
-        qInfo() << "Authentication is completed for  " + ui->userInput->text();
+
+
+        qInfo() << "Authentication is completed for  " + lastuser;
 
 
         /* Reset to default screensaver values */
 
         needPasswordChange = 0;
-        Cache().setLastUser(ui->userInput->text().trimmed());
-        Cache().setLastSession(ui->userInput->text(), currentSession());
-        addUsertoCache(ui->userInput->text().trimmed());
+
+        addUsertoCache(lastuser);
+        Cache().setLastUser(lastuser);
+        Cache().setLastSession(lastuser, currentSessionStr);
         Cache().sync();
 
-        qWarning() <<  "Start session : " << currentSession();
-        if(!m_Greeter.startSessionSync(currentSession())){
+        qWarning() <<  "Start session : " << currentSessionStr;
+        if(!m_Greeter.startSessionSync(currentSessionStr)){
 
             qWarning() <<  "Failed to start session  ";
 
@@ -374,7 +400,7 @@ void LoginForm::authenticationComplete()
 
     }else if(loginStartFlag == true || resetStartFlag == true) {
 
-        qWarning() <<  "Authentication error for  " + ui->userInput->text();
+        qWarning() <<  "Authentication error for  " + lastuser;
 
         qWarning() <<  "message: " + lastMessage;
 
@@ -605,6 +631,9 @@ void LoginForm::initializeUserList(){
 
     qInfo() <<  (QString::number(total_user_count) + " users found for last users cache");
 
+
+    currentSessionStr = Cache().getLastSession( userList[0]);
+    qInfo() << "currentSessionStr: " << currentSessionStr;
 
     total_user_count++;
     usersbuttonReposition();
@@ -896,11 +925,13 @@ void LoginForm::animationTimerFinished(){
             ui->userInput->show();
             ui->userInput->setText("");
             ui->domainnameLabel->setText("");
+            emit sendCurrentUser(QString("Other User"));
 
 
         }else{
             ui->userInput->hide();
             ui->domainnameLabel->setText(getUserRealm(toolButtons[(lastuserindex + 1) % 3]->text()));
+            emit sendCurrentUser(toolButtons[(lastuserindex + 1) % 3]->text());
         }
 
 
@@ -1202,7 +1233,7 @@ void LoginForm::LoginTimerFinished(){
             if(m_Greeter.isAuthenticated()){
 
                 qWarning() << "user already Authenticated";
-                m_Greeter.startSessionSync(currentSession());
+                m_Greeter.startSessionSync(currentSessionStr);
                 endFlag = 1;
                 promptCheckCounter = 0;
 
@@ -1955,6 +1986,7 @@ void LoginForm::usersbuttonReposition(){
 
 
     ui->domainnameLabel->setText(getUserRealm(userList[0]));
+    emit sendCurrentUser(userList[0]);
 
     ui->toolButtonleft->hide();
     ui->toolButtoncenter->setText(userList[0]);
@@ -2196,7 +2228,7 @@ QString LoginForm::readRealm(){
 
 
     if(readerror == false){
- 
+
         read_size = fread(data, 1, sizeof(data), fp);
 
         if( read_size < 1){

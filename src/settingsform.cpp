@@ -3,6 +3,7 @@
 #include "ui_settingsform.h"
 #include <QWidget>
 #include <QLightDM/UsersModel>
+#include <QLightDM/SessionsModel>
 #include <QNetworkInterface>
 #include <QTimer>
 #include <QToolTip>
@@ -25,19 +26,64 @@
 
 QString SettingsForm::current_layout = NULL;
 
+
+const int KeyRole = QLightDM::SessionsModel::KeyRole;
 SettingsForm::SettingsForm(QWidget *parent) :
     QWidget(parent),
+    sessionsModel(QLightDM::SessionsModel::LocalSessions,this),
     ui(new Ui::SettingsForm)
 {
+    int i,j;
+    QString lastsession;
+    QString user;
 
     ui->setupUi(this);
 
     initialize();
     ctrlClicked = false;
 
+
     qDebug() << tr("SettingsForm is initializing");
 
     timer = new QTimer();
+
+
+    //ui->sessioncomboBox->setModel(&sessionsModel);
+
+   // qDebug() <<"---"<< sessionsModel.rowCount(QModelIndex());
+
+    //qm.setPixel(1,qRgba(33, 67, 106, 100));
+    //QPixmap iconsession(":/resources/login_1_1_bos.png");
+    QPixmap iconsession(2,30);
+
+   // iconsession.fill(qRgba(0x1B, 0x6C, 0xBD, 0xFF));
+    iconsession.fill(QColor(0x1B, 0x6C, 0xBD, 0));
+
+    for(i = 0; i< sessionsModel.rowCount(QModelIndex()); i++){
+
+        ui->sessioncomboBox->addItem(iconsession, sessionsModel.data(sessionsModel.index(i, 0), KeyRole).toString(), sessionsModel.data(sessionsModel.index(i, 0), KeyRole).toString());
+
+    }
+
+   // ui->sessioncomboBox->setItemIcon(1, QIcon(iconsession));
+    //ui->sessioncomboBox->setItemIcon(0, QIcon(iconsession));
+     //ui->sessioncomboBox->setItemIcon(-1, QIcon(iconsession));
+
+
+    user = Cache().getLastUser();
+    lastsession = Cache().getLastSession(user);
+
+    if(!lastsession.isEmpty() && !lastsession.isNull()){
+        for(i = 0; i< ui->sessioncomboBox->count(); i++){
+
+            if (lastsession == sessionsModel.data(sessionsModel.index(i, 0), KeyRole).toString()) {
+                ui->sessioncomboBox->setCurrentIndex(i);
+            }
+
+        }
+    }else{
+        ui->sessioncomboBox->setCurrentIndex(0);
+    }
 
     nwDialog = new NetworkDialog();
     nwDialog->setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
@@ -393,7 +439,6 @@ void SettingsForm::setKeyboardLayout(int index){
 }
 
 
-
 QString SettingsForm::getValueOfString(QString data, QString value){
 
     //qPrintable();
@@ -514,4 +559,37 @@ void SettingsForm::keyboardSelect(void){
         emit selectKeyboard(0);
         ui->kybrdcomboBox->setCurrentIndex(0);
     }
+}
+
+
+void SettingsForm::receiveCurrentUser(QString User){
+
+    int i;
+    QString sessionstr;
+    ui->sessioncomboBox->setCurrentIndex(0);
+
+    sessionstr = Cache().getLastSession(User);
+
+    for(i = 0; i< ui->sessioncomboBox->count(); i++){
+
+        if (sessionstr == sessionsModel.data(sessionsModel.index(i, 0), KeyRole).toString()) {
+            ui->sessioncomboBox->setCurrentIndex(i);
+            break;
+        }
+
+    }
+
+    if(!sessionstr.isNull() && !sessionstr.isEmpty()){
+        emit sendSessionInfo(sessionstr);
+    }else{
+        sessionstr = sessionsModel.data(sessionsModel.index(0, 0), KeyRole).toString();
+        emit sendSessionInfo(sessionstr);
+    }
+
+}
+
+void SettingsForm::on_sessioncomboBox_activated(int index)
+{
+    QString sessionname = ui->sessioncomboBox->itemData(index).toString();
+    emit sendSessionInfo(sessionname);
 }

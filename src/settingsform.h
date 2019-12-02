@@ -54,11 +54,15 @@ private slots:
 
 
 
+    void on_sessioncomboBox_activated(int index);
+
 public slots:
 
     void networkCheckSlot(void);
 
     void keyboardSelectSlot(void);
+
+    void receiveCurrentUser(QString User);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
@@ -66,6 +70,7 @@ Q_SIGNALS:
      void sendNWStatusSignal(bool status);
      void sendKeyboardLayout(QString &layout);
      void  selectKeyboard(int);
+     void sendSessionInfo(QString &sessionname);
 
 private:
 

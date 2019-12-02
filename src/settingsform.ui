@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>347</width>
+    <width>408</width>
     <height>109</height>
    </rect>
   </property>
@@ -129,7 +129,7 @@ QComboBox::down-arrow {
      <widget class="QComboBox" name="kybrdcomboBox">
       <property name="geometry">
        <rect>
-        <x>140</x>
+        <x>167</x>
         <y>60</y>
         <width>135</width>
         <height>45</height>
@@ -361,7 +361,7 @@ QComboBox::down-arrow {
      <widget class="QPushButton" name="NwpushButton">
       <property name="geometry">
        <rect>
-        <x>280</x>
+        <x>310</x>
         <y>60</y>
         <width>60</width>
         <height>45</height>
@@ -408,7 +408,7 @@ QComboBox::down-arrow {
      <widget class="QLabel" name="hostnamelabel">
       <property name="geometry">
        <rect>
-        <x>140</x>
+        <x>10</x>
         <y>10</y>
         <width>201</width>
         <height>41</height>
@@ -419,6 +419,28 @@ QComboBox::down-arrow {
       </property>
       <property name="wordWrap">
        <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="sessioncomboBox">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>150</width>
+        <height>45</height>
+       </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>5</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="frame">
+       <bool>false</bool>
       </property>
      </widget>
     </widget>

@@ -66,6 +66,7 @@ public slots:
 
     void authenticationComplete();
     void stopWaitOperation(const bool& networkstatus);
+    void setCurrentSession(QString &session);
 #ifdef SCREENKEYBOARD
 
     void keyboardCloseEvent();
@@ -81,6 +82,7 @@ Q_SIGNALS:
     void sendKeyboardRequest(QPoint from, int width);
     void sendKeyboardCloseRequest();
     void selectKeyboard(void);
+    void sendCurrentUser(QString user);
 
 
 
@@ -136,8 +138,7 @@ private slots:
 
 private:
     void initialize();
-    QString currentSession();
-    void setCurrentSession(QString session);
+
 
     void checkPasswordResetButton();
     void initializeUserList();
@@ -217,6 +218,7 @@ private:
     int nwcheckcount;
     QString realM;
     bool ctrlClicked;
+    QString currentSessionStr;
 
 
     QRect left = QRect(52,25,100,110);

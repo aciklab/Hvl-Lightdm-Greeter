@@ -157,6 +157,8 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         QObject::connect(m_SettingsForm, &SettingsForm::sendNWStatusSignal, this, &MainWindow::receiveNetworkStatus);
         QObject::connect(this, &MainWindow::sendNetworkStatustoChilds, m_LoginForm, &LoginForm::stopWaitOperation);
         QObject::connect(m_LoginForm, &LoginForm::selectKeyboard, m_SettingsForm, &SettingsForm::keyboardSelectSlot);
+        QObject::connect(m_SettingsForm, &SettingsForm::sendSessionInfo, m_LoginForm, &LoginForm::setCurrentSession);
+        QObject::connect(m_LoginForm, &LoginForm::sendCurrentUser, m_SettingsForm, &SettingsForm::receiveCurrentUser);
         keyboardInit();
 
     }
@@ -215,8 +217,13 @@ void MainWindow::setBackground(bool start)
     rect = QApplication::desktop()->screenGeometry(m_Screen);
     //QRect rect = QApplication::desktop()->screenGeometry(m_Screen);
     QString pathToBackgroundImageDir = greeterSettings.value(BACKGROUND_IMAGE_DIR_KEY).toString();
+    QString pathToBackgroundImage = greeterSettings.value(BACKGROUND_IMAGE_KEY).toString();
 
-    if(!pathToBackgroundImageDir.isNull()){
+    if(!pathToBackgroundImage.isNull() && !pathToBackgroundImage.isEmpty()){
+
+         backgroundImage = QImage(pathToBackgroundImage);
+
+    }else if(!pathToBackgroundImageDir.isNull() && !pathToBackgroundImageDir.isEmpty()){
 
         if(pathToBackgroundImageDir[pathToBackgroundImageDir.length() - 1 ] != '/')
             pathToBackgroundImageDir += '/';
@@ -250,7 +257,7 @@ void MainWindow::setBackground(bool start)
 
     }
     else{
-        QString pathToBackgroundImage = ":/resources/bgs/bg1.jpg";
+        pathToBackgroundImage = ":/resources/bgs/bg1.jpg";
         backgroundImage = QImage(pathToBackgroundImage);
 
 
