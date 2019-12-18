@@ -37,38 +37,11 @@ void NetworkDialog::SetText(QString Text){
 void NetworkDialog::addService(QString Text){
 
 
-    ui->servicecomboBox->addItem(Text, Text);
+
 }
 
 static bool hidden = false;
 
-void NetworkDialog::on_restartservicebutton_clicked()
-{
-    char *setcommand;
-    char cmd_array[256];
-    memset(cmd_array,0,sizeof(cmd_array));
-
-    QString actionName = ui->servicecomboBox->itemData(ui->servicecomboBox->currentIndex()).toString();
-
-    if(actionName == NULL)
-        return;
-
-
-    QByteArray ba;
-    ba = actionName.toLatin1();
-    setcommand = ba.data();
-
-    close();
-    hidden  =true;
-
-    sprintf(cmd_array, "systemctl restart %s &",setcommand);
-    system(cmd_array);
-
-    emit servicereset();
-
-    logButtonClicked = false;
-
-}
 
 void NetworkDialog::on_logbutton_clicked()
 {

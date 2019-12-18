@@ -324,19 +324,19 @@ void SettingsForm::on_NwpushButton_clicked()
 
     }
 
-    nwDialog->setFixedHeight((line_count + 1) * 20 + 50);
-    nwDialog->setFixedWidth(this->width() + 100);
+    nwDialog->setFixedHeight((line_count + 1) * 30 + 50);
+    nwDialog->setFixedWidth(this->width() + 200);
     QPoint pt_g = QWidget::mapToGlobal(this->pos());
     QPoint pt = this->pos();
 
-    uint labelx = ((pt_g.x() - pt.x())+ (this->width() - 100)/2) - ((nwDialog->width()) / 2);
+    uint labelx = ((pt_g.x() - pt.x())+ (this->width() - 200)/2) - ((nwDialog->width()) / 2);
 
     nwDialog->logButtonClicked = false;
     nwDialog->SetText(networkInfoString);
 
-    nwDialog->setGeometry(labelx, (pt_g.y() - pt.y()) - ((line_count + 1) * 20 + 50), 0, 0);
-    nwDialog->setFixedHeight((line_count + 1) * 20 + 50);
-    nwDialog->setFixedWidth(this->width() + 100);
+    nwDialog->setGeometry(labelx, (pt_g.y() - pt.y()) - ((line_count + 1) * 30 + 50), 0, 0);
+    nwDialog->setFixedHeight((line_count + 1) * 30 + 50);
+    nwDialog->setFixedWidth(this->width() + 200);
 
     nwDialog->exec();
     nwDialog->clearFocus();

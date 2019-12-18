@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>408</width>
-    <height>109</height>
+    <width>260</width>
+    <height>165</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -129,9 +129,9 @@ QComboBox::down-arrow {
      <widget class="QComboBox" name="kybrdcomboBox">
       <property name="geometry">
        <rect>
-        <x>167</x>
-        <y>60</y>
-        <width>135</width>
+        <x>115</x>
+        <y>65</y>
+        <width>140</width>
         <height>45</height>
        </rect>
       </property>
@@ -361,8 +361,8 @@ QComboBox::down-arrow {
      <widget class="QPushButton" name="NwpushButton">
       <property name="geometry">
        <rect>
-        <x>310</x>
-        <y>60</y>
+        <x>50</x>
+        <y>65</y>
         <width>60</width>
         <height>45</height>
        </rect>
@@ -408,10 +408,10 @@ QComboBox::down-arrow {
      <widget class="QLabel" name="hostnamelabel">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>201</width>
-        <height>41</height>
+        <x>44</x>
+        <y>5</y>
+        <width>211</width>
+        <height>55</height>
        </rect>
       </property>
       <property name="text">
@@ -424,9 +424,9 @@ QComboBox::down-arrow {
      <widget class="QComboBox" name="sessioncomboBox">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>60</y>
-        <width>150</width>
+        <x>115</x>
+        <y>115</y>
+        <width>140</width>
         <height>45</height>
        </rect>
       </property>

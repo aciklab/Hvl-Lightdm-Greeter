@@ -26,7 +26,6 @@ Q_SIGNALS:
     void servicereset(void);
 
 private slots:
-    void on_restartservicebutton_clicked();
 
     void on_logbutton_clicked();
 

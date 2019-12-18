@@ -1186,7 +1186,7 @@ void LoginForm::LoginTimerFinished(){
 
     case 0:
 
-        qInfo() << "Login start for " + toolButtons[(lastuserindex + 1) % 3]->text().trimmed();
+
 
         ui->waitlabel->setText(tr("Authenticating"));
         pageTransition(ui->waitpage);
@@ -1213,6 +1213,7 @@ void LoginForm::LoginTimerFinished(){
         } else{
             userid = toolButtons[(lastuserindex+ 1) % 3]->text();
         }
+        qInfo() << "Login start for " + userid;
 
         qInfo() << "User name is sending";
         m_Greeter.authenticate(userid.trimmed());
