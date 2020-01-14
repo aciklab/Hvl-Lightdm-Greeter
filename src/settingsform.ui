@@ -443,6 +443,32 @@ QComboBox::down-arrow {
        <bool>false</bool>
       </property>
      </widget>
+     <widget class="QPushButton" name="Batterybutton">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>115</y>
+        <width>60</width>
+        <height>45</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="hvl-lightdm-greeter.qrc">
+        <normaloff>:/resources/battery_critical.png</normaloff>:/resources/battery_critical.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>35</width>
+        <height>35</height>
+       </size>
+      </property>
+     </widget>
     </widget>
    </item>
   </layout>

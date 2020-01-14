@@ -12,6 +12,7 @@
 #include <QApplication>
 #include <QThread>
 #include <QMessageBox>
+#include <QDir>
 
 #include "settings.h"
 #include "networkdialog.h"
@@ -50,13 +51,13 @@ SettingsForm::SettingsForm(QWidget *parent) :
 
     //ui->sessioncomboBox->setModel(&sessionsModel);
 
-   // qDebug() <<"---"<< sessionsModel.rowCount(QModelIndex());
+    // qDebug() <<"---"<< sessionsModel.rowCount(QModelIndex());
 
     //qm.setPixel(1,qRgba(33, 67, 106, 100));
     //QPixmap iconsession(":/resources/login_1_1_bos.png");
     QPixmap iconsession(2,30);
 
-   // iconsession.fill(qRgba(0x1B, 0x6C, 0xBD, 0xFF));
+    // iconsession.fill(qRgba(0x1B, 0x6C, 0xBD, 0xFF));
     iconsession.fill(QColor(0x1B, 0x6C, 0xBD, 0));
 
     for(i = 0; i< sessionsModel.rowCount(QModelIndex()); i++){
@@ -65,9 +66,9 @@ SettingsForm::SettingsForm(QWidget *parent) :
 
     }
 
-   // ui->sessioncomboBox->setItemIcon(1, QIcon(iconsession));
+    // ui->sessioncomboBox->setItemIcon(1, QIcon(iconsession));
     //ui->sessioncomboBox->setItemIcon(0, QIcon(iconsession));
-     //ui->sessioncomboBox->setItemIcon(-1, QIcon(iconsession));
+    //ui->sessioncomboBox->setItemIcon(-1, QIcon(iconsession));
 
 
     user = Cache().getLastUser();
@@ -112,6 +113,7 @@ SettingsForm::SettingsForm(QWidget *parent) :
 
     connect(this, SIGNAL(selectKeyboard(int)), this, SLOT(setKeyboardLayout(int)));
 
+    batteryInit();
 
     checkNetwork();
 }
@@ -127,12 +129,10 @@ SettingsForm::~SettingsForm()
 
 void SettingsForm::initialize(){
 
-
     serviceList = Settings().getservices();
-
-    getKeyboardLayouts();
-    ui->kybrdcomboBox->setCurrentText("tr");
     connect(ui->kybrdcomboBox, SIGNAL(activated(int)), this, SLOT(setKeyboardLayout(int)));
+    getKeyboardLayouts();
+
     nwButtonPressed = false;
 }
 
@@ -216,6 +216,8 @@ void SettingsForm::checkNetwork(){
     uint ip_count = 0;
     int res;
 
+
+    checkBattery();
     int runningServices = 0;
 
     ip_string += "  IP:\n";
@@ -352,6 +354,7 @@ void SettingsForm::getKeyboardLayouts(){
     QString  tmpstring;
     QString outstr;
     int read_size;
+    QString cachedlayout;
 
     tmpstring = "";
 
@@ -393,10 +396,28 @@ void SettingsForm::getKeyboardLayouts(){
     ui->kybrdcomboBox->addItem(iconx, "Türkçe F", "tr f");
     ui->kybrdcomboBox->addItem(iconx, "English Q", "us");
 
+    cachedlayout = Cache().getUserKeyboard();
+
+    if(!cachedlayout.isEmpty() && !cachedlayout.isNull())
+        tmpstring = cachedlayout;
 
     qInfo() << "Current Keyboard layout is: " +  tmpstring;
     emit sendKeyboardLayout(tmpstring);
     current_layout = tmpstring;
+
+    QByteArray ba;
+    char *setcommand;
+    char cmd_array[256];
+
+    ba = tmpstring.toLatin1();
+
+    setcommand = ba.data();
+
+    sprintf(cmd_array, "/usr/bin/setxkbmap %s &",setcommand);
+
+    system(cmd_array);
+
+    Cache().setUserKeyboard(tmpstring);
 
 
     if(ui->kybrdcomboBox->findData(tmpstring) == -1){
@@ -433,6 +454,8 @@ void SettingsForm::setKeyboardLayout(int index){
     sprintf(cmd_array, "/usr/bin/setxkbmap %s &",setcommand);
 
     system(cmd_array);
+
+    Cache().setUserKeyboard(actionName);
 
     //set onscreen keyboard layout
     emit sendKeyboardLayout(actionName);
@@ -592,4 +615,71 @@ void SettingsForm::on_sessioncomboBox_activated(int index)
 {
     QString sessionname = ui->sessioncomboBox->itemData(index).toString();
     emit sendSessionInfo(sessionname);
+}
+
+
+
+void SettingsForm::batteryInit(void){
+
+    QDir pathDir("/sys/class/power_supply/BAT0");
+    if (pathDir.exists()){
+
+        ui->Batterybutton->setToolTipDuration(10000);
+        batteryExist = true;
+        ui->Batterybutton->show();
+    }else{
+        batteryExist = false;
+        ui->Batterybutton->hide();
+    }
+}
+
+void SettingsForm::checkBattery(void){
+
+    QFile file("/sys/class/power_supply/BAT0/capacity");
+    int level;
+
+    if(batteryExist){
+
+        if(!file.open(QIODevice::ReadOnly))
+        {
+            return;
+        }
+
+        QTextStream instream(&file);
+        QString line = instream.readLine();
+
+        level = line.toInt();
+
+        if(level == 100){
+
+            QPixmap iconx(":/resources/battery_full.png");
+            ui->Batterybutton->setIcon(iconx);
+        }else if(level <= 15){
+
+            QPixmap iconx(":/resources/battery_critical.png");
+            ui->Batterybutton->setIcon(iconx);
+
+        }else if (level <= 35){
+
+            QPixmap iconx(":/resources/battery_low.png");
+            ui->Batterybutton->setIcon(iconx);
+
+        }else if(level <= 65){
+            QPixmap iconx(":/resources/battery_normal.png");
+            ui->Batterybutton->setIcon(iconx);
+
+
+        }else if(level <= 90){
+
+            QPixmap iconx(":/resources/battery_good.png");
+            ui->Batterybutton->setIcon(iconx);
+
+        }
+
+        ui->Batterybutton->setToolTip("%" + line);
+
+        file.close();
+
+    }
+
 }

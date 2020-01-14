@@ -87,7 +87,8 @@ private:
 #define SERVICE_NOT_WORKING -1
 #define SERVICE_NOT_EXIST -2
     int CheckService(QString Service);
-
+    void batteryInit(void);
+    void checkBattery(void);
 
 
 
@@ -108,6 +109,7 @@ private:
     bool networkOK;
     NetworkDialog *nwDialog;
     bool ctrlClicked;
+    bool batteryExist;
 
 
 

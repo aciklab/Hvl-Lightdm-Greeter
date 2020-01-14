@@ -17,5 +17,10 @@
         <file>resources/keyboard.png</file>
         <file>resources/restart.png</file>
         <file>resources/sleep.png</file>
+        <file>resources/battery_critical.png</file>
+        <file>resources/battery_full.png</file>
+        <file>resources/battery_good.png</file>
+        <file>resources/battery_low.png</file>
+        <file>resources/battery_normal.png</file>
     </qresource>
 </RCC>

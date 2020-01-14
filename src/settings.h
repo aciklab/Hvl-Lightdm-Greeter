@@ -19,6 +19,8 @@ public:
     void setLastUser(QString userId) { setValue("last-user", userId); }
     QString getLastSession(QString userId) { return value(userId + "/last-session").toString(); }
     void setLastSession(QString userId, QString session) { setValue(userId + "/last-session", session); }
+    void setUserKeyboard(QString keyboard) { setValue("keyboard", keyboard); }
+    QString getUserKeyboard() { return value("keyboard").toString(); }
 };
 
 #define CONFIG_FILE "/usr/share/lightdm/lightdm-hvl-greeter.conf.d/hvl-lightdm-greeter.conf"
