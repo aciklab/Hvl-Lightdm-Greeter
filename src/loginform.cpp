@@ -467,59 +467,6 @@ void LoginForm::preparetoLogin(){
 }
 
 
-void LoginForm::addUsertoCache(QString user_name){
-
-    int i;
-    int nullfound = 0;
-
-    for(i = 0; i< 6; i++){
-        if(userList[i].compare(user_name) == 0)
-            userList[i].clear();
-
-        if(i >= Settings().cachedusercount() || userList[i].compare(tr("Other User")) == 0)
-            userList[i].clear();
-
-        if(userList[i].isNull() || userList[i].isEmpty())
-            nullfound++;
-    }
-
-    if(userList[0].isNull() || userList[0].isEmpty()){
-        userList[0] = user_name;
-    }else{
-
-        if(nullfound > 0){
-            for(i = 4; i >= 0; i--){
-                if((userList[i].isNull() || userList[i].isEmpty()) && i != 0){
-
-                    userList[i] = userList[i-1];
-                    userList[i-1].clear();
-
-                }
-            }
-
-            userList[0] = user_name;
-
-        }else{
-            userList[4] = userList[3];
-            userList[3] = userList[2];
-            userList[2] = userList[1];
-            userList[1] = userList[0];
-            userList[0] = user_name;
-        }
-
-    }
-
-    for(i = 0; i < Settings().cachedusercount(); i++){
-        if(!userList[i].isNull() && !userList[i].isEmpty())
-            Cache().setLastUsertoIndex(userList[i], i);
-        else
-            Cache().setLastUsertoIndex("", i);
-
-    }
-
-    userList[total_user_count - 1] = tr("Other User");
-
-}
 
 
 void LoginForm::on_pushButton_resetpwd_clicked()
@@ -613,13 +560,13 @@ void LoginForm::initializeUserList(){
     for(int i = 0; i < Settings().cachedusercount(); i++){
         userList[i] = Cache().getLastUserfromIndex(i);
 
-        if(!userList[i].isNull() && !userList[i].isEmpty() )
+        if(!userList[i].isNull() && !userList[i].isEmpty() && userList[i].length() > 2)
             total_user_count++;
     }
 
     for(int i = 0; i < 5; i++){
-        if((userList[i].isNull() || userList[i].isEmpty()) && i < 4){
-
+        if((userList[i].isNull() || userList[i].isEmpty() || userList[i].length() < 3) && i < 4){
+            userList[i].clear();
             userList[i] = userList[i + 1];
             userList[i + 1].clear();
         }
@@ -637,8 +584,6 @@ void LoginForm::initializeUserList(){
 
     total_user_count++;
     usersbuttonReposition();
-
-
 
 
     if(total_user_count == 1){
@@ -695,7 +640,92 @@ void LoginForm::initializeUserList(){
     current_user_button = 1;
     currentUserIndex = 0;
 
+
 }
+
+void LoginForm::addUsertoCache(QString user_name){
+
+    int i;
+    int nullfound = 0;
+
+    for(i = 0; i< 5; i++){
+
+        if(userList[0].isNull() || userList[0].isEmpty() ||  userList[0].length() < 3){
+            userList[i].clear();
+        }
+
+        if(userList[i].compare(user_name) == 0)
+            userList[i].clear();
+
+        if(i >= Settings().cachedusercount() || userList[i].compare(tr("Other User")) == 0)
+            userList[i].clear();
+
+        if(userList[i].isNull() || userList[i].isEmpty() || userList[i].length() < 3){
+            nullfound++;
+            userList[i].clear();
+        }
+    }
+
+    if(userList[0].isNull() || userList[0].isEmpty() ||  userList[0].length() < 3){
+        userList[0].clear();
+        userList[0] = user_name;
+    }else{
+
+        if(nullfound > 0){
+
+
+
+            for(i = 4; i >= 1; i--){
+                if((userList[i].isNull() || userList[i].isEmpty() || userList[i].length() < 3) && i != 0){
+
+
+                    if((!userList[i - 1].isNull() && !userList[i - 1].isEmpty() && userList[i - 1].length() > 2) && i != 0){
+                        userList[i].clear();
+                        userList[i] = userList[i-1];
+                        userList[i-1].clear();
+                    }else{
+                        userList[i-1].clear();
+                    }
+
+                }
+            }
+
+            userList[0] = user_name;
+
+            for(i = 0; i < 5; i++){
+
+                if((userList[i].isNull() || userList[i].isEmpty() || userList[i].length() < 3) && i != 0){
+                     userList[i] = userList[i+ 1];
+                     userList[i+ 1].clear();
+                }
+
+            }
+
+
+        }else{
+            userList[4] = userList[3];
+            userList[3] = userList[2];
+            userList[2] = userList[1];
+            userList[1] = userList[0];
+            userList[0] = user_name;
+        }
+
+    }
+
+    for(i = 0; i < Settings().cachedusercount(); i++){
+        if(!userList[i].isNull() && !userList[i].isEmpty() && userList[i].length() > 2)
+            Cache().setLastUsertoIndex(userList[i], i);
+        else
+            Cache().setLastUsertoIndex("", i);
+
+    }
+
+    userList[total_user_count - 1] = tr("Other User");
+
+}
+
+
+
 
 void LoginForm::userButtonClicked(){
 
@@ -1217,6 +1247,7 @@ void LoginForm::LoginTimerFinished(){
 
         qInfo() << "User name is sending";
         m_Greeter.authenticate(userid.trimmed());
+       // addUsertoCache(userid.trimmed());//todo delete
         loginTimerState = 2;
         messageReceived = false;
         promptCheckCounter = 0;
