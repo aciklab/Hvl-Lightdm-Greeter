@@ -164,7 +164,7 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
 
     }else{
 
-        if(mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
+        if(QApplication::desktop()->screenCount() > 1 && mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
             if(mainWindowsList[1]->pos().x() == mainWindowsList[0]->pos().x()){
                 mainWindowsList[1]->hide();
                 mirrored = 1;
@@ -621,7 +621,7 @@ void MainWindow::checkNetwork(){
 
 void MainWindow::receiveNetworkStatus(bool connected){
 
-    if(mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
+    if(QApplication::desktop()->screenCount() > 1 && mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
         if(mainWindowsList[1]->pos().x() == mainWindowsList[0]->pos().x()){
             mainWindowsList[1]->hide();
             mirrored = 1;
