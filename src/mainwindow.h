@@ -79,6 +79,8 @@ private:
     static MainWindow **mainWindowsList;
     QPoint mouseppos;
     QLabel *hostNameLabel;
+    int initialScreenset;
+    int mirrored;
 
 #ifdef SCREENKEYBOARD
     Keyboard *screenKeyboard;

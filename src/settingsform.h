@@ -108,7 +108,7 @@ private:
     bool nwButtonPressed;
     bool networkOK;
     NetworkDialog *nwDialog;
-    bool ctrlClicked;
+    bool winClicked;
     bool batteryExist;
 
 

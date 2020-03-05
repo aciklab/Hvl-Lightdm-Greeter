@@ -217,7 +217,7 @@ private:
     bool passwordChangeError;
     int nwcheckcount;
     QString realM;
-    bool ctrlClicked;
+    bool winClicked;
     QString currentSessionStr;
 
 

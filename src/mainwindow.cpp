@@ -50,9 +50,10 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
     setGeometry(screenRect);
 
 
-    if(mainWindowsList != NULL)
+    if(mainWindowsList != NULL){
         mainWindowsList[m_Screen] = this;
 
+    }
 
     previousScreen = 1;
     setBackground(true);
@@ -67,7 +68,7 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         }
 
         qApp->installEventFilter(this);
-
+        mirrored = 0;
         currentScreen = m_Screen;
 
         widgetScreen = m_Screen;
@@ -161,6 +162,15 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         QObject::connect(m_LoginForm, &LoginForm::sendCurrentUser, m_SettingsForm, &SettingsForm::receiveCurrentUser);
         keyboardInit();
 
+    }else{
+
+        if(mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
+            if(mainWindowsList[1]->pos().x() == mainWindowsList[0]->pos().x()){
+                mainWindowsList[1]->hide();
+                mirrored = 1;
+            }
+        }
+
     }
 
 }
@@ -221,7 +231,7 @@ void MainWindow::setBackground(bool start)
 
     if(!pathToBackgroundImage.isNull() && !pathToBackgroundImage.isEmpty()){
 
-         backgroundImage = QImage(pathToBackgroundImage);
+        backgroundImage = QImage(pathToBackgroundImage);
 
     }else if(!pathToBackgroundImageDir.isNull() && !pathToBackgroundImageDir.isEmpty()){
 
@@ -482,26 +492,40 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
         QPoint globalCursorPos = QCursor::pos();
 
+        if(mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
+            if(mainWindowsList[1]->pos().x() == mainWindowsList[0]->pos().x()){
+                mainWindowsList[1]->hide();
+                mirrored = 1;
+            }
+        }
+
+
+        if(mirrored)
+            mainWindowsList[1]->hide();
+
         int mousescreen = qApp->desktop()->screenNumber(globalCursorPos);
 
         if(mousescreen != currentScreen){
 
+            // mainWindowsList[previousScreen]->hide();
             previousScreen = currentScreen;
             currentScreen = mousescreen;
+
+
 
             QRect prvScreenRect = QApplication::desktop()->screenGeometry(previousScreen);
             QRect curScreenRect = QApplication::desktop()->screenGeometry(currentScreen);
 
             for (int i = 0; i < QApplication::desktop()->screenCount(); i++){
                 if(mainWindowsList[i]->pos().x() == prvScreenRect.x() && mainWindowsList[i]->pos().y() == prvScreenRect.y()){
-
                     mainWindowsList[i]->hide();
                     mainWindowsList[i]->setGeometry(curScreenRect);
+
                     mainWindowsList[i]->move(QPoint(curScreenRect.x(), curScreenRect.y()));
                     mainWindowsList[i]->m_Screen = currentScreen;
                     mainWindowsList[i]->setBackground(false);
                     mainWindowsList[i]->show();
-
+                    // mainWindowsList[previousScreen]->hide();
 
                 }else if(mainWindowsList[i]->pos().x() == curScreenRect.x() && mainWindowsList[i]->pos().y() == curScreenRect.y()){
 
@@ -514,13 +538,19 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 
                     mainWindowsList[i]->show();
 
+
                 }
 
             }
 
+        }else{
         }
 
     }
+
+    if(mirrored)
+        mainWindowsList[1]->hide();
+
     return false;
 }
 
@@ -590,6 +620,13 @@ void MainWindow::checkNetwork(){
 
 
 void MainWindow::receiveNetworkStatus(bool connected){
+
+    if(mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
+        if(mainWindowsList[1]->pos().x() == mainWindowsList[0]->pos().x()){
+            mainWindowsList[1]->hide();
+            mirrored = 1;
+        }
+    }
 
     emit sendNetworkStatustoChilds(connected);
 

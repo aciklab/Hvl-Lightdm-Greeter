@@ -41,7 +41,7 @@ SettingsForm::SettingsForm(QWidget *parent) :
     ui->setupUi(this);
 
     initialize();
-    ctrlClicked = false;
+    winClicked = false;
 
 
     qDebug() << tr("SettingsForm is initializing");
@@ -510,7 +510,7 @@ void SettingsForm::keyPressEvent(QKeyEvent *event)
 {
 
     if (event->key() == Qt::Key_Up || event->key() == Qt::Key_Down) {
-        ctrlClicked = false;
+        winClicked = false;
         if(ui->kybrdcomboBox->isActiveWindow()){
 
         }
@@ -524,27 +524,27 @@ void SettingsForm::keyPressEvent(QKeyEvent *event)
         }
     }else if(event->key() == Qt::Key_Escape){
 
-        ctrlClicked = false;
+        winClicked = false;
         clearFocus();
 
         ui->kybrdcomboBox->clearFocus();
         ui->NwpushButton->clearFocus();
 
 
-    } else if(event->key() == Qt::Key_Control){
+    } else if(event->key() == Qt::Key_Meta){
 
-        ctrlClicked = true;
+        winClicked = true;
 
 
-    }else if(event->key() == Qt::Key_Shift){
+    }else if(event->key() == Qt::Key_Space){
 
-        if(ctrlClicked)
+        if(winClicked)
             keyboardSelect();
-        ctrlClicked = false;
+        winClicked = false;
 
     }else{
 
-        ctrlClicked = false;
+        winClicked = false;
         QWidget::keyPressEvent(event);
     }
 

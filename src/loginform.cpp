@@ -68,7 +68,7 @@ LoginForm::LoginForm(QWidget *parent) :
 
     ui->setupUi(this);
     initialize();
-    ctrlClicked = false;
+    winClicked = false;
 
 }
 
@@ -1011,7 +1011,7 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
 
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
 
-        ctrlClicked = false;
+        winClicked = false;
         if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->resetpage))
             on_resetpasswordButton_clicked();
         else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->warningpage)){
@@ -1035,7 +1035,7 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_Escape) {
 
-        ctrlClicked = false;
+        winClicked = false;
 #ifdef SCREENKEYBOARD
         emit sendKeyboardCloseRequest();
 #endif
@@ -1060,19 +1060,19 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
     }
     else if ((event->key() == Qt::Key_Left || event->key() == Qt::Key_Right) &&
              ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->loginpage)) {
-        ctrlClicked = false;
+        winClicked = false;
         userSelectStateMachine(event->key(), -1);
-    }else if (event->key() == Qt::Key_Control){
-        ctrlClicked = true;
-    }else if (event->key() == Qt::Key_Shift){
+    }else if (event->key() == Qt::Key_Meta || event->key() == Qt::Key_Meta ){
+        winClicked = true;
+    }else if (event->key() == Qt::Key_Space){
 
-        if(ctrlClicked)
+        if(winClicked)
             emit selectKeyboard();
 
-        ctrlClicked = false;
+        winClicked = false;
     }
     else {
-        ctrlClicked = false;
+        winClicked = false;
         QWidget::keyPressEvent(event);
     }
 
