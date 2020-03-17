@@ -66,7 +66,7 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
             mainWindowsList = (MainWindow**)malloc(sizeof(MainWindow*) * QApplication::desktop()->screenCount());
             mainWindowsList[m_Screen] = this;
         }
-        setMainBackground(true);
+
         qApp->installEventFilter(this);
         mirrored = 0;
         currentScreen = m_Screen;
@@ -144,7 +144,7 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         m_ClockForm->show();
 
 
-
+         setMainBackground(true);
 
         // This hack ensures that the primary screen will have focus
         // if there are more screens (move the mouse cursor in the center
@@ -335,11 +335,11 @@ void MainWindow::setMainBackground(bool start)
         finalImage = resizeImage(rect, backgroundImage);
         // screenImage = &backgroundImage;
 
-        if(!formshidden && m_LoginForm != NULL ){
-            QGraphicsOpacityEffect *blur = new QGraphicsOpacityEffect;
-            blur->setOpacity(0.5);
+        if((!formshidden) && m_LoginForm != NULL ){
+            QGraphicsOpacityEffect *opacitr = new QGraphicsOpacityEffect;
+            opacitr->setOpacity(0.5);
 
-            QImage result = applyEffectToImage(finalImage, blur, 0);
+            QImage result = applyEffectToImage(finalImage, opacitr, 0);
 
             QBrush brush(result);
             palette.setBrush(this->backgroundRole(), brush);
@@ -407,10 +407,10 @@ void MainWindow::setOtherBackgrounds(QImage *backgroundImage, bool start, bool f
         tmp_image = resizeImage(rect, *backgroundImage);
 
         if(!formshidden && m_LoginForm != NULL ){
-            QGraphicsOpacityEffect *blur = new QGraphicsOpacityEffect;
-            blur->setOpacity(0.5);
+            QGraphicsOpacityEffect *opacity = new QGraphicsOpacityEffect;
+            opacity->setOpacity(0.5);
 
-            QImage result = applyEffectToImage(tmp_image, blur, 0);
+            QImage result = applyEffectToImage(tmp_image, opacity, 0);
 
             QBrush brush(result);
             palette.setBrush(this->backgroundRole(), brush);
@@ -674,7 +674,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 
 
 void MainWindow::receiveKeyboardRequest(QPoint from, int width){
-    showForms();
 
     if(checkTouchScreen())
         return;
@@ -761,7 +760,7 @@ int MainWindow::checkTouchScreen(){
 }
 
 void MainWindow::receiveKeyboardClose(){
-    showForms();
+
     screenKeyboard->close();
 
     emit keyboardClosed();
@@ -769,7 +768,7 @@ void MainWindow::receiveKeyboardClose(){
 }
 
 void MainWindow::sendKeyPress(QString key){
-    showForms();
+
     emit sendKeytoChilds(key);
 
 }
@@ -843,6 +842,10 @@ void MainWindow::showForms(void){
     if(!m_LoginForm){
         return;
     }
+
+
+    if(!formshidden)
+        return;
 
     if(m_LoginForm){
         m_LoginForm->showAll();
@@ -944,7 +947,7 @@ void MainWindow::backgroundTimerCallback(void){
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    showForms();
+    //showForms();
     QWidget::keyPressEvent(event);
 }
 void MainWindow::resetHideFormsTimer(void){
