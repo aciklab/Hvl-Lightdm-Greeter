@@ -144,6 +144,8 @@ private slots:
 
     void on_pushButton_left_clicked();
 
+    void on_passwordInput_textEdited(const QString &arg1);
+
 private:
     void initialize();
 
@@ -228,6 +230,7 @@ private:
     bool winClicked;
     QString currentSessionStr;
     bool ishidden = false;
+    bool justshowed = false;
 
 
 

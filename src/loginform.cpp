@@ -1027,7 +1027,14 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
 
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
 
+
+
         winClicked = false;
+
+        if(justshowed){
+            justshowed = false;
+            return;
+        }
         if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->resetpage))
             on_resetpasswordButton_clicked();
         else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->warningpage)){
@@ -1043,10 +1050,9 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
                 ui->passwordInput->setFocus();
             } else if(ui->userInput->hasFocus() && !ui->userInput->isHidden() && ui->passwordInput->text().isEmpty()){
                 ui->passwordInput->setFocus();
-            }else{
+            }else {
                 startLogin();
             }
-
         }
     }
     else if (event->key() == Qt::Key_Escape) {
@@ -1092,7 +1098,7 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
         QWidget::keyPressEvent(event);
     }
 
-
+    justshowed = false;
 }
 
 void LoginForm::keyReleaseEvent(QKeyEvent *event){
@@ -2491,6 +2497,7 @@ void LoginForm::hideAll(void){
     //ui->usersframe->hide();
     // ui->userspage->hide();
     ui->passwordInput->hide();
+    ui->passwordInput->clearFocus();
     //ui->userInput->hide();
 
     hide();
@@ -2518,9 +2525,14 @@ void LoginForm::showAll(void){
             ui->passwordInput->setFocus();
         else
             ui->userInput->setFocus();
-
+        justshowed = true;
     }
 
     ishidden = false;
 }
 
+
+void LoginForm::on_passwordInput_textEdited(const QString &arg1)
+{
+    justshowed = false;
+}
