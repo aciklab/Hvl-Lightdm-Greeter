@@ -32,13 +32,14 @@ private slots:
 
     void on_backButton_clicked();
 
-    void on_backspace_clicked();
 
     void on_shift_toggled(bool checked);
 
     void on_rightshift_toggled(bool checked);
 
     void on_Buttonaltgr_toggled(bool checked);
+
+    void on_Buttonbackspace_clicked();
 
 public slots:
     void setKeyboardLayout(QString &layout);

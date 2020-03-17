@@ -455,6 +455,9 @@ QComboBox::down-arrow {
         <height>45</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="text">
        <string/>
       </property>

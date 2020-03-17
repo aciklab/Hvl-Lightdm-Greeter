@@ -131,6 +131,7 @@ void LoginForm::initialize()
 
     if (user.isEmpty() || user.isNull()) {
         user = m_Greeter.selectUserHint();
+        ui->pushButton_right->hide();
         currentSessionStr = m_Greeter.defaultSessionHint();
     }else{
         currentSessionStr = Cache().getLastSession(user);
@@ -179,11 +180,15 @@ void LoginForm::initialize()
 
 
     if(Settings().waittimeout() == 0){
-
-        //ui->userInput->show();
-        ui->userInput->setFocus();
-
         pageTransition(ui->loginpage);
+        //ui->userInput->show();
+
+        if(ui->userInput->isHidden())
+            ui->passwordInput->setFocus();
+        else
+            ui->userInput->setFocus();
+
+
 
 
     }
@@ -193,7 +198,7 @@ void LoginForm::initialize()
             qInfo() << "Waiting for network and services";
         }
     }
-
+    ui->pushButton_left->hide();
     QWidget::setTabOrder(ui->userInput, ui->passwordInput);
     QWidget::setTabOrder(ui->oldpasswordinput, ui->newpasswordinput);
     QWidget::setTabOrder(ui->newpasswordinput, ui->newpasswordconfirminput);
@@ -449,7 +454,7 @@ void LoginForm::preparetoLogin(){
     if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->loginpage)){
         ui->passwordInput->setEnabled(true);
         ui->userInput->setEnabled(true);
-        // ui->passwordInput->setFocus();
+        ui->passwordInput->setFocus();
         ui->passwordInput->clear();
     }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->resetpage)){
         ui->newpasswordinput->clear();
@@ -459,7 +464,7 @@ void LoginForm::preparetoLogin(){
         ui->newpasswordconfirminput->setEnabled(true);
         ui->oldpasswordinput->setEnabled(true);
         ui->resetpasswordButton->setEnabled(true);
-        //ui->newpasswordinput->setFocus();
+        ui->newpasswordinput->setFocus();
         needPasswordChange = false;
     }
 
@@ -560,12 +565,12 @@ void LoginForm::initializeUserList(){
     for(int i = 0; i < Settings().cachedusercount(); i++){
         userList[i] = Cache().getLastUserfromIndex(i);
 
-        if(!userList[i].isNull() && !userList[i].isEmpty() && userList[i].length() > 2)
+        if(!userList[i].isNull() && !userList[i].isEmpty() && userList[i].length() > 1)
             total_user_count++;
     }
 
     for(int i = 0; i < 5; i++){
-        if((userList[i].isNull() || userList[i].isEmpty() || userList[i].length() < 3) && i < 4){
+        if((userList[i].isNull() || userList[i].isEmpty() || userList[i].length() < 2) && i < 4){
             userList[i].clear();
             userList[i] = userList[i + 1];
             userList[i + 1].clear();
@@ -648,9 +653,12 @@ void LoginForm::addUsertoCache(QString user_name){
     int i;
     int nullfound = 0;
 
+    if(userList[0].compare(user_name) == 0)
+        return;
+
     for(i = 0; i< 5; i++){
 
-        if(userList[0].isNull() || userList[0].isEmpty() ||  userList[0].length() < 3){
+        if(userList[0].isNull() || userList[0].isEmpty() ||  userList[0].length() < 2){
             userList[i].clear();
         }
 
@@ -660,26 +668,24 @@ void LoginForm::addUsertoCache(QString user_name){
         if(i >= Settings().cachedusercount() || userList[i].compare(tr("Other User")) == 0)
             userList[i].clear();
 
-        if(userList[i].isNull() || userList[i].isEmpty() || userList[i].length() < 3){
+        if(userList[i].isNull() || userList[i].isEmpty() || userList[i].length() < 2){
             nullfound++;
             userList[i].clear();
         }
     }
 
-    if(userList[0].isNull() || userList[0].isEmpty() ||  userList[0].length() < 3){
+    if(userList[0].isNull() || userList[0].isEmpty() ||  userList[0].length() < 2){
         userList[0].clear();
         userList[0] = user_name;
     }else{
 
         if(nullfound > 0){
 
-
-
             for(i = 4; i >= 1; i--){
-                if((userList[i].isNull() || userList[i].isEmpty() || userList[i].length() < 3) && i != 0){
+                if((userList[i].isNull() || userList[i].isEmpty() || userList[i].length() < 2) && i != 0){
 
 
-                    if((!userList[i - 1].isNull() && !userList[i - 1].isEmpty() && userList[i - 1].length() > 2) && i != 0){
+                    if((!userList[i - 1].isNull() && !userList[i - 1].isEmpty() && userList[i - 1].length() > 1) && i != 0){
                         userList[i].clear();
                         userList[i] = userList[i-1];
                         userList[i-1].clear();
@@ -694,9 +700,9 @@ void LoginForm::addUsertoCache(QString user_name){
 
             for(i = 0; i < 5; i++){
 
-                if((userList[i].isNull() || userList[i].isEmpty() || userList[i].length() < 3) && i != 0){
-                     userList[i] = userList[i+ 1];
-                     userList[i+ 1].clear();
+                if((userList[i].isNull() || userList[i].isEmpty() || userList[i].length() < 2) && i != 0){
+                    userList[i] = userList[i+ 1];
+                    userList[i+ 1].clear();
                 }
 
             }
@@ -896,8 +902,9 @@ void LoginForm::animationTimerFinished(){
 
             }
 
-            if(lastuserindex == total_user_count - 1)
+            if(lastuserindex == total_user_count - 1){
                 toolButtons[(lastuserindex + 2) % 3]->hide();
+            }
 
         }else{
 
@@ -956,12 +963,21 @@ void LoginForm::animationTimerFinished(){
             ui->userInput->setText("");
             ui->domainnameLabel->setText("");
             emit sendCurrentUser(QString("Other User"));
-
+            ui->userInput->setFocus();
+            ui->pushButton_right->hide();
 
         }else{
+            ui->pushButton_right->show();
             ui->userInput->hide();
             ui->domainnameLabel->setText(getUserRealm(toolButtons[(lastuserindex + 1) % 3]->text()));
             emit sendCurrentUser(toolButtons[(lastuserindex + 1) % 3]->text());
+            ui->passwordInput->setFocus();
+        }
+
+        if(lastuserindex == 0){
+            ui->pushButton_left->hide();
+        }else{
+            ui->pushButton_left->show();
         }
 
 
@@ -1088,6 +1104,27 @@ void LoginForm::keyReleaseEvent(QKeyEvent *event){
         QWidget::keyReleaseEvent(event);
     }
 
+}
+
+
+void LoginForm::hideEvent(QHideEvent *event){
+#if 0
+    ui->userInput->clear();
+    ui->userInput->clearFocus();
+    ui->passwordInput->clear();
+    ui->passwordInput->clearFocus();
+    //pageTransition(ui->userspage);
+    this->hide();
+    setAttribute(Qt::WA_DontShowOnScreen, true);
+#endif
+}
+
+void LoginForm::showEvent(QHideEvent *event){
+#if 0
+    setAttribute(Qt::WA_DontShowOnScreen, false);
+    this->show();
+    // pageTransition(ui->loginpage);
+#endif
 }
 
 
@@ -1247,7 +1284,9 @@ void LoginForm::LoginTimerFinished(){
 
         qInfo() << "User name is sending";
         m_Greeter.authenticate(userid.trimmed());
-       // addUsertoCache(userid.trimmed());//todo delete
+        // addUsertoCache(userid.trimmed());//todo delete
+        //Cache().setLastUser(userid.trimmed());//todo delete
+
         loginTimerState = 2;
         messageReceived = false;
         promptCheckCounter = 0;
@@ -1944,6 +1983,11 @@ void LoginForm::pageTransition(QWidget *Page){
         if(!loginStartFlag)
             ui->messagelabel->clear();
 
+        if(ui->userInput->isHidden())
+            ui->passwordInput->setFocus();
+        else
+            ui->userInput->setFocus();
+
         mv->stop();
     }
     else if(Page == ui->warningpage){
@@ -1953,6 +1997,9 @@ void LoginForm::pageTransition(QWidget *Page){
 #endif
         ui->userInput->clearFocus();
         ui->passwordInput->clearFocus();
+
+
+
         mv->stop();
 
 #ifdef SCREENKEYBOARD
@@ -2298,7 +2345,7 @@ bool LoginForm::ifLocalUser(QString username){
 
 
     FILE *fp;
-    char data[512];
+    char data[16096] = {0};
     bool readerror = false;
     QString  tmpstring;
     QString outstr = NULL;
@@ -2416,3 +2463,64 @@ void LoginForm::debugBox(QString mes){
         // do something else
     }
 }
+
+void LoginForm::on_pushButton_right_clicked()
+{
+    userSelectStateMachine(Qt::Key_Right, -1);
+}
+
+void LoginForm::on_pushButton_left_clicked()
+{
+    userSelectStateMachine(Qt::Key_Left, -1);
+}
+
+void LoginForm::showLoginPage(void){
+    pageTransition(ui->loginpage);
+}
+
+
+void LoginForm::hideAll(void){
+
+#if 0
+    QList<QWidget *> allPWidgets = findChildren<QWidget *>(QString(), Qt::FindChildrenRecursively);
+    for(int i = 0; i < allPWidgets.length(); i++)
+        allPWidgets.at(i)->hide();
+#endif
+
+    //pageTransition(ui->userspage);
+    //ui->usersframe->hide();
+    // ui->userspage->hide();
+    ui->passwordInput->hide();
+    //ui->userInput->hide();
+
+    hide();
+    ishidden = true;
+
+}
+
+void LoginForm::showAll(void){
+#if 0
+    QList<QWidget *> allPWidgets = findChildren<QWidget *>(QString(), Qt::FindChildrenRecursively);
+    for(int i = 0; i < allPWidgets.length(); i++)
+        allPWidgets.at(i)->show();
+
+    pageTransition(ui->loginpage);
+#endif
+
+    if(ishidden){
+        show();
+        ui->passwordInput->show();
+        // usersbuttonReposition();
+        //pageTransition(ui->loginpage);
+        //on_cancelResetButton_clicked();
+
+        if(ui->userInput->isHidden())
+            ui->passwordInput->setFocus();
+        else
+            ui->userInput->setFocus();
+
+    }
+
+    ishidden = false;
+}
+

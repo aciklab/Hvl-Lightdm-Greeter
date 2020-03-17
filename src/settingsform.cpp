@@ -650,7 +650,7 @@ void SettingsForm::checkBattery(void){
 
         level = line.toInt();
 
-        if(level == 100){
+        if(level > 90){
 
             QPixmap iconx(":/resources/battery_full.png");
             ui->Batterybutton->setIcon(iconx);

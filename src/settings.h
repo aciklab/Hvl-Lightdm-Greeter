@@ -60,7 +60,8 @@ public:
     QString screenkeyboardenabled(){return value("screen_keyboard").toString(); }
     QString passwordresetenabled(){return value("password-reset-button").toString();}
     QString passwordresetwebpageurl(){return value("password-web-reset-webpage").toString();}
-
+    int screenSaver_timeout() { return value("screen-saver-timeout").toInt(); }
+    int slideShow_timeout() { return value("slide-show-timeout").toInt(); }
 };
 
 

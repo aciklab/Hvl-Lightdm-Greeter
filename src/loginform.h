@@ -54,7 +54,9 @@ public:
     ~LoginForm();
     virtual void setFocus(Qt::FocusReason reason);
     QString getHostname();
-
+    void showLoginPage(void);
+    void hideAll(void);
+     void showAll(void);
 
 public slots:
     void cancelLogin();
@@ -77,6 +79,8 @@ public slots:
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
+    virtual void  hideEvent(QHideEvent *event);
+     virtual void  showEvent(QHideEvent *event);
 
 Q_SIGNALS:
     void sendKeyboardRequest(QPoint from, int width);
@@ -135,6 +139,10 @@ private slots:
     void on_showconfirmPwdButton_pressed();
 
     void on_showconfirmPwdButton_released();
+
+    void on_pushButton_right_clicked();
+
+    void on_pushButton_left_clicked();
 
 private:
     void initialize();
@@ -219,6 +227,8 @@ private:
     QString realM;
     bool winClicked;
     QString currentSessionStr;
+    bool ishidden = false;
+
 
 
     QRect left = QRect(52,25,100,110);

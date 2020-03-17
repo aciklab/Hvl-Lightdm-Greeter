@@ -6,6 +6,10 @@
 #include <QDebug>
 #include <QtNetwork/QtNetwork>
 #include <QMessageBox>
+#include <QTimer>
+#include <QGraphicsEffect>
+#include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
 
 #include "mainwindow.h"
 #include "loginform.h"
@@ -17,13 +21,7 @@
 #include "stdlib.h"
 
 
-#include <X11/Xatom.h>
-#include <X11/Xlib.h>
-#include <QtX11Extras/QX11Info>
-#include <X11/Xcursor/Xcursor.h>
-#include <X11/Xutil.h>
-#include <X11/Xos.h>
-#include <X11/extensions/Xrandr.h>
+
 
 
 #ifdef SCREENKEYBOARD
@@ -37,6 +35,8 @@
 bool MainWindow::selectflag = false;
 int MainWindow::image_index = 0;
 MainWindow **MainWindow::mainWindowsList = NULL;
+
+QImage *MainWindow::screenImage = NULL;
 
 int MainWindow::widgetScreen = 0;
 
@@ -56,7 +56,7 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
     }
 
     previousScreen = 1;
-    setBackground(true);
+
 
     // display login dialog only in the main screen
     
@@ -66,7 +66,7 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
             mainWindowsList = (MainWindow**)malloc(sizeof(MainWindow*) * QApplication::desktop()->screenCount());
             mainWindowsList[m_Screen] = this;
         }
-
+        setMainBackground(true);
         qApp->installEventFilter(this);
         mirrored = 0;
         currentScreen = m_Screen;
@@ -162,8 +162,38 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         QObject::connect(m_LoginForm, &LoginForm::sendCurrentUser, m_SettingsForm, &SettingsForm::receiveCurrentUser);
         keyboardInit();
 
+        int slide_timeout = Settings().slideShow_timeout();
+
+        if(slide_timeout < 1)
+            slide_timeout = 60;
+
+
+
+        backgroundTimer = new QTimer();
+        backgroundTimer->setTimerType(Qt::TimerType::CoarseTimer);
+        backgroundTimer->setInterval(slide_timeout * 1000);
+        backgroundTimer->setSingleShot(false);
+        backgroundTimer->start();
+        connect(backgroundTimer, SIGNAL(timeout()), this, SLOT(backgroundTimerCallback()));
+
+        int screen_saver_timeout = Settings().screenSaver_timeout();
+
+        if(screen_saver_timeout < 1)
+            screen_saver_timeout = 30;
+
+
+        formHideTimer = new QTimer();
+        formHideTimer->setTimerType(Qt::TimerType::CoarseTimer);
+        formHideTimer->setInterval(screen_saver_timeout * 1000);
+        formHideTimer->setSingleShot(false);
+        formHideTimer->start();
+        connect(formHideTimer, SIGNAL(timeout()), this, SLOT(hideForms()));
+
+
     }else{
 
+
+        setOtherBackgrounds(screenImage, true, false);
         if(QApplication::desktop()->screenCount() > 1 && mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
             if(mainWindowsList[1]->pos().x() == mainWindowsList[0]->pos().x()){
                 mainWindowsList[1]->hide();
@@ -172,6 +202,9 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         }
 
     }
+
+
+
 
 }
 
@@ -212,14 +245,14 @@ int MainWindow::getOffset(QString settingsOffset, int maxVal, int defaultVal)
     return offset;
 }
 
-void MainWindow::setBackground(bool start)
+void MainWindow::setMainBackground(bool start)
 {
     QImage backgroundImage;
     QSettings greeterSettings(CONFIG_FILE, QSettings::IniFormat);
 
-    QPalette palette;
+
     QRect rect;
-    QImage finalImage;
+    QPalette palette;
 
 
     this->setStyleSheet("background-position: center;");
@@ -252,6 +285,10 @@ void MainWindow::setBackground(bool start)
                 image_index = 0;
 
             selectflag = true;
+        }else{
+            image_index++;
+            if(image_index >= backgroundImageList.count())
+                image_index = 0;
         }
 
         if (!backgroundImageList.isEmpty()) {
@@ -262,6 +299,8 @@ void MainWindow::setBackground(bool start)
 
         }else{
             qWarning() << tr("Not able to read image at index: ") << image_index << tr(" as image");
+            pathToBackgroundImage = ":/resources/bgs/bg1.jpg";
+            backgroundImage = QImage(pathToBackgroundImage);
         }
 
 
@@ -288,13 +327,33 @@ void MainWindow::setBackground(bool start)
 
         //resizeImage(rect, backgroundImage);//todo:test
 
-        finalImage = resizeImage(rect, backgroundImage);
+        if(screenImage)
+            screenImage->~QImage();
 
-        QBrush brush(finalImage);
+        screenImage = new QImage(backgroundImage);
+
+        finalImage = resizeImage(rect, backgroundImage);
+        // screenImage = &backgroundImage;
+
+        if(!formshidden && m_LoginForm != NULL ){
+            QGraphicsOpacityEffect *blur = new QGraphicsOpacityEffect;
+            blur->setOpacity(0.5);
+
+            QImage result = applyEffectToImage(finalImage, blur, 0);
+
+            QBrush brush(result);
+            palette.setBrush(this->backgroundRole(), brush);
+
+        }else{
+            QBrush brush(finalImage);
+            palette.setBrush(this->backgroundRole(), brush);
+        }
+
+
 
 
         //QBrush brush(backgroundImage.scaled(rect.width(), rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-        palette.setBrush(this->backgroundRole(), brush);
+
     }
     this->setPalette(palette);
 
@@ -312,6 +371,596 @@ void MainWindow::setBackground(bool start)
         }
     }
 }
+
+
+void MainWindow::setOtherBackgrounds(QImage *backgroundImage, bool start, bool forcemain){
+
+
+
+    QRect rect;
+    QPalette palette;
+    QImage tmp_image;
+
+    if(m_LoginForm != NULL && !forcemain)
+        return;
+
+
+
+    this->setStyleSheet("background-position: center;");
+
+    rect = QApplication::desktop()->screenGeometry(m_Screen);
+    //QRect rect = QApplication::desktop()->screenGeometry(m_Screen);
+
+    if(!backgroundImage){
+        palette.setColor(QPalette::Background, qRgb(255, 203, 80));
+        return;
+
+    }
+
+    if (backgroundImage->isNull()) {
+        palette.setColor(QPalette::Background, qRgb(255, 203, 80));
+        return;
+    }
+    else {
+
+
+        tmp_image = resizeImage(rect, *backgroundImage);
+
+        if(!formshidden && m_LoginForm != NULL ){
+            QGraphicsOpacityEffect *blur = new QGraphicsOpacityEffect;
+            blur->setOpacity(0.5);
+
+            QImage result = applyEffectToImage(tmp_image, blur, 0);
+
+            QBrush brush(result);
+            palette.setBrush(this->backgroundRole(), brush);
+
+        }else{
+            QBrush brush(tmp_image);
+            palette.setBrush(this->backgroundRole(), brush);
+        }
+
+
+
+
+        //QBrush brush(backgroundImage.scaled(rect.width(), rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+
+    }
+    this->setPalette(palette);
+
+    /* We are painting x root background with current greeter background */
+    if(m_Screen == QApplication::desktop()->primaryScreen()){
+        if(!tmp_image.isNull()){
+            if(start)
+                setRootBackground(tmp_image);
+        }else{
+            QImage tmpimage(rect.width(), rect.height(), QImage::Format_ARGB32_Premultiplied) ;
+            tmpimage.fill(qRgb(255,203,80));
+            if(start)
+                setRootBackground(tmpimage);
+
+        }
+    }
+
+}
+
+
+QImage MainWindow::applyEffectToImage(QImage src, QGraphicsEffect *effect, int extent = 0){
+    if(src.isNull()) return QImage();   //No need to do anything else!
+    if(!effect) return src;             //No need to do anything else!
+    QGraphicsScene scene;
+    QGraphicsPixmapItem item;
+    item.setPixmap(QPixmap::fromImage(src));
+    item.setGraphicsEffect(effect);
+    scene.addItem(&item);
+    QImage res(src.size()+QSize(extent*2, extent*2), QImage::Format_ARGB32);
+    res.fill(Qt::transparent);
+    QPainter ptr(&res);
+    scene.render(&ptr, QRectF(), QRectF( -extent, -extent, src.width()+extent*2, src.height()+extent*2 ) );
+    return res;
+}
+
+
+
+QImage MainWindow::resizeImage(QRect screen_rect, QImage input_image){
+
+    int image_width;
+    int image_height;
+    QImage new_image;
+    //QImage final_image(screen_rect.width(), screen_rect.height(), input_image.format());
+    QImage final_image;
+    int i;
+    int j;
+
+    qreal screen_aspect_ratio = (qreal)screen_rect.width() / (qreal)screen_rect.height();
+
+    qreal image_aspect_ratio = (qreal)input_image.width() / (qreal)input_image.height();
+
+    if(image_aspect_ratio <= 1){
+
+        image_height = screen_rect.width() / image_aspect_ratio;
+
+        new_image = input_image.scaled(image_width, screen_rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
+        final_image = input_image.scaled(screen_rect.width(), screen_rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
+
+    }else{//> 1
+
+
+        if(screen_aspect_ratio > image_aspect_ratio){
+
+            image_height = screen_rect.width() / image_aspect_ratio;
+            image_width =screen_rect.width();
+            new_image = input_image.scaled(image_width, image_height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+            int pixeloffset = (image_height - screen_rect.height()) / 2;
+            final_image = new_image.copy(0, pixeloffset, image_width, image_height - (  pixeloffset));
+
+#if 0
+
+
+
+            for(j = 0; j < image_width; j++){
+
+                for(i = 0; i < screen_rect.height(); i++){
+
+                    final_image.setPixelColor(j,i,new_image.pixelColor(j,i + pixeloffset));
+
+                }
+            }
+
+#endif
+
+
+        }else if(screen_aspect_ratio <= image_aspect_ratio){
+            //norrower
+            image_width = screen_rect.height() * image_aspect_ratio;
+            image_height = screen_rect.height();
+            new_image = input_image.scaled(image_width, image_height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
+            int pixeloffset = (image_width - screen_rect.width()) / 2;
+
+            final_image = new_image.copy(pixeloffset, 0, image_width -  ( 2 * pixeloffset), image_height);
+
+
+
+#if 0
+            for(j = 0; j < image_height; j++){
+
+                for(i = 0; i < screen_rect.width(); i++){
+
+                    final_image.setPixelColor(i,j,new_image.pixelColor(i + pixeloffset, j));
+
+                }
+            }
+#endif
+
+
+        }
+
+    }
+
+    return final_image;
+
+}
+
+
+
+void MainWindow::moveForms(int screen_number){
+
+
+    QRect screenRect = QApplication::desktop()->screenGeometry(screen_number);
+    setGeometry(screenRect);
+
+    screenRect.x();
+
+    int maxX = screenRect.width() - m_LoginForm->width();
+    int maxY = screenRect.height() - m_LoginForm->height();
+    int defaultX = 50*maxX/100;
+    int defaultY = 30*maxY/100;
+    int offsetX = getOffset(Settings().offsetX_loginform(), maxX, defaultX);
+    int offsetY = getOffset(Settings().offsetY_loginform(), maxY, defaultY);
+
+    m_LoginForm->move(offsetX , offsetY);
+    // m_LoginForm->show();
+
+
+    maxX = screenRect.width() - m_SettingsForm->width();
+    maxY = screenRect.height() - m_SettingsForm->height();
+    defaultX = 100*maxX/100;
+    defaultY = 80*maxY/100;
+    offsetX = getOffset(Settings().offsetX_settingsform(), maxX, defaultX);
+    offsetY = getOffset(Settings().offsetY_settingsform(), maxY, defaultY);
+
+
+    m_SettingsForm->move(offsetX, offsetY);
+    // m_SettingsForm->show();
+
+    maxX = screenRect.width() - m_PowerForm->width();
+    maxY = screenRect.height() - m_PowerForm->height();
+    defaultX = 50*maxX/100;
+    defaultY = 80*maxY/100;
+    offsetX = getOffset(Settings().offsetX_powerform(), maxX, defaultX);
+    offsetY = getOffset(Settings().offsetY_powerform(), maxY, defaultY);
+
+
+    m_PowerForm->move(offsetX, offsetY);
+    //m_PowerForm->show();
+
+
+}
+
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+
+    if (event->type() == QEvent::MouseMove || event->type() == QEvent::KeyPress || event->type() == QEvent::MouseButtonPress){
+        showForms();
+    }
+
+    if (event->type() == QEvent::MouseMove && QApplication::desktop()->screenCount() > 1)
+    {
+
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+        QPoint globalCursorPos = QCursor::pos();
+
+        if(mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
+            if(mainWindowsList[1]->pos().x() == mainWindowsList[0]->pos().x()){
+                mainWindowsList[1]->hide();
+                mirrored = 1;
+            }
+        }
+
+
+        if(mirrored)
+            mainWindowsList[1]->hide();
+
+        int mousescreen = qApp->desktop()->screenNumber(globalCursorPos);
+
+        if(mousescreen != currentScreen){
+
+            // mainWindowsList[previousScreen]->hide();
+            previousScreen = currentScreen;
+            currentScreen = mousescreen;
+
+
+
+            QRect prvScreenRect = QApplication::desktop()->screenGeometry(previousScreen);
+            QRect curScreenRect = QApplication::desktop()->screenGeometry(currentScreen);
+
+            for (int i = 0; i < QApplication::desktop()->screenCount(); i++){
+                if(mainWindowsList[i]->pos().x() == prvScreenRect.x() && mainWindowsList[i]->pos().y() == prvScreenRect.y()){
+                    mainWindowsList[i]->hide();
+                    mainWindowsList[i]->setGeometry(curScreenRect);
+
+                    mainWindowsList[i]->move(QPoint(curScreenRect.x(), curScreenRect.y()));
+                    mainWindowsList[i]->m_Screen = currentScreen;
+
+                    mainWindowsList[i]->setOtherBackgrounds(screenImage,false, true);
+                    mainWindowsList[i]->show();
+                    // mainWindowsList[previousScreen]->hide();
+
+
+
+                }else if(mainWindowsList[i]->pos().x() == curScreenRect.x() && mainWindowsList[i]->pos().y() == curScreenRect.y()){
+
+                    mainWindowsList[i]->hide();
+                    mainWindowsList[i]->setGeometry(prvScreenRect);
+                    mainWindowsList[i]->move(QPoint(prvScreenRect.x(), prvScreenRect.y()));
+                    mainWindowsList[i]->m_Screen = previousScreen;
+
+                    mainWindowsList[i]->setOtherBackgrounds(screenImage,false, true);
+                    moveForms(currentScreen);
+
+
+                    mainWindowsList[i]->show();
+
+
+                }
+
+            }
+
+        }else{
+        }
+
+    }
+
+    if(mirrored && QApplication::desktop()->screenCount() > 1)
+        mainWindowsList[1]->hide();
+
+    return false;
+}
+
+
+
+void MainWindow::receiveKeyboardRequest(QPoint from, int width){
+    showForms();
+
+    if(checkTouchScreen())
+        return;
+
+
+    int middlepoint = from.x() + (width / 2);
+    int keyboard_width = screenKeyboard->width();
+    int keyboard_height = screenKeyboard->height();
+
+    QRect screenRect = QApplication::desktop()->screenGeometry(QApplication::desktop()->primaryScreen());
+
+
+    if(screenRect.width() <= 640){
+
+        keyboard_width = 400;
+        keyboard_height = 170;
+
+    }else if(screenRect.width() <= 800){
+
+        keyboard_width = 500;
+        keyboard_height = 190;
+
+    }else if(screenRect.width() <= 1024){
+
+        keyboard_width = 600;
+        keyboard_height = 250;
+
+    }
+
+    screenKeyboard->setGeometry(middlepoint - (keyboard_width / 2), from.y() + 150,  keyboard_width, keyboard_height);
+
+    from.setX(middlepoint -  (keyboard_width / 2));
+    from.setY(from.y() + 150);
+
+
+    if(from.y() + keyboard_height > screenRect.height() ){
+
+        from.setY( screenRect.height() - keyboard_height);
+    }
+
+    screenKeyboard->move(from);
+
+    screenKeyboard->show();
+
+}
+
+
+int MainWindow::checkTouchScreen(){
+
+    FILE *fp;
+    char data[128];
+    bool readerror = false;
+    QString  tmpstring;
+    QString outstr;
+    int read_size;
+    QString cachedlayout;
+    int ret = 1;
+
+    tmpstring = "";
+
+    fp = popen("udevadm info --export-db | grep ID_INPUT_TOUCHSCREEN=1", "r");
+    if (fp == NULL) {
+        qWarning() << "Current Keyboard layout can not be read" ;
+        readerror = true;
+    }
+
+    if(readerror == false){
+
+        read_size = fread(data, 1, sizeof(data), fp);
+
+        if( read_size < 2){
+            ret = 1;
+        }else{
+            ret = 0;
+        }
+
+
+
+    }
+
+    /* close */
+    pclose(fp);
+    return ret;
+}
+
+void MainWindow::receiveKeyboardClose(){
+    showForms();
+    screenKeyboard->close();
+
+    emit keyboardClosed();
+
+}
+
+void MainWindow::sendKeyPress(QString key){
+    showForms();
+    emit sendKeytoChilds(key);
+
+}
+
+
+void MainWindow::checkNetwork(){
+
+}
+
+
+void MainWindow::receiveNetworkStatus(bool connected){
+
+
+    if(QApplication::desktop()->screenCount() > 1 && mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
+        if(mainWindowsList[1]->pos().x() == mainWindowsList[0]->pos().x()){
+            mainWindowsList[1]->hide();
+            mirrored = 1;
+        }
+    }
+
+    emit sendNetworkStatustoChilds(connected);
+
+    if(formshidden){
+        hideForms();
+    }
+
+
+}
+
+
+void MainWindow::keyboardInit(){
+
+
+#ifdef SCREENKEYBOARD
+
+    if(Settings().screenkeyboardenabled().compare("y") != 0){
+        return;
+    }
+
+    //screen keyboard
+
+    screenKeyboard = new Keyboard(this);
+    screenKeyboard->setKeyboardLayout(m_SettingsForm->current_layout);
+
+
+    screenKeyboard->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::WindowSystemMenuHint | Qt::WindowDoesNotAcceptFocus);
+    screenKeyboard->close();
+
+    connect(screenKeyboard, &Keyboard::sendKey, this, &MainWindow::sendKeyPress);
+    connect(this, &MainWindow::sendKeytoChilds, m_LoginForm,&LoginForm::keyboardEvent);
+
+    connect(screenKeyboard, &Keyboard::sendCloseEvent, this, &MainWindow::receiveKeyboardClose);
+    connect(this, &MainWindow::keyboardClosed, m_LoginForm,&LoginForm::keyboardCloseEvent);
+
+    connect(m_LoginForm, &LoginForm::sendKeyboardRequest, this, &MainWindow::receiveKeyboardRequest);
+
+    connect(m_LoginForm, &LoginForm::sendKeyboardCloseRequest, this, &MainWindow::receiveKeyboardClose);
+    connect(m_SettingsForm, &SettingsForm::sendKeyboardLayout, screenKeyboard, &Keyboard::setKeyboardLayout);
+
+#endif
+
+}
+
+void MainWindow::showForms(void){
+
+    QPalette palette;
+    QRect   rect;
+    QImage tmpimage;
+
+
+    if(!m_LoginForm){
+        return;
+    }
+
+    if(m_LoginForm){
+        m_LoginForm->showAll();
+        // m_LoginForm->setFocus(Qt::OtherFocusReason);
+    }
+
+    if(m_ClockForm)
+        m_ClockForm->show();
+
+    if(m_PowerForm)
+        m_PowerForm->show();
+
+    if(m_SettingsForm)
+        m_SettingsForm->show();
+
+    if(!formHideTimer)
+        return;
+
+    formHideTimer->stop();
+    formHideTimer->start();
+    formshidden = 0;
+
+    if( m_LoginForm != NULL ){
+
+
+        rect = QApplication::desktop()->screenGeometry(m_Screen);
+        QGraphicsOpacityEffect *blur = new QGraphicsOpacityEffect;
+        blur->setOpacity(0.5);
+
+        tmpimage = resizeImage(rect, *screenImage);
+        QImage result = applyEffectToImage(tmpimage, blur, 0);
+
+        QBrush brush(result);
+        palette.setBrush(this->backgroundRole(), brush);
+        this->setPalette(palette);
+    }
+}
+
+
+void MainWindow::hideForms(void){
+
+    QPalette palette;
+    QRect   rect;
+    QImage tmpimage;
+
+    if(!m_LoginForm){
+        return;
+    }
+
+    rect = QApplication::desktop()->screenGeometry(m_Screen);
+    tmpimage = resizeImage(rect, *screenImage);
+    QBrush brush(tmpimage);
+    palette.setBrush(this->backgroundRole(), brush);
+    this->setPalette(palette);
+    repaint();
+
+
+    if(m_LoginForm){
+        //  m_LoginForm->clearFocus();
+        m_LoginForm->hideAll();
+        //m_LoginForm->setVisible(false);
+
+    }
+
+
+    if(m_SettingsForm){
+        m_SettingsForm->hide();
+    }
+
+
+
+    if(m_ClockForm){
+        m_ClockForm->clearFocus();
+        m_ClockForm->hide();
+    }
+    if(m_PowerForm){
+        m_PowerForm->clearFocus();
+        m_PowerForm->hide();
+    }
+
+    formshidden = 1;
+
+}
+
+
+
+
+void MainWindow::backgroundTimerCallback(void){
+    setMainBackground(true);
+
+    if(QApplication::desktop()->screenCount() > 1){
+
+        for (int i = 0; i < QApplication::desktop()->screenCount(); i++){
+            mainWindowsList[i]->setOtherBackgrounds(screenImage, true, false);
+        }
+    }
+}
+
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    showForms();
+    QWidget::keyPressEvent(event);
+}
+void MainWindow::resetHideFormsTimer(void){
+
+    formHideTimer->stop();
+    formHideTimer->start();
+}
+
+
+#include <X11/Xatom.h>
+#include <X11/Xlib.h>
+#include <QtX11Extras/QX11Info>
+#include <X11/Xcursor/Xcursor.h>
+#include <X11/Xutil.h>
+#include <X11/Xos.h>
+#include <X11/extensions/Xrandr.h>
 
 
 void MainWindow::setRootBackground(QImage img){
@@ -362,307 +1011,3 @@ void MainWindow::setRootBackground(QImage img){
 
     XClearWindow(dis, win);
 }
-
-
-QImage MainWindow::resizeImage(QRect screen_rect, QImage input_image){
-
-    int image_width;
-    int image_height;
-    QImage new_image;
-    QImage final_image(screen_rect.width(), screen_rect.height(), input_image.format());
-    int i;
-    int j;
-
-    qreal screen_aspect_ratio = (qreal)screen_rect.width() / (qreal)screen_rect.height();
-
-    qreal image_aspect_ratio = (qreal)input_image.width() / (qreal)input_image.height();
-
-    if(image_aspect_ratio <= 1){
-
-        image_height = screen_rect.width() / image_aspect_ratio;
-
-        new_image = input_image.scaled(image_width, screen_rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        //todo check this
-
-        final_image = input_image.scaled(screen_rect.width(), screen_rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        //todo check
-
-    }else{//> 1
-
-
-        if(screen_aspect_ratio > image_aspect_ratio){
-
-            image_height = screen_rect.width() / image_aspect_ratio;
-            image_width =screen_rect.width();
-            new_image = input_image.scaled(image_width, image_height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-
-            int pixeloffset = (image_height - screen_rect.height()) / 2;
-
-            for(j = 0; j < image_width; j++){
-
-                for(i = 0; i < screen_rect.height(); i++){
-
-                    final_image.setPixelColor(j,i,new_image.pixelColor(j,i + pixeloffset));
-
-                }
-            }
-
-
-
-
-        }else if(screen_aspect_ratio <= image_aspect_ratio){
-            //norrower
-            image_width = screen_rect.height() * image_aspect_ratio;
-            image_height = screen_rect.height();
-            new_image = input_image.scaled(image_width, image_height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-
-            int pixeloffset = (image_width - screen_rect.width()) / 2;
-
-            for(j = 0; j < image_height; j++){
-
-                for(i = 0; i < screen_rect.width(); i++){
-
-                    final_image.setPixelColor(i,j,new_image.pixelColor(i + pixeloffset, j));
-
-                }
-            }
-
-
-
-        }
-
-    }
-
-    return final_image;
-
-}
-
-
-
-void MainWindow::moveForms(int screen_number){
-
-
-    QRect screenRect = QApplication::desktop()->screenGeometry(screen_number);
-    setGeometry(screenRect);
-
-    screenRect.x();
-
-    int maxX = screenRect.width() - m_LoginForm->width();
-    int maxY = screenRect.height() - m_LoginForm->height();
-    int defaultX = 50*maxX/100;
-    int defaultY = 30*maxY/100;
-    int offsetX = getOffset(Settings().offsetX_loginform(), maxX, defaultX);
-    int offsetY = getOffset(Settings().offsetY_loginform(), maxY, defaultY);
-
-    m_LoginForm->move(offsetX , offsetY);
-    m_LoginForm->show();
-
-
-    maxX = screenRect.width() - m_SettingsForm->width();
-    maxY = screenRect.height() - m_SettingsForm->height();
-    defaultX = 100*maxX/100;
-    defaultY = 80*maxY/100;
-    offsetX = getOffset(Settings().offsetX_settingsform(), maxX, defaultX);
-    offsetY = getOffset(Settings().offsetY_settingsform(), maxY, defaultY);
-
-
-    m_SettingsForm->move(offsetX, offsetY);
-    m_SettingsForm->show();
-
-    maxX = screenRect.width() - m_PowerForm->width();
-    maxY = screenRect.height() - m_PowerForm->height();
-    defaultX = 50*maxX/100;
-    defaultY = 80*maxY/100;
-    offsetX = getOffset(Settings().offsetX_powerform(), maxX, defaultX);
-    offsetY = getOffset(Settings().offsetY_powerform(), maxY, defaultY);
-
-
-    m_PowerForm->move(offsetX, offsetY);
-    m_PowerForm->show();
-
-
-}
-
-
-bool MainWindow::eventFilter(QObject *obj, QEvent *event)
-{
-
-    if (event->type() == QEvent::MouseMove && QApplication::desktop()->screenCount() > 1)
-    {
-        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-        QPoint globalCursorPos = QCursor::pos();
-
-        if(mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
-            if(mainWindowsList[1]->pos().x() == mainWindowsList[0]->pos().x()){
-                mainWindowsList[1]->hide();
-                mirrored = 1;
-            }
-        }
-
-
-        if(mirrored)
-            mainWindowsList[1]->hide();
-
-        int mousescreen = qApp->desktop()->screenNumber(globalCursorPos);
-
-        if(mousescreen != currentScreen){
-
-            // mainWindowsList[previousScreen]->hide();
-            previousScreen = currentScreen;
-            currentScreen = mousescreen;
-
-
-
-            QRect prvScreenRect = QApplication::desktop()->screenGeometry(previousScreen);
-            QRect curScreenRect = QApplication::desktop()->screenGeometry(currentScreen);
-
-            for (int i = 0; i < QApplication::desktop()->screenCount(); i++){
-                if(mainWindowsList[i]->pos().x() == prvScreenRect.x() && mainWindowsList[i]->pos().y() == prvScreenRect.y()){
-                    mainWindowsList[i]->hide();
-                    mainWindowsList[i]->setGeometry(curScreenRect);
-
-                    mainWindowsList[i]->move(QPoint(curScreenRect.x(), curScreenRect.y()));
-                    mainWindowsList[i]->m_Screen = currentScreen;
-                    mainWindowsList[i]->setBackground(false);
-                    mainWindowsList[i]->show();
-                    // mainWindowsList[previousScreen]->hide();
-
-                }else if(mainWindowsList[i]->pos().x() == curScreenRect.x() && mainWindowsList[i]->pos().y() == curScreenRect.y()){
-
-                    mainWindowsList[i]->hide();
-                    mainWindowsList[i]->setGeometry(prvScreenRect);
-                    mainWindowsList[i]->move(QPoint(prvScreenRect.x(), prvScreenRect.y()));
-                    mainWindowsList[i]->m_Screen = previousScreen;
-                    mainWindowsList[i]->setBackground(false);
-                    moveForms(currentScreen);
-
-                    mainWindowsList[i]->show();
-
-
-                }
-
-            }
-
-        }else{
-        }
-
-    }
-
-    if(mirrored)
-        mainWindowsList[1]->hide();
-
-    return false;
-}
-
-
-
-void MainWindow::receiveKeyboardRequest(QPoint from, int width){
-
-    int middlepoint = from.x() + (width / 2);
-    int keyboard_width = screenKeyboard->width();
-    int keyboard_height = screenKeyboard->height();
-
-    QRect screenRect = QApplication::desktop()->screenGeometry(QApplication::desktop()->primaryScreen());
-
-
-    if(screenRect.width() <= 640){
-
-        keyboard_width = 400;
-        keyboard_height = 170;
-
-    }else if(screenRect.width() <= 800){
-
-        keyboard_width = 500;
-        keyboard_height = 190;
-
-    }else if(screenRect.width() <= 1024){
-
-        keyboard_width = 600;
-        keyboard_height = 250;
-
-    }
-
-    screenKeyboard->setGeometry(middlepoint - (keyboard_width / 2), from.y() + 150,  keyboard_width, keyboard_height);
-
-    from.setX(middlepoint -  (keyboard_width / 2));
-    from.setY(from.y() + 150);
-
-
-    if(from.y() + keyboard_height > screenRect.height() ){
-
-        from.setY( screenRect.height() - keyboard_height);
-    }
-
-    screenKeyboard->move(from);
-
-    screenKeyboard->show();
-
-}
-
-
-void MainWindow::receiveKeyboardClose(){
-    screenKeyboard->close();
-
-    emit keyboardClosed();
-
-}
-
-void MainWindow::sendKeyPress(QString key){
-
-    emit sendKeytoChilds(key);
-
-}
-
-
-void MainWindow::checkNetwork(){
-
-}
-
-
-void MainWindow::receiveNetworkStatus(bool connected){
-
-    if(QApplication::desktop()->screenCount() > 1 && mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
-        if(mainWindowsList[1]->pos().x() == mainWindowsList[0]->pos().x()){
-            mainWindowsList[1]->hide();
-            mirrored = 1;
-        }
-    }
-
-    emit sendNetworkStatustoChilds(connected);
-
-}
-
-
-void MainWindow::keyboardInit(){
-
-
-#ifdef SCREENKEYBOARD
-
-    if(Settings().screenkeyboardenabled().compare("y") != 0){
-        return;
-    }
-
-    //screen keyboard
-
-    screenKeyboard = new Keyboard(this);
-    screenKeyboard->setKeyboardLayout(m_SettingsForm->current_layout);
-
-
-    screenKeyboard->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::WindowSystemMenuHint | Qt::WindowDoesNotAcceptFocus);
-    screenKeyboard->close();
-
-    connect(screenKeyboard, &Keyboard::sendKey, this, &MainWindow::sendKeyPress);
-    connect(this, &MainWindow::sendKeytoChilds, m_LoginForm,&LoginForm::keyboardEvent);
-
-    connect(screenKeyboard, &Keyboard::sendCloseEvent, this, &MainWindow::receiveKeyboardClose);
-    connect(this, &MainWindow::keyboardClosed, m_LoginForm,&LoginForm::keyboardCloseEvent);
-
-    connect(m_LoginForm, &LoginForm::sendKeyboardRequest, this, &MainWindow::receiveKeyboardRequest);
-
-    connect(m_LoginForm, &LoginForm::sendKeyboardCloseRequest, this, &MainWindow::receiveKeyboardClose);
-    connect(m_SettingsForm, &SettingsForm::sendKeyboardLayout, screenKeyboard, &Keyboard::setKeyboardLayout);
-
-#endif
-
-}
-

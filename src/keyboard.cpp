@@ -79,7 +79,7 @@ Keyboard::Keyboard(QWidget *parent) :
     connect ( ui->space, SIGNAL( clicked() ), this, SLOT( keyboardHandler() ) );
 
 
-    connect ( ui->Buttonbackspace, SIGNAL( clicked() ), this, SLOT( on_backspace_clicked() ) );
+   // connect ( ui->Buttonbackspace, SIGNAL( clicked() ), this, SLOT( on_backspace_clicked() ) );
 
 
 
@@ -206,14 +206,6 @@ void Keyboard::on_clear_clicked()
 
     clearFocus();
 }
-
-void Keyboard::on_backspace_clicked(){
-
-    keySender(QString("backspace"));
-
-    clearFocus();
-}
-
 
 
 void Keyboard::on_enterButton_clicked()
@@ -469,3 +461,10 @@ void Keyboard::setCurrentSymbols(int n, bool caps){
 //convert text to character
 
 
+
+void Keyboard::on_Buttonbackspace_clicked()
+{
+    keySender(QString("backspace"));
+
+    clearFocus();
+}

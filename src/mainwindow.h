@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include <QLightDM/Greeter>
+#include <QGraphicsEffect>
 
 #include "loginform.h"
 #include "settingsform.h"
@@ -34,6 +35,7 @@ public:
     int m_Screen;
 
     LoginForm* loginForm() { return m_LoginForm;}
+    void setOtherBackgrounds(QImage *image,  bool start, bool forcemain);
 
     //SettingsForm* settingsForm() { return m_SettingsForm;}
 
@@ -43,18 +45,25 @@ Q_SIGNALS:
     void sendKeytoChilds(QString key);
     void sendNetworkStatustoChilds(bool connected);
 
+
 public slots:
     void receiveKeyboardRequest(QPoint from, int width);
     void receiveKeyboardClose();
     void sendKeyPress(QString key);
     void receiveNetworkStatus(bool connected);
+    void resetHideFormsTimer(void);
+
+private slots:
+    void backgroundTimerCallback(void);
+    void hideForms(void);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
+    virtual void keyPressEvent(QKeyEvent *event);
 
 private:
     int getOffset(QString offset, int maxVal, int defaultVal);
-    void setBackground(bool start);
+    void setMainBackground(bool start);
     void setRootBackground(QImage img);
     void moveForms(int screen_number);
 
@@ -62,13 +71,16 @@ private:
     void checkNetwork();
     QImage resizeImage(QRect screen_rect, QImage input_image);
 
+    int checkTouchScreen();
+    void showForms(void);
+    QImage applyEffectToImage(QImage src, QGraphicsEffect *effect, int extent);
 
+    QImage finalImage;
 
-
-    LoginForm* m_LoginForm;
-    clockForm *m_ClockForm;
-    SettingsForm *m_SettingsForm;
-    PowerForm *m_PowerForm;
+    LoginForm* m_LoginForm = NULL;
+    clockForm *m_ClockForm = NULL;
+    SettingsForm *m_SettingsForm = NULL;
+    PowerForm *m_PowerForm = NULL;
     static int image_index;
     static bool selectflag;
 
@@ -77,10 +89,14 @@ private:
     static int widgetScreen;
     int screenCount;
     static MainWindow **mainWindowsList;
+    static QImage *screenImage;
     QPoint mouseppos;
     QLabel *hostNameLabel;
     int initialScreenset;
     int mirrored;
+    QTimer *backgroundTimer = NULL;
+    QTimer *formHideTimer = NULL;
+    int formshidden = 0;
 
 #ifdef SCREENKEYBOARD
     Keyboard *screenKeyboard;
