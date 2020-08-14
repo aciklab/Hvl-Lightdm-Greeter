@@ -63,6 +63,7 @@ Kodu derlemek için,
 - lightdm
 - qttools5-dev
 - qttools5-dev-tools
+- qtdeclarative5-dev
 
 paketlerinin sisteminizde kurulu olduğuna emin olun
 

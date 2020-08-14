@@ -40,6 +40,7 @@ For building, make sure you have;
 - libxrandr-dev 
 - lightdm
 - qttools5-dev-tools
+- qtdeclarative5-dev
 
 installed on your system
 

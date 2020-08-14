@@ -1,14 +1,13 @@
 <RCC>
     <qresource prefix="/">
-        <file>resources/dropdown.svg</file>
-        <file>resources/leaveIcon.svg</file>
-        <file>resources/pardus.png</file>
-        <file>settings.cpp</file>
-        <file>resources/load1.gif</file>
-        <file>resources/eye.png</file>
-        <file>resources/ethernet-off.png</file>
-        <file>resources/ethernet-on.png</file>
-        <file>resources/keyboard.png</file>
-        <file>resources/avatar-default.png</file>
+        <file>ui/main.qml</file>
+        <file>ui/StringInput.qml</file>
+        <file>ui/LoginFrame.qml</file>
+        <file>ui/other.qml</file>
+        <file>ui/CustomButton.qml</file>
+        <file>ui/WaitFrame.qml</file>
+        <file>ui/Style.qml</file>
+        <file>ui/UserButton.qml</file>
+        <file>ui/UserSelect.qml</file>
     </qresource>
 </RCC>

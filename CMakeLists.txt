@@ -1,8 +1,11 @@
-cmake_minimum_required(VERSION 3.0.2 FATAL_ERROR)
-project(hvl-lightdm-greeter)
+cmake_minimum_required(VERSION 3.1)
+
+project(hvl-lightdm-greeter LANGUAGES CXX)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_subdirectory(src)
-
-
-install(FILES  hvl-lightdm-greeter.desktop  DESTINATION /usr/share/xgreeters)
-install(FILES hvl-lightdm-greeter.conf DESTINATION /usr/share/lightdm/lightdm-hvl-greeter.conf.d)
 
