@@ -87,6 +87,7 @@ Q_SIGNALS:
     void sendKeyboardCloseRequest();
     void selectKeyboard(void);
     void sendCurrentUser(QString user);
+    void resetHideTimer(void);
 
 
 
@@ -145,6 +146,8 @@ private slots:
     void on_pushButton_left_clicked();
 
     void on_passwordInput_textEdited(const QString &arg1);
+
+    void on_userInput_textEdited(const QString &arg1);
 
 private:
     void initialize();

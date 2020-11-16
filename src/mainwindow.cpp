@@ -160,7 +160,9 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         QObject::connect(m_LoginForm, &LoginForm::selectKeyboard, m_SettingsForm, &SettingsForm::keyboardSelectSlot);
         QObject::connect(m_SettingsForm, &SettingsForm::sendSessionInfo, m_LoginForm, &LoginForm::setCurrentSession);
         QObject::connect(m_LoginForm, &LoginForm::sendCurrentUser, m_SettingsForm, &SettingsForm::receiveCurrentUser);
+        QObject::connect(m_LoginForm, &LoginForm::resetHideTimer, this, &MainWindow::resetHideFormsTimer);
         keyboardInit();
+
 
         int slide_timeout = Settings().slideShow_timeout();
 

@@ -250,7 +250,7 @@ void LoginForm::onPrompt(QString prompt, QLightDM::Greeter::PromptType promptTyp
     //"password: "
     //"Enter new password: "
     //"Enter it again: "
-
+    emit resetHideTimer();
     qInfo() << "Received Prompt: " << prompt << " type: " << QString::number(promptType);
 
     if((prompt.compare("Enter new password: ") == 0 || prompt.compare("New password: ") == 0 ||
@@ -297,7 +297,7 @@ void LoginForm::onPrompt(QString prompt, QLightDM::Greeter::PromptType promptTyp
 
 void LoginForm::onMessage(QString prompt, QLightDM::Greeter::MessageType messageType){
     QString type = NULL;
-
+    emit resetHideTimer();
     qInfo() << "Received Message: " << prompt << " type: " << QString::number(messageType);
 
     if(messageType == QLightDM::Greeter::MessageTypeError){
@@ -359,7 +359,7 @@ void LoginForm::authenticationComplete()
 {
 
     QString lastuser;
-
+    emit resetHideTimer();
 
     lastuser = ui->userInput->text().trimmed();
 
@@ -480,7 +480,7 @@ void LoginForm::on_pushButton_resetpwd_clicked()
     QString userid;
 
 
-
+    emit resetHideTimer();
     if(toolButtons[(lastuserindex + 1) % 3]->text().isEmpty())
         return;
 
@@ -735,8 +735,11 @@ void LoginForm::addUsertoCache(QString user_name){
 
 void LoginForm::userButtonClicked(){
 
+
     QObject *senderObj = sender(); // This will give Sender object
     QString senderObjName = senderObj->objectName();
+
+    emit resetHideTimer();
 
     for(int i = 0; i< total_user_count + 1; i++){
 
@@ -1025,6 +1028,7 @@ void LoginForm::userSelectStateMachine(int key, int button){
 void LoginForm::keyPressEvent(QKeyEvent *event)
 {
 
+    emit resetHideTimer();
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
 
 
@@ -1138,7 +1142,7 @@ void LoginForm::on_resetpasswordButton_clicked()
 {
 
     QString userid;
-
+    emit resetHideTimer();
     if(!userResetRequest){
 
 
@@ -1254,7 +1258,7 @@ void LoginForm::LoginTimerFinished(){
     QString userid;
     static int opcheckcounter;
 
-
+    emit resetHideTimer();
     switch(loginTimerState){
 
     case 0:
@@ -1396,7 +1400,7 @@ void LoginForm::userPasswordResetRequest(){
     static int inpipefd[2];
     static int outpipefd[2];
     int status;
-
+    emit resetHideTimer();
 
     switch(userRequestTimerState){
 
@@ -1587,7 +1591,7 @@ void LoginForm::passwordResetTimerFinished(){
     static int opcheckcounter;
     bool errorflag = false;
     static QString userx;
-
+    emit resetHideTimer();
     switch(resetTimerState){
 
     case 0:
@@ -1763,6 +1767,9 @@ QString LoginForm::translateResetPwdMessage(QString message){
 
 void LoginForm::on_acceptbutton_clicked()
 {
+
+    emit resetHideTimer();
+
     if(userResetRequest){
 
         if(passwordChangeError){
@@ -1967,7 +1974,7 @@ void LoginForm::pageTransition(QWidget *Page){
 
     ui->stackedWidget->setCurrentIndex(ui->stackedWidget->indexOf(Page));
 
-
+    emit resetHideTimer();
     if(Page == ui->waitpage){
         ui->waitlabel->setFocus();
         mv->start();
@@ -2025,6 +2032,8 @@ void LoginForm::pageTransition(QWidget *Page){
 
 void LoginForm::on_backButton_clicked()
 {
+
+    emit resetHideTimer();
     needPasswordChange = 0;
     cancelLogin();
     ui->passwordInput->clear();
@@ -2040,6 +2049,7 @@ void LoginForm::on_backButton_clicked()
 void LoginForm::usersbuttonReposition(){
     QFont font;
 
+    emit resetHideTimer();
     ui->userInput->clear();
     ui->userInput->hide();
     ui->toolButtonleft->setGeometry(left);
@@ -2096,7 +2106,7 @@ void LoginForm::usersbuttonReposition(){
 
 void LoginForm::on_cancelResetButton_clicked()
 {
-
+    emit resetHideTimer();
     userResetRequest = false;
     systemResetRequest = false;
 
@@ -2181,7 +2191,7 @@ void LoginForm::keyboardEvent(QString key){
     QString txt;
 
 
-
+    emit resetHideTimer();
 
     if(key.compare(QString("enter")) == 0){
         QKeyEvent *event = new QKeyEvent(QEvent::KeyPress, Qt::Key_Enter, Qt::NoModifier);
@@ -2405,6 +2415,7 @@ bool LoginForm::ifLocalUser(QString username){
 
 void LoginForm::on_pwShowbutton_pressed()
 {
+    emit resetHideTimer();
     ui->passwordInput->setEchoMode(QLineEdit::EchoMode::Normal);
     ui->passwordInput->setDisabled(true);
 }
@@ -2420,6 +2431,7 @@ void LoginForm::on_pwShowbutton_released()
 
 void LoginForm::on_showoldPwdButton_pressed()
 {
+    emit resetHideTimer();
     ui->oldpasswordinput->setEchoMode(QLineEdit::EchoMode::Normal);
     ui->oldpasswordinput->setDisabled(true);
 }
@@ -2433,6 +2445,7 @@ void LoginForm::on_showoldPwdButton_released()
 
 void LoginForm::on_shownewPwdButton_pressed()
 {
+    emit resetHideTimer();
     ui->newpasswordinput->setEchoMode(QLineEdit::EchoMode::Normal);
     ui->newpasswordinput->setDisabled(true);
 }
@@ -2445,6 +2458,7 @@ void LoginForm::on_shownewPwdButton_released()
 
 void LoginForm::on_showconfirmPwdButton_pressed()
 {
+    emit resetHideTimer();
     ui->newpasswordconfirminput->setEchoMode(QLineEdit::EchoMode::Normal);
     ui->newpasswordconfirminput->setDisabled(true);
 }
@@ -2472,11 +2486,13 @@ void LoginForm::debugBox(QString mes){
 
 void LoginForm::on_pushButton_right_clicked()
 {
+    emit resetHideTimer();
     userSelectStateMachine(Qt::Key_Right, -1);
 }
 
 void LoginForm::on_pushButton_left_clicked()
 {
+    emit resetHideTimer();
     userSelectStateMachine(Qt::Key_Left, -1);
 }
 
@@ -2534,5 +2550,12 @@ void LoginForm::showAll(void){
 
 void LoginForm::on_passwordInput_textEdited(const QString &arg1)
 {
+    emit resetHideTimer();
+    justshowed = false;
+}
+
+void LoginForm::on_userInput_textEdited(const QString &arg1)
+{
+    emit resetHideTimer();
     justshowed = false;
 }
