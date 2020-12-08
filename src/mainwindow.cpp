@@ -107,7 +107,8 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         m_SettingsForm->move(offsetX, offsetY);
         m_SettingsForm->show();
 
-        m_SettingsForm->updateHostName(m_LoginForm->getHostname());
+        if(Settings().show_domaininfo())
+            m_SettingsForm->updateHostName(m_LoginForm->getHostname());
 
         m_PowerForm = new PowerForm(this);
 
@@ -144,7 +145,7 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         m_ClockForm->show();
 
 
-         setMainBackground(true);
+        setMainBackground(true);
 
         // This hack ensures that the primary screen will have focus
         // if there are more screens (move the mouse cursor in the center

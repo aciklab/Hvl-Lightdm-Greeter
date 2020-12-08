@@ -62,6 +62,7 @@ public:
     QString passwordresetwebpageurl(){return value("password-web-reset-webpage").toString();}
     int screenSaver_timeout() { return value("screen-saver-timeout").toInt(); }
     int slideShow_timeout() { return value("slide-show-timeout").toInt(); }
+    int show_domaininfo() { return value("show-domain-info").toInt(); }
 };
 
 

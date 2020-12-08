@@ -972,7 +972,8 @@ void LoginForm::animationTimerFinished(){
         }else{
             ui->pushButton_right->show();
             ui->userInput->hide();
-            ui->domainnameLabel->setText(getUserRealm(toolButtons[(lastuserindex + 1) % 3]->text()));
+            if(Settings().show_domaininfo())
+                ui->domainnameLabel->setText(getUserRealm(toolButtons[(lastuserindex + 1) % 3]->text()));
             emit sendCurrentUser(toolButtons[(lastuserindex + 1) % 3]->text());
             ui->passwordInput->setFocus();
         }
@@ -2079,8 +2080,8 @@ void LoginForm::usersbuttonReposition(){
     ui->toolButtonright->setIcon(iconPassive);
     ui->toolButtoncenter->setIcon(iconActive);
 
-
-    ui->domainnameLabel->setText(getUserRealm(userList[0]));
+    if(Settings().show_domaininfo())
+        ui->domainnameLabel->setText(getUserRealm(userList[0]));
     emit sendCurrentUser(userList[0]);
 
     ui->toolButtonleft->hide();
