@@ -32,7 +32,8 @@ Dialog_webview::Dialog_webview(QWidget *parent) :
     QString tmpurl = checkPasswordResetWebPage();
 
     if(!tmpurl.isEmpty() && !tmpurl.isNull()){
-        ui->widget1->load(QUrl(tmpurl,QUrl::ParsingMode::TolerantMode));
+        //ui->widget1->load(QUrl(tmpurl,QUrl::ParsingMode::TolerantMode));
+       ui->widget1->setUrl(QUrl(tmpurl,QUrl::ParsingMode::TolerantMode));
         //ui->widget1->setFocus();
         qInfo() <<  "Opening webpage " +  tmpurl + " now";
     }else{

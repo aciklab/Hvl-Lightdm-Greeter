@@ -169,6 +169,8 @@ private:
     QString getUserRealm(QString username);
     void debugBox(QString mes);
     QString translateResetPwdMessage(QString message);
+    QString fixUserName(QString &username);
+    QString getShortUsername(QString &username);
 
     Ui::LoginForm *ui;
 

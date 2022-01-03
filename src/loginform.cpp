@@ -127,14 +127,15 @@ void LoginForm::initialize()
         ui->userInput->completer()->setCompletionMode(QCompleter::InlineCompletion);
     }
 
-    QString user = Cache().getLastUser();
+    QString tmp = Cache().getLastUser();
+    QString user = getShortUsername(tmp);
 
     if (user.isEmpty() || user.isNull()) {
         user = m_Greeter.selectUserHint();
         ui->pushButton_right->hide();
         currentSessionStr = m_Greeter.defaultSessionHint();
     }else{
-        currentSessionStr = Cache().getLastSession(user);
+        currentSessionStr = Cache().getLastSession(getShortUsername(user));
     }
 
 
@@ -377,9 +378,9 @@ void LoginForm::authenticationComplete()
 
         needPasswordChange = 0;
 
-        addUsertoCache(lastuser);
-        Cache().setLastUser(lastuser);
-        Cache().setLastSession(lastuser, currentSessionStr);
+        addUsertoCache(getShortUsername(lastuser));
+        Cache().setLastUser(getShortUsername(lastuser));
+        Cache().setLastSession(getShortUsername(lastuser), currentSessionStr);
         Cache().sync();
 
         qWarning() <<  "Start session : " << currentSessionStr;
@@ -559,11 +560,13 @@ void LoginForm::initializeUserList(){
 
     total_user_count = 0;
     animationprogress = false;
+    QString tmp;
 
 
 
     for(int i = 0; i < Settings().cachedusercount(); i++){
-        userList[i] = Cache().getLastUserfromIndex(i);
+        tmp = Cache().getLastUserfromIndex(i);
+        userList[i] = getShortUsername(tmp);
 
         if(!userList[i].isNull() && !userList[i].isEmpty() && userList[i].length() > 1)
             total_user_count++;
@@ -584,7 +587,7 @@ void LoginForm::initializeUserList(){
     qInfo() <<  (QString::number(total_user_count) + " users found for last users cache");
 
 
-    currentSessionStr = Cache().getLastSession( userList[0]);
+    currentSessionStr = Cache().getLastSession( getShortUsername(userList[0]));
     qInfo() << "currentSessionStr: " << currentSessionStr;
 
     total_user_count++;
@@ -661,7 +664,6 @@ void LoginForm::addUsertoCache(QString user_name){
         if(userList[0].isNull() || userList[0].isEmpty() ||  userList[0].length() < 2){
             userList[i].clear();
         }
-
         if(userList[i].compare(user_name) == 0)
             userList[i].clear();
 
@@ -720,7 +722,7 @@ void LoginForm::addUsertoCache(QString user_name){
 
     for(i = 0; i < Settings().cachedusercount(); i++){
         if(!userList[i].isNull() && !userList[i].isEmpty() && userList[i].length() > 2)
-            Cache().setLastUsertoIndex(userList[i], i);
+            Cache().setLastUsertoIndex(getShortUsername(userList[i]), i);
         else
             Cache().setLastUsertoIndex("", i);
 
@@ -1294,7 +1296,7 @@ void LoginForm::LoginTimerFinished(){
         qInfo() << "Login start for " + userid;
 
         qInfo() << "User name is sending";
-        m_Greeter.authenticate(userid.trimmed());
+        m_Greeter.authenticate(fixUserName(userid));
         // addUsertoCache(userid.trimmed());//todo delete
         //Cache().setLastUser(userid.trimmed());//todo delete
 
@@ -1612,7 +1614,7 @@ void LoginForm::passwordResetTimerFinished(){
             userx = toolButtons[(lastuserindex+ 1) % 3]->text();
         }
 
-        m_Greeter.authenticate(userx);
+        m_Greeter.authenticate(fixUserName(userx));
         resetTimerState = 2;
         break;
 
@@ -2560,3 +2562,54 @@ void LoginForm::on_userInput_textEdited(const QString &arg1)
     emit resetHideTimer();
     justshowed = false;
 }
+
+
+
+QString LoginForm::fixUserName(QString &username){
+
+    QString newname, tmpname;
+    int offset;
+    QString realm = getUserRealm(username);
+
+    offset = username.indexOf(realm.toLower());
+
+    if(offset < 0)
+        offset = username.indexOf(realm.toUpper());
+
+    if(offset > 1){
+        tmpname = username.mid(0, offset - 1);
+    }else{
+        tmpname = username;
+    }
+
+    if(realm.length() > 2){
+        newname = tmpname.trimmed() + "@" + realm;
+    }else {
+        newname = tmpname;
+    }
+
+    return newname;
+}
+
+QString LoginForm::getShortUsername(QString &username){
+
+    QString newname, tmpname;
+    int offset;
+    QString realm = getUserRealm(username);
+
+    offset = username.indexOf(realm.toLower());
+
+    if(offset < 0)
+        offset = username.indexOf(realm.toUpper());
+
+    if(offset > 1){
+        tmpname = username.mid(0, offset - 1);
+    }else{
+        tmpname = username;
+    }
+
+
+    return tmpname;
+
+}
+
