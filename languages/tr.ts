@@ -526,7 +526,7 @@ Başlat</translation>
     </message>
     <message>
         <source>Go to Hibernate?</source>
-        <translation>Bilkisayar Uykuya Girsin mi?</translation>
+        <translation>Bilgisayar Uykuya Girsin mi?</translation>
     </message>
     <message>
         <source>Go to Suspend?</source>
@@ -592,7 +592,7 @@ Başlat</translation>
     </message>
     <message>
         <source>Go to Hibernate?</source>
-        <translation type="vanished">Bilkisayar Uykuya Girsin mi?</translation>
+        <translation type="vanished">Bilgisayar Uykuya Girsin mi?</translation>
     </message>
     <message>
         <source>Go to Suspend?</source>
