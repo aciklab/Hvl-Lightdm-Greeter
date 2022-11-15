@@ -18,7 +18,7 @@
 #include "settingsform.h"
 #include "clockform.h"
 #include "powerform.h"
-
+#include "x11_utils.h"
 #include "stdlib.h"
 
 
@@ -356,12 +356,12 @@ void MainWindow::setMainBackground(bool start)
     if(qScreen == QGuiApplication::primaryScreen()){
         if(!finalImage.isNull()){
             if(start)
-                setRootBackground(finalImage);
+                setRootBackground(finalImage, qScreen);
         }else{
             QImage tmpimage(rect.width(), rect.height(), QImage::Format_ARGB32_Premultiplied) ;
             tmpimage.fill(qRgb(255,203,80));
             if(start)
-                setRootBackground(tmpimage);
+                setRootBackground(tmpimage, qScreen);
 
         }
     }
@@ -426,12 +426,12 @@ void MainWindow::setOtherBackgrounds(QImage *backgroundImage, bool start, bool f
     if(qScreen == QGuiApplication::primaryScreen()){
         if(!tmp_image.isNull()){
             if(start)
-                setRootBackground(tmp_image);
+                setRootBackground(tmp_image, qScreen);
         }else{
             QImage tmpimage(rect.width(), rect.height(), QImage::Format_ARGB32_Premultiplied) ;
             tmpimage.fill(qRgb(255,203,80));
             if(start)
-                setRootBackground(tmpimage);
+                setRootBackground(tmpimage, qScreen);
 
         }
     }
@@ -917,61 +917,3 @@ void MainWindow::resetHideFormsTimer(void){
     formHideTimer->start();
 }
 
-
-#include <X11/Xatom.h>
-#include <X11/Xlib.h>
-#include <QtX11Extras/QX11Info>
-#include <X11/Xcursor/Xcursor.h>
-#include <X11/Xutil.h>
-#include <X11/Xos.h>
-#include <X11/extensions/Xrandr.h>
-
-
-void MainWindow::setRootBackground(QImage img){
-
-    Display *dis  = QX11Info::display();
-    int screen = m_Screen;
-    Window win = RootWindow(dis, screen);
-
-    QRect screenRect = qScreen->geometry();
-
-    int width = screenRect.width();
-    int height = screenRect.height();
-
-    unsigned int depth = (unsigned int)DefaultDepth(dis, screen);
-
-    XFlush(dis);
-
-    Pixmap pix = XCreatePixmap(dis,win, width, height, depth);
-
-    char *tempimage = (char *)malloc(width * height * 4);
-
-    int k = 0;
-
-    for(int i = 0; i< height; i++ ){
-        for(int j = 0; j< width; j++){
-            *((uint*)tempimage + k) = img.pixel(j,i);
-            k++;
-        }
-    }
-
-    Visual *visual = DefaultVisual(dis, screen);
-
-    XImage *image = XCreateImage(dis, visual, 24, ZPixmap, 0, tempimage, width, height, 32, 0);
-
-    GC gc = XCreateGC(dis, pix, 0, NULL);
-
-    XPutImage(dis, pix, gc, image, 0, 0, 0, 0, width, height);
-
-    XSetWindowBackgroundPixmap(dis, win, pix);
-
-    /* Prevent from x shaped cursor after greeter is closed */
-    Cursor c = XcursorLibraryLoadCursor(dis, "arrow");
-    XDefineCursor (dis, win, c);
-
-    /* Clear pixmap */
-    XFreePixmap(dis, pix);
-    XDestroyImage(image);
-    // free(tempimage);
-    XClearWindow(dis, win);
-}

@@ -34,7 +34,6 @@
 #include <X11/XKBlib.h>
 #include <X11/Xlib.h>
 
-
 Display* dpy;
 int timeout, interval, prefer_blanking, allow_exposures;
 bool lockhint = false;
@@ -154,4 +153,66 @@ void openNumlock(void){
     numlock_set_on();
     XCloseDisplay( dpy );
 
+}
+
+int getScreenNumber(QScreen *qscreen){
+    int index = 0;
+    for (int i = 0; i< QGuiApplication::screens().length(); i++){
+        if(QGuiApplication::screens()[i] == qscreen){
+            index = i;
+            break;
+        }
+    }
+    return index;
+}
+
+
+void setRootBackground(QImage img, QScreen *qscreen){
+
+    Display *dis  = QX11Info::display();
+
+    auto screen = getScreenNumber(qscreen);
+    Window win = RootWindow(dis, screen);
+
+    QRect screenRect = qscreen->geometry();
+
+    int width = screenRect.width();
+    int height = screenRect.height();
+
+    unsigned int depth = (unsigned int)DefaultDepth(dis, screen);
+
+    XFlush(dis);
+
+    Pixmap pix = XCreatePixmap(dis,win, width, height, depth);
+
+    char *tempimage = (char *)malloc(width * height * 4);
+
+    int k = 0;
+
+    for(int i = 0; i< height; i++ ){
+        for(int j = 0; j< width; j++){
+            *((uint*)tempimage + k) = img.pixel(j,i);
+            k++;
+        }
+    }
+
+    Visual *visual = DefaultVisual(dis, screen);
+
+    XImage *image = XCreateImage(dis, visual, 24, ZPixmap, 0, tempimage, width, height, 32, 0);
+
+    GC gc = XCreateGC(dis, pix, 0, NULL);
+
+    XPutImage(dis, pix, gc, image, 0, 0, 0, 0, width, height);
+
+    XSetWindowBackgroundPixmap(dis, win, pix);
+
+    /* Prevent from x shaped cursor after greeter is closed */
+    Cursor c = XcursorLibraryLoadCursor(dis, "arrow");
+    XDefineCursor (dis, win, c);
+
+    /* Clear pixmap */
+    XFreePixmap(dis, pix);
+    XDestroyImage(image);
+    // free(tempimage);
+    XClearWindow(dis, win);
 }

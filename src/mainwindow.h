@@ -65,7 +65,6 @@ protected:
 private:
     int getOffset(QString offset, int maxVal, int defaultVal);
     void setMainBackground(bool start);
-    void setRootBackground(QImage img);
     void moveForms(int screen_number);
 
     void keyboardInit();

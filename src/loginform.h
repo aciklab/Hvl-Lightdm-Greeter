@@ -156,7 +156,7 @@ private:
     void checkPasswordResetButton();
     void initializeUserList();
     void addUsertoCache(QString user);
-    void userSelectStateMachine(int key, int button);
+    void userSelectStateMachine(int key);
     bool capsOn();
     void capsLockCheck();
     QString getValueOfString(QString data, QString value);
@@ -164,13 +164,7 @@ private:
     void usersbuttonReposition();
     void loginPageTransition();
     void preparetoLogin();
-    QString readRealm();
-    bool ifLocalUser(QString username);
-    QString getUserRealm(QString username);
     void debugBox(QString mes);
-    QString translateResetPwdMessage(QString message);
-    QString fixUserName(QString &username);
-    QString getShortUsername(QString &username);
 
     Ui::LoginForm *ui;
 
@@ -246,14 +240,6 @@ private:
     QPixmap iconActive = QPixmap(":/resources/login_1.png");
     QPixmap iconEmptyPassive = QPixmap(":/resources/login_1_1_bos.png");
     QPixmap iconEmptyActive = QPixmap(":/resources/login_1_bos.png");
-
-#if 0
-
-    QRect left = QRect(52,25,100,110);
-    QRect center = QRect(157,10,120,140);
-    QRect right = QRect(282,25,100,110);
-#endif
-
 
 };
 

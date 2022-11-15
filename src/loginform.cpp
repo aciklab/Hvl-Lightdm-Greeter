@@ -36,6 +36,7 @@
 #include <pwd.h>
 #include "settingsform.h"
 #include "mainwindow.h"
+#include "loginhelpers.h"
 
 
 const int KeyRole = QLightDM::SessionsModel::KeyRole;
@@ -98,18 +99,13 @@ void LoginForm::initialize()
     mv = new QMovie(":/resources/load1.gif");
     mv->setScaledSize(QSize(ui->giflabel->width(), ui->giflabel->height()));
 
-
-
-
-
-
     connect(&m_Greeter, SIGNAL(showPrompt(QString, QLightDM::Greeter::PromptType)), this, SLOT(onPrompt(QString, QLightDM::Greeter::PromptType)));
     connect(&m_Greeter, SIGNAL(showMessage(QString, QLightDM::Greeter::MessageType)), this, SLOT(onMessage(QString, QLightDM::Greeter::MessageType)));
     connect(&m_Greeter, SIGNAL(authenticationComplete()), this, SLOT(authenticationComplete()));
     connect(&m_Greeter, SIGNAL(reset()), this, SLOT(resetRequest()));
 
 
-    realM = readRealm();
+    realM = LoginHelpers::readRealm();
     ui->passwordInput->clear();
 
     initializeUserList();
@@ -128,14 +124,14 @@ void LoginForm::initialize()
     }
 
     QString tmp = Cache().getLastUser();
-    QString user = getShortUsername(tmp);
+    QString user = LoginHelpers::getShortUsername(tmp);
 
     if (user.isEmpty() || user.isNull()) {
         user = m_Greeter.selectUserHint();
         ui->pushButton_right->hide();
         currentSessionStr = m_Greeter.defaultSessionHint();
     }else{
-        currentSessionStr = Cache().getLastSession(getShortUsername(user));
+        currentSessionStr = Cache().getLastSession(LoginHelpers::getShortUsername(user));
     }
 
 
@@ -174,11 +170,6 @@ void LoginForm::initialize()
 
     ui->giflabel->setAttribute(Qt::WA_NoSystemBackground);
     ui->giflabel->setMovie(mv);
-
-    // ui->pwShowbutton->setParent(ui->passwordInput);
-    //ui->pwShowbutton->raise();
-    //ui->pwShowbutton->move( ui->passwordInput->x() + ui->passwordInput->width() - 10, 5);
-
 
     if(Settings().waittimeout() == 0){
         pageTransition(ui->loginpage);
@@ -258,7 +249,7 @@ void LoginForm::onPrompt(QString prompt, QLightDM::Greeter::PromptType promptTyp
         prompt.compare("(current) UNIX password: ") == 0 || prompt.compare("Current Password: ") == 0)
             && needPasswordChange != 1 && !resetStartFlag){
 
-        if(prompt.compare("(current) UNIX password: " ) == 0 || prompt.compare("Current Password: ") == 0)
+        if(prompt.compare("(current) UNIX password: " ) == 0 || prompt.compare("Current Password: ") == 0 || prompt.compare("Current password: ") == 0)
             needReenterOldPassword = 1;
 
         needPasswordChange = true;
@@ -378,9 +369,9 @@ void LoginForm::authenticationComplete()
 
         needPasswordChange = 0;
 
-        addUsertoCache(getShortUsername(lastuser));
-        Cache().setLastUser(getShortUsername(lastuser));
-        Cache().setLastSession(getShortUsername(lastuser), currentSessionStr);
+        addUsertoCache(LoginHelpers::getShortUsername(lastuser));
+        Cache().setLastUser(LoginHelpers::getShortUsername(lastuser));
+        Cache().setLastSession(LoginHelpers::getShortUsername(lastuser), currentSessionStr);
         Cache().sync();
 
         qWarning() <<  "Start session : " << currentSessionStr;
@@ -423,7 +414,7 @@ void LoginForm::authenticationComplete()
         if(resetStartFlag){
 
             pageTransition(ui->warningpage);
-            ui->warninglabel->setText(translateResetPwdMessage(lastMessage));
+            ui->warninglabel->setText(LoginHelpers::translateResetPwdMessage(lastMessage));
             resetStartFlag = true;
             userResetRequest = false;
             needPasswordChange = false;
@@ -566,7 +557,7 @@ void LoginForm::initializeUserList(){
 
     for(int i = 0; i < Settings().cachedusercount(); i++){
         tmp = Cache().getLastUserfromIndex(i);
-        userList[i] = getShortUsername(tmp);
+        userList[i] = LoginHelpers::getShortUsername(tmp);
 
         if(!userList[i].isNull() && !userList[i].isEmpty() && userList[i].length() > 1)
             total_user_count++;
@@ -587,7 +578,7 @@ void LoginForm::initializeUserList(){
     qInfo() <<  (QString::number(total_user_count) + " users found for last users cache");
 
 
-    currentSessionStr = Cache().getLastSession( getShortUsername(userList[0]));
+    currentSessionStr = Cache().getLastSession(LoginHelpers::getShortUsername(userList[0]));
     qInfo() << "currentSessionStr: " << currentSessionStr;
 
     total_user_count++;
@@ -722,7 +713,7 @@ void LoginForm::addUsertoCache(QString user_name){
 
     for(i = 0; i < Settings().cachedusercount(); i++){
         if(!userList[i].isNull() && !userList[i].isEmpty() && userList[i].length() > 2)
-            Cache().setLastUsertoIndex(getShortUsername(userList[i]), i);
+            Cache().setLastUsertoIndex(LoginHelpers::getShortUsername(userList[i]), i);
         else
             Cache().setLastUsertoIndex("", i);
 
@@ -747,7 +738,7 @@ void LoginForm::userButtonClicked(){
 
         if(senderObjName.compare(toolButtons[(lastuserindex + 0) % 3]->objectName()) == 0){//left
 
-            userSelectStateMachine(Qt::Key_Left, -1);
+            userSelectStateMachine(Qt::Key_Left);
 
         }else if(senderObjName.compare(toolButtons[(lastuserindex + 1) % 3]->objectName()) == 0){//center
 
@@ -763,7 +754,7 @@ void LoginForm::userButtonClicked(){
 
 
         }else{
-            userSelectStateMachine(Qt::Key_Right, -1);
+            userSelectStateMachine(Qt::Key_Right);
         }//toolButtonright
 
     }
@@ -880,10 +871,6 @@ void LoginForm::animationTimerFinished(){
 
     case 1:
         if(lastkey == Qt::Key_Right){
-
-
-
-
             font = toolButtons[(lastuserindex + 1) % 3]->font();
             font.setPointSize(11);
             toolButtons[(lastuserindex + 1) % 3]->setFont(font);
@@ -975,7 +962,7 @@ void LoginForm::animationTimerFinished(){
             ui->pushButton_right->show();
             ui->userInput->hide();
             if(Settings().show_domaininfo())
-                ui->domainnameLabel->setText(getUserRealm(toolButtons[(lastuserindex + 1) % 3]->text()));
+                ui->domainnameLabel->setText(LoginHelpers::getUserRealm(toolButtons[(lastuserindex + 1) % 3]->text()));
             emit sendCurrentUser(toolButtons[(lastuserindex + 1) % 3]->text());
             ui->passwordInput->setFocus();
         }
@@ -992,7 +979,7 @@ void LoginForm::animationTimerFinished(){
 
 }
 
-void LoginForm::userSelectStateMachine(int key, int button){
+void LoginForm::userSelectStateMachine(int key){
 
 
     if(useroffset < 0 || animationprogress)
@@ -1072,9 +1059,7 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
         if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->loginpage)){
 
             on_backButton_clicked();
-            //needPasswordChange = 0;
-            //cancelLogin();
-            //usersbuttonReposition();
+
 
         }else if(ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->resetpage) && !resetStartFlag){
             // on_cancelResetButton_clicked();
@@ -1090,7 +1075,7 @@ void LoginForm::keyPressEvent(QKeyEvent *event)
     else if ((event->key() == Qt::Key_Left || event->key() == Qt::Key_Right) &&
              ui->stackedWidget->currentIndex() == ui->stackedWidget->indexOf(ui->loginpage)) {
         winClicked = false;
-        userSelectStateMachine(event->key(), -1);
+        userSelectStateMachine(event->key());
     }else if (event->key() == Qt::Key_Meta || event->key() == Qt::Key_Meta ){
         winClicked = true;
     }else if (event->key() == Qt::Key_Space){
@@ -1207,7 +1192,6 @@ void LoginForm::on_resetpasswordButton_clicked()
     }else{
 
         //user requested reset her/his password
-
         ui->rstpwdmessagelabel->clear();
 
         if(ui->newpasswordinput->text().isEmpty() || ui->newpasswordconfirminput->text().isEmpty()){
@@ -1259,15 +1243,10 @@ void LoginForm::LoginTimerFinished(){
     static int promptCheckCounter;
     static int userCheckCounter;
     QString userid;
-    static int opcheckcounter;
-
     emit resetHideTimer();
     switch(loginTimerState){
 
     case 0:
-
-
-
         ui->waitlabel->setText(tr("Authenticating"));
         pageTransition(ui->waitpage);
         //cancelLogin();
@@ -1296,9 +1275,7 @@ void LoginForm::LoginTimerFinished(){
         qInfo() << "Login start for " + userid;
 
         qInfo() << "User name is sending";
-        m_Greeter.authenticate(fixUserName(userid));
-        // addUsertoCache(userid.trimmed());//todo delete
-        //Cache().setLastUser(userid.trimmed());//todo delete
+        m_Greeter.authenticate(LoginHelpers::fixUserName(userid));
 
         loginTimerState = 2;
         messageReceived = false;
@@ -1430,12 +1407,6 @@ void LoginForm::userPasswordResetRequest(){
             dup2(inpipefd[1], STDOUT_FILENO);
             dup2(inpipefd[1], STDERR_FILENO);
 
-            //ask kernel to deliver SIGTERM in case the parent dies
-            //prctl(PR_SET_PDEATHSIG, SIGTERM);
-
-            //replace tee with your process
-            //execl("/usr/bin/passwd", "passwd", user_data,  (char*) NULL);
-
             execl("/sbin/runuser", "runuser","-l", user_data, "-c", "passwd", (char*) NULL);
             exit(1);
         }
@@ -1455,7 +1426,7 @@ void LoginForm::userPasswordResetRequest(){
 
         received = QString::fromUtf8(data);
 
-        if(!strcmp(data, "Current Password: ") || !strcmp(data, "(current) UNIX password: ") || !strcmp(data, "(geçerli) parola: ") || !strcmp(data, "Current Kerberos password:")
+        if(!strcmp(data, "Current Password: ") || !strcmp(data, "Current password: ") || !strcmp(data, "(current) UNIX password: ") || !strcmp(data, "(geçerli) parola: ") || !strcmp(data, "Current Kerberos password:")
                 || !strcmp(data, "Current Kerberos password: ") || !strcmp(data, "Enter login(LDAP) password: ")){
 
             memset(data, 0, 512);
@@ -1614,13 +1585,14 @@ void LoginForm::passwordResetTimerFinished(){
             userx = toolButtons[(lastuserindex+ 1) % 3]->text();
         }
 
-        m_Greeter.authenticate(fixUserName(userx));
+        m_Greeter.authenticate(LoginHelpers::fixUserName(userx));
         resetTimerState = 2;
         break;
 
     case 2:
         //enter password
         m_Greeter.respond(oldPassword);
+
         resetTimerState = 3;
         break;
 
@@ -1716,7 +1688,7 @@ void LoginForm::passwordResetTimerFinished(){
             //pageTransition(ui->resetpage);
 
             pageTransition(ui->warningpage);
-            ui->warninglabel->setText(translateResetPwdMessage(lastMessage));
+            ui->warninglabel->setText(LoginHelpers::translateResetPwdMessage(lastMessage));
             resetStartFlag = true;
             userResetRequest = false;
             needPasswordChange = false;
@@ -1733,38 +1705,6 @@ void LoginForm::passwordResetTimerFinished(){
         resetStartFlag = true;
     }
 
-}
-
-QString LoginForm::translateResetPwdMessage(QString message){
-
-
-    QString res;
-
-    if(message.contains("The password fails the dictionary check - it is based on a dictionary word")){
-
-        res = tr("Error: The password fails the dictionary check - it is based on a dictionary word");
-
-    }else if(message.contains("The password is shorter than 8 characters")){
-
-        res = tr("Error: The password is shorter than 8 characters");
-
-    }else if(message.contains("Please make sure the password meets the complexity constraints")){
-
-        res = tr("Error: Please make sure the password meets the complexity constraints and don't use old passwords");
-
-    }else if(message.contains("The password is the same as the old one")){
-
-        res = tr("Error: The password is the same as the old one");
-
-    }else if(message.contains("The password fails the dictionary check - it is too simplistic/systematic")){
-
-        res = tr("Error: The password fails the dictionary check - it is too simplistic/systematic");
-
-    }else{
-        res = message;
-    }
-
-    return res;
 }
 
 
@@ -1855,34 +1795,33 @@ QString LoginForm::getValueOfString(QString data, QString value){
 
 bool LoginForm::capsOn()
 {
-    FILE *fp;
-    char data[128];
+
     bool ret = false;
 
 
-    fp = popen("xset q | grep Caps", "r");
-    if (fp == NULL) {
+    QString data;
+    QStringList arguments = { "-c" ,"xset q | grep Caps"};
+    QProcess proc;
+    proc.start("/bin/bash", arguments);
+    if (!proc.waitForStarted()){
         qWarning() << "Unable to open capslock status" ;
         return false;
     }
 
+    while(proc.waitForReadyRead()){
+        data = QString::fromUtf8(proc.readLine());
+    }
 
-    int read_size = fread(data, 1, sizeof(data), fp);
-
-    if(read_size < 1){
+    if(data.length() < 1){
         qWarning() << " Unable to read capslock status" ;
-
-        /* close */
-        pclose(fp);
         return false;
     }
 
-    if(getValueOfString(QString::fromLocal8Bit(data), QString("Caps Lock")).compare("off") == 0)
+    if(getValueOfString(data, QString("Caps Lock")).compare("off") == 0)
         ret = false;
     else
         ret = true;
 
-    pclose(fp);
     return ret;
 
 }
@@ -2083,7 +2022,7 @@ void LoginForm::usersbuttonReposition(){
     ui->toolButtoncenter->setIcon(iconActive);
 
     if(Settings().show_domaininfo())
-        ui->domainnameLabel->setText(getUserRealm(userList[0]));
+        ui->domainnameLabel->setText(LoginHelpers::getUserRealm(userList[0]));
     emit sendCurrentUser(userList[0]);
 
     ui->toolButtonleft->hide();
@@ -2305,116 +2244,6 @@ QString LoginForm::getHostname(){
     return m_Greeter.hostname();
 }
 
-QString LoginForm::readRealm(){
-
-    FILE *fp;
-    char data[512] = {0};
-    bool readerror = false;
-    QString  tmpstring;
-    QString outstr;
-    int read_size;
-
-    // fp = popen("net ads info", "r");
-    fp = popen("/usr/sbin/realm list", "r");
-    if (fp == NULL) {
-        qWarning() << "Realm can not be read 1" ;
-        readerror = true;
-    }
-
-
-
-
-
-    if(readerror == false){
-
-        read_size = fread(data, 1, sizeof(data), fp);
-
-        if( read_size < 1){
-            qDebug() << tr("Realm can not be read") ;
-        }else{
-            outstr = getValueOfString(QString::fromLocal8Bit(data, read_size), QString("realm-name"));
-        }
-
-
-    }
-
-    /* close */
-    pclose(fp);
-
-
-    return outstr;
-
-}
-
-
-QString LoginForm::getUserRealm(QString username){
-
-
-    if(username.isNull() || username.isEmpty() || !username.compare(tr("Other User")))
-        return QString("");
-
-    if(ifLocalUser(username))
-        return QString("");
-    else
-        return realM;
-}
-
-
-bool LoginForm::ifLocalUser(QString username){
-
-
-    FILE *fp;
-    char data[16096] = {0};
-    bool readerror = false;
-    QString  tmpstring;
-    QString outstr = NULL;
-    int read_size;
-    QString command;
-    QString compare;
-
-
-    command = QString(" cat /etc/passwd | grep ") + username;
-
-    fp = popen(command.toLocal8Bit().data(), "r");
-    if (fp == NULL) {
-        qWarning() << "username can not be read from passwd" ;
-        readerror = true;
-    }
-
-
-    if(readerror == false){
-
-        read_size = fread(data, 1, sizeof(data), fp);
-
-        if( read_size < 5){
-            //  qDebug() << tr("Realm can not be read 2") ;
-            readerror = true;
-        }else{
-            outstr = QString(data);
-        }
-
-
-    }
-    pclose(fp);
-
-    if(readerror){
-        return false;
-    }else{
-
-        compare = username +":";
-
-        if(!outstr.left(compare.length()).compare(compare)){
-
-            return true;
-        }
-
-        return false;
-
-    }
-
-    return false;
-}
-
 
 void LoginForm::on_pwShowbutton_pressed()
 {
@@ -2490,13 +2319,13 @@ void LoginForm::debugBox(QString mes){
 void LoginForm::on_pushButton_right_clicked()
 {
     emit resetHideTimer();
-    userSelectStateMachine(Qt::Key_Right, -1);
+    userSelectStateMachine(Qt::Key_Right);
 }
 
 void LoginForm::on_pushButton_left_clicked()
 {
     emit resetHideTimer();
-    userSelectStateMachine(Qt::Key_Left, -1);
+    userSelectStateMachine(Qt::Key_Left);
 }
 
 void LoginForm::showLoginPage(void){
@@ -2563,53 +2392,4 @@ void LoginForm::on_userInput_textEdited(const QString &arg1)
     justshowed = false;
 }
 
-
-
-QString LoginForm::fixUserName(QString &username){
-
-    QString newname, tmpname;
-    int offset;
-    QString realm = getUserRealm(username);
-
-    offset = username.indexOf(realm.toLower());
-
-    if(offset < 0)
-        offset = username.indexOf(realm.toUpper());
-
-    if(offset > 1){
-        tmpname = username.mid(0, offset - 1);
-    }else{
-        tmpname = username;
-    }
-
-    if(realm.length() > 2){
-        newname = tmpname.trimmed() + "@" + realm;
-    }else {
-        newname = tmpname;
-    }
-
-    return newname;
-}
-
-QString LoginForm::getShortUsername(QString &username){
-
-    QString newname, tmpname;
-    int offset;
-    QString realm = getUserRealm(username);
-
-    offset = username.indexOf(realm.toLower());
-
-    if(offset < 0)
-        offset = username.indexOf(realm.toUpper());
-
-    if(offset > 1){
-        tmpname = username.mid(0, offset - 1);
-    }else{
-        tmpname = username;
-    }
-
-
-    return tmpname;
-
-}
 
