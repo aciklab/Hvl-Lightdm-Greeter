@@ -17,9 +17,6 @@ public:
     ~NetworkDialog();
 
     void SetText(QString Text);
-
-    void addService(QString Text);
-
     bool logButtonClicked;
 
 Q_SIGNALS:

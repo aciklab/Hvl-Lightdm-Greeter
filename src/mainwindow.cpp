@@ -1,5 +1,6 @@
 #include <QRect>
 #include <QApplication>
+#include <QGuiApplication>
 #include <QDesktopWidget>
 #include <QPalette>
 #include <QString>
@@ -46,12 +47,14 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
 {
     setObjectName(QString("MainWindow_%1").arg(screen));
 
-    QRect screenRect = QApplication::desktop()->screenGeometry(screen);
-    setGeometry(screenRect);
-
+    //QRect screenRect = QApplication::desktop()->screenGeometry(screen);
+    // setGeometry(screenRect);
+    qScreen = QGuiApplication::screens()[screen];
+    setGeometry(qScreen->geometry());
+    QRect screenRect = qScreen->geometry();
 
     if(mainWindowsList != NULL){
-        mainWindowsList[m_Screen] = this;
+        mainWindowsList[screen] = this;
 
     }
 
@@ -60,10 +63,10 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
 
     // display login dialog only in the main screen
     
-    if (m_Screen == QApplication::desktop()->primaryScreen()) {
+    if (qScreen == QGuiApplication::primaryScreen()) {
 
-        if(QApplication::desktop()->screenCount() > 1){
-            mainWindowsList = (MainWindow**)malloc(sizeof(MainWindow*) * QApplication::desktop()->screenCount());
+        if(QGuiApplication::screens().length() > 1){
+            mainWindowsList = (MainWindow**)malloc(sizeof(MainWindow*) *QGuiApplication::screens().length());
             mainWindowsList[m_Screen] = this;
         }
 
@@ -85,16 +88,8 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         m_LoginForm->move(offsetX, offsetY);
         m_LoginForm->show();
 
-#if 0
-        hostNameLabel = new QLabel(this);
-        hostNameLabel->setGeometry(screenRect.width() - 160 ,0, 150, 30);
-        hostNameLabel->setText(m_LoginForm->getHostname());
 
-        hostNameLabel->setStyleSheet("	color: white;\nfont-size:16px;\nfont:bold italic;");
-        hostNameLabel->setAlignment(Qt::AlignRight);
-#endif
         m_SettingsForm = new SettingsForm(this);
-
 
         maxX = screenRect.width() - m_SettingsForm->width();
         maxY = screenRect.height() - m_SettingsForm->height();
@@ -125,9 +120,6 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
 
 
         m_ClockForm = new clockForm(this);
-
-        maxX = screenRect.width();
-        maxY = screenRect.height();
 
         maxX = screenRect.width() - m_ClockForm->width();
         maxY = screenRect.height() - m_ClockForm->height();
@@ -197,7 +189,7 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
 
 
         setOtherBackgrounds(screenImage, true, false);
-        if(QApplication::desktop()->screenCount() > 1 && mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
+        if(QGuiApplication::screens().length() > 1 && mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
             if(mainWindowsList[1]->pos().x() == mainWindowsList[0]->pos().x()){
                 mainWindowsList[1]->hide();
                 mirrored = 1;
@@ -217,11 +209,12 @@ MainWindow::~MainWindow()
 
 bool MainWindow::showLoginForm()
 {
-    return m_Screen == QApplication::desktop()->primaryScreen();
+    return qScreen == QGuiApplication::primaryScreen();
 }
 
 void MainWindow::setFocus(Qt::FocusReason reason)
 {
+    qDebug() <<reason;
 }
 
 int MainWindow::getOffset(QString settingsOffset, int maxVal, int defaultVal)
@@ -260,8 +253,7 @@ void MainWindow::setMainBackground(bool start)
 
     this->setStyleSheet("background-position: center;");
 
-    rect = QApplication::desktop()->screenGeometry(m_Screen);
-    //QRect rect = QApplication::desktop()->screenGeometry(m_Screen);
+    rect = qScreen->geometry();
     QString pathToBackgroundImageDir = greeterSettings.value(BACKGROUND_IMAGE_DIR_KEY).toString();
     QString pathToBackgroundImage = greeterSettings.value(BACKGROUND_IMAGE_KEY).toString();
 
@@ -280,10 +272,10 @@ void MainWindow::setMainBackground(bool start)
 
         if(!selectflag){
 
-            qsrand (time(NULL));
+
 
             if(backgroundImageList.count() > 1)
-                image_index = qrand() % (backgroundImageList.count());
+                image_index = QRandomGenerator::global()->generate() % (backgroundImageList.count());
             else
                 image_index = 0;
 
@@ -361,7 +353,7 @@ void MainWindow::setMainBackground(bool start)
     this->setPalette(palette);
 
     /* We are painting x root background with current greeter background */
-    if(m_Screen == QApplication::desktop()->primaryScreen()){
+    if(qScreen == QGuiApplication::primaryScreen()){
         if(!finalImage.isNull()){
             if(start)
                 setRootBackground(finalImage);
@@ -391,8 +383,7 @@ void MainWindow::setOtherBackgrounds(QImage *backgroundImage, bool start, bool f
 
     this->setStyleSheet("background-position: center;");
 
-    rect = QApplication::desktop()->screenGeometry(m_Screen);
-    //QRect rect = QApplication::desktop()->screenGeometry(m_Screen);
+    rect = qScreen->geometry();
 
     if(!backgroundImage){
         palette.setColor(QPalette::Background, qRgb(255, 203, 80));
@@ -432,7 +423,7 @@ void MainWindow::setOtherBackgrounds(QImage *backgroundImage, bool start, bool f
     this->setPalette(palette);
 
     /* We are painting x root background with current greeter background */
-    if(m_Screen == QApplication::desktop()->primaryScreen()){
+    if(qScreen == QGuiApplication::primaryScreen()){
         if(!tmp_image.isNull()){
             if(start)
                 setRootBackground(tmp_image);
@@ -472,8 +463,6 @@ QImage MainWindow::resizeImage(QRect screen_rect, QImage input_image){
     QImage new_image;
     //QImage final_image(screen_rect.width(), screen_rect.height(), input_image.format());
     QImage final_image;
-    int i;
-    int j;
 
     qreal screen_aspect_ratio = (qreal)screen_rect.width() / (qreal)screen_rect.height();
 
@@ -481,7 +470,8 @@ QImage MainWindow::resizeImage(QRect screen_rect, QImage input_image){
 
     if(image_aspect_ratio <= 1){
 
-        image_height = screen_rect.width() / image_aspect_ratio;
+        image_width = screen_rect.width();
+       // image_height = screen_rect.width() / image_aspect_ratio;
 
         new_image = input_image.scaled(image_width, screen_rect.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
@@ -499,22 +489,6 @@ QImage MainWindow::resizeImage(QRect screen_rect, QImage input_image){
             int pixeloffset = (image_height - screen_rect.height()) / 2;
             final_image = new_image.copy(0, pixeloffset, image_width, image_height - (  pixeloffset));
 
-#if 0
-
-
-
-            for(j = 0; j < image_width; j++){
-
-                for(i = 0; i < screen_rect.height(); i++){
-
-                    final_image.setPixelColor(j,i,new_image.pixelColor(j,i + pixeloffset));
-
-                }
-            }
-
-#endif
-
-
         }else if(screen_aspect_ratio <= image_aspect_ratio){
             //norrower
             image_width = screen_rect.height() * image_aspect_ratio;
@@ -524,20 +498,6 @@ QImage MainWindow::resizeImage(QRect screen_rect, QImage input_image){
             int pixeloffset = (image_width - screen_rect.width()) / 2;
 
             final_image = new_image.copy(pixeloffset, 0, image_width -  ( 2 * pixeloffset), image_height);
-
-
-
-#if 0
-            for(j = 0; j < image_height; j++){
-
-                for(i = 0; i < screen_rect.width(); i++){
-
-                    final_image.setPixelColor(i,j,new_image.pixelColor(i + pixeloffset, j));
-
-                }
-            }
-#endif
-
 
         }
 
@@ -552,7 +512,7 @@ QImage MainWindow::resizeImage(QRect screen_rect, QImage input_image){
 void MainWindow::moveForms(int screen_number){
 
 
-    QRect screenRect = QApplication::desktop()->screenGeometry(screen_number);
+    QRect screenRect = qScreen->geometry();
     setGeometry(screenRect);
 
     screenRect.x();
@@ -601,10 +561,9 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         showForms();
     }
 
-    if (event->type() == QEvent::MouseMove && QApplication::desktop()->screenCount() > 1)
+    if (event->type() == QEvent::MouseMove && QGuiApplication::screens().length() > 1)
     {
 
-        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
         QPoint globalCursorPos = QCursor::pos();
 
         if(mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
@@ -618,26 +577,26 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         if(mirrored)
             mainWindowsList[1]->hide();
 
-        int mousescreen = qApp->desktop()->screenNumber(globalCursorPos);
+        QScreen *mousescreen =QGuiApplication::screenAt(globalCursorPos);
 
-        if(mousescreen != currentScreen){
+        if(mousescreen != qScreen){
 
             // mainWindowsList[previousScreen]->hide();
-            previousScreen = currentScreen;
-            currentScreen = mousescreen;
+            prevQScreen = qScreen;
+            qScreen = mousescreen;
 
 
 
-            QRect prvScreenRect = QApplication::desktop()->screenGeometry(previousScreen);
-            QRect curScreenRect = QApplication::desktop()->screenGeometry(currentScreen);
+            QRect prvScreenRect = prevQScreen->geometry();
+            QRect curScreenRect = qScreen->geometry();
 
-            for (int i = 0; i < QApplication::desktop()->screenCount(); i++){
+            for (int i = 0; i < QGuiApplication::screens().length(); i++){
                 if(mainWindowsList[i]->pos().x() == prvScreenRect.x() && mainWindowsList[i]->pos().y() == prvScreenRect.y()){
                     mainWindowsList[i]->hide();
                     mainWindowsList[i]->setGeometry(curScreenRect);
 
                     mainWindowsList[i]->move(QPoint(curScreenRect.x(), curScreenRect.y()));
-                    mainWindowsList[i]->m_Screen = currentScreen;
+                    mainWindowsList[i]->qScreen = qScreen;
 
                     mainWindowsList[i]->setOtherBackgrounds(screenImage,false, true);
                     mainWindowsList[i]->show();
@@ -650,7 +609,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
                     mainWindowsList[i]->hide();
                     mainWindowsList[i]->setGeometry(prvScreenRect);
                     mainWindowsList[i]->move(QPoint(prvScreenRect.x(), prvScreenRect.y()));
-                    mainWindowsList[i]->m_Screen = previousScreen;
+                    mainWindowsList[i]->qScreen = prevQScreen;
 
                     mainWindowsList[i]->setOtherBackgrounds(screenImage,false, true);
                     moveForms(currentScreen);
@@ -668,7 +627,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 
     }
 
-    if(mirrored && QApplication::desktop()->screenCount() > 1)
+    if(mirrored && QGuiApplication::screens().length() > 1)
         mainWindowsList[1]->hide();
 
     return false;
@@ -686,7 +645,7 @@ void MainWindow::receiveKeyboardRequest(QPoint from, int width){
     int keyboard_width = screenKeyboard->width();
     int keyboard_height = screenKeyboard->height();
 
-    QRect screenRect = QApplication::desktop()->screenGeometry(QApplication::desktop()->primaryScreen());
+    QRect screenRect = QGuiApplication::primaryScreen()->geometry();
 
 
     if(screenRect.width() <= 640){
@@ -785,7 +744,7 @@ void MainWindow::checkNetwork(){
 void MainWindow::receiveNetworkStatus(bool connected){
 
 
-    if(QApplication::desktop()->screenCount() > 1 && mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
+    if(QGuiApplication::screens().length() > 1 && mainWindowsList[1] != NULL && mainWindowsList[0] != NULL){
         if(mainWindowsList[1]->pos().x() == mainWindowsList[0]->pos().x()){
             mainWindowsList[1]->hide();
             mirrored = 1;
@@ -874,7 +833,7 @@ void MainWindow::showForms(void){
     if( m_LoginForm != NULL ){
 
 
-        rect = QApplication::desktop()->screenGeometry(m_Screen);
+        rect = qScreen->geometry();
         QGraphicsOpacityEffect *blur = new QGraphicsOpacityEffect;
         blur->setOpacity(0.5);
 
@@ -898,7 +857,7 @@ void MainWindow::hideForms(void){
         return;
     }
 
-    rect = QApplication::desktop()->screenGeometry(m_Screen);
+    rect = qScreen->geometry();
     tmpimage = resizeImage(rect, *screenImage);
     QBrush brush(tmpimage);
     palette.setBrush(this->backgroundRole(), brush);
@@ -939,12 +898,11 @@ void MainWindow::hideForms(void){
 void MainWindow::backgroundTimerCallback(void){
     setMainBackground(true);
 
-    if(QApplication::desktop()->screenCount() > 1){
 
-        for (int i = 0; i < QApplication::desktop()->screenCount(); i++){
-            mainWindowsList[i]->setOtherBackgrounds(screenImage, true, false);
-        }
+    for (int i = 0; i < QGuiApplication::screens().length(); i++){
+        mainWindowsList[i]->setOtherBackgrounds(screenImage, true, false);
     }
+
 }
 
 
@@ -975,7 +933,7 @@ void MainWindow::setRootBackground(QImage img){
     int screen = m_Screen;
     Window win = RootWindow(dis, screen);
 
-    QRect screenRect = QApplication::desktop()->screenGeometry(screen);
+    QRect screenRect = qScreen->geometry();
 
     int width = screenRect.width();
     int height = screenRect.height();
@@ -1014,6 +972,6 @@ void MainWindow::setRootBackground(QImage img){
     /* Clear pixmap */
     XFreePixmap(dis, pix);
     XDestroyImage(image);
-
+    // free(tempimage);
     XClearWindow(dis, win);
 }

@@ -34,6 +34,7 @@ public:
     bool showLoginForm();
     int m_Screen;
 
+
     LoginForm* loginForm() { return m_LoginForm;}
     void setOtherBackgrounds(QImage *image,  bool start, bool forcemain);
 
@@ -83,6 +84,9 @@ private:
     PowerForm *m_PowerForm = NULL;
     static int image_index;
     static bool selectflag;
+
+    QScreen *qScreen = NULL;
+    QScreen *prevQScreen = NULL;
 
     int currentScreen;
     int previousScreen;

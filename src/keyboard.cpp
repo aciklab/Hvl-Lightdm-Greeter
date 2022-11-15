@@ -14,8 +14,6 @@ Keyboard::Keyboard(QWidget *parent) :
 
     setAttribute(Qt::WA_ShowWithoutActivating);
     readKeyboardLayout();
-   // setKeyboardLayout(NULL);
-
 
     connect ( ui->Buttonacute, SIGNAL( clicked() ), this, SLOT( keyboardHandler() ) );
     connect ( ui->Button1, SIGNAL( clicked() ), this, SLOT( keyboardHandler() ) );
@@ -72,17 +70,7 @@ Keyboard::Keyboard(QWidget *parent) :
     connect ( ui->Buttondot, SIGNAL( clicked() ), this, SLOT( keyboardHandler() ) );
     connect ( ui->Buttonslash, SIGNAL( clicked() ), this, SLOT( keyboardHandler() ) );
 
-
-
-
-
     connect ( ui->space, SIGNAL( clicked() ), this, SLOT( keyboardHandler() ) );
-
-
-   // connect ( ui->Buttonbackspace, SIGNAL( clicked() ), this, SLOT( on_backspace_clicked() ) );
-
-
-
 
     outputText = "";
     shift = false;
@@ -93,8 +81,7 @@ Keyboard::Keyboard(QWidget *parent) :
 
 }
 
-void Keyboard::keyboardHandler()
-{
+void Keyboard::keyboardHandler(){
     QPushButton *button = (QPushButton *)sender();
     //qDebug() << "pressed " << button->text();
 
@@ -115,24 +102,12 @@ void Keyboard::keyboardHandler()
     {
         inputText = ui->Buttona->text() ;
     }
-    else
-    {
 
-        inputText = inputText;
-
-    }
 
     keySender(inputText);
-    //ui->lineEdit->setText(outputText);
     clearFocus();
 }
 
-
-void Keyboard::setLineEdit(QLineEdit * line)
-{
-
-
-}
 
 Keyboard::~Keyboard()
 {

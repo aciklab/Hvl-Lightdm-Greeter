@@ -13,7 +13,7 @@
 #include <QThread>
 #include <QMessageBox>
 #include <QDir>
-
+#include <iostream>
 #include "settings.h"
 #include "networkdialog.h"
 
@@ -31,10 +31,10 @@ QString SettingsForm::current_layout = NULL;
 const int KeyRole = QLightDM::SessionsModel::KeyRole;
 SettingsForm::SettingsForm(QWidget *parent) :
     QWidget(parent),
-    sessionsModel(QLightDM::SessionsModel::LocalSessions,this),
-    ui(new Ui::SettingsForm)
+    ui(new Ui::SettingsForm),
+    sessionsModel(QLightDM::SessionsModel::LocalSessions,this)
 {
-    int i,j;
+    int i;
     QString lastsession;
     QString user;
 
@@ -48,16 +48,8 @@ SettingsForm::SettingsForm(QWidget *parent) :
 
     timer = new QTimer();
 
-
-    //ui->sessioncomboBox->setModel(&sessionsModel);
-
-    // qDebug() <<"---"<< sessionsModel.rowCount(QModelIndex());
-
-    //qm.setPixel(1,qRgba(33, 67, 106, 100));
-    //QPixmap iconsession(":/resources/login_1_1_bos.png");
     QPixmap iconsession(2,30);
 
-    // iconsession.fill(qRgba(0x1B, 0x6C, 0xBD, 0xFF));
     iconsession.fill(QColor(0x1B, 0x6C, 0xBD, 0));
 
     for(i = 0; i< sessionsModel.rowCount(QModelIndex()); i++){
@@ -65,12 +57,6 @@ SettingsForm::SettingsForm(QWidget *parent) :
         ui->sessioncomboBox->addItem(iconsession, sessionsModel.data(sessionsModel.index(i, 0), KeyRole).toString(), sessionsModel.data(sessionsModel.index(i, 0), KeyRole).toString());
 
     }
-
-    // ui->sessioncomboBox->setItemIcon(1, QIcon(iconsession));
-    //ui->sessioncomboBox->setItemIcon(0, QIcon(iconsession));
-    //ui->sessioncomboBox->setItemIcon(-1, QIcon(iconsession));
-
-
     user = Cache().getLastUser();
     lastsession = Cache().getLastSession(user);
 
@@ -89,21 +75,11 @@ SettingsForm::SettingsForm(QWidget *parent) :
     nwDialog = new NetworkDialog();
     nwDialog->setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
 
-    for (int i = 0; i< serviceList.count();i++){
-        nwDialog->addService(serviceList[i]);
-    }
-
     connect(nwDialog, &NetworkDialog::servicereset, this, &SettingsForm::networkCheckSlot);
 
 
     networkOK = true;
     network_check_counter = 0;
-
-    //ui->formFrame->clearFocus();
-    //ui->kybrdcomboBox->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-    //ui->leaveComboBox->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-    //ui->NwpushButton->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-
     timer->setTimerType(Qt::TimerType::CoarseTimer);
     timer->setInterval(50);
     timer->setSingleShot(false);
@@ -139,8 +115,6 @@ void SettingsForm::initialize(){
 
 int SettingsForm::CheckService(QString Service){
 
-    FILE *fp;
-    char data[220];
 
     QString  tmpstring;
     QString outstr;
@@ -148,30 +122,28 @@ int SettingsForm::CheckService(QString Service){
 
     tmpstring = "";
 
-    QString command = "systemctl status " + Service;
-    QByteArray commandba = command.toLocal8Bit();
-
-    fp = popen(commandba.data(), "r");
-    if (fp == NULL) {
+    QString line;
+    QStringList arguments = {"status", Service};
+    QProcess proc;
+    proc.start("systemctl", arguments);
+    if (!proc.waitForStarted()){
         qWarning() << Service + " Service check failed";
         return SERVICE_NOT_EXIST;//no need to wait
     }
 
+    while(proc.waitForReadyRead())
+    {
+        line.append(proc.readAll());
+    }
 
-    read_size = fread(data, 1, sizeof(data), fp);
-    pclose(fp);
-
-    if(read_size < 1){
+    if(line.length() < 1){
         qWarning() << Service + " Service check failed";
         return SERVICE_NOT_EXIST;
     }
 
-    /* close */
-
-
     /*get current layout*/
 
-    outstr = getValueOfString(QString::fromLocal8Bit(data, read_size), QString("Active"));
+    outstr = getValueOfString(line, QString("Active"));
 
     if(outstr == NULL){
 
@@ -180,7 +152,6 @@ int SettingsForm::CheckService(QString Service){
             qWarning() << Service + " Service is not exixst";
 
         }
-
 
         return SERVICE_NOT_EXIST;
     }
@@ -290,22 +261,14 @@ void SettingsForm::checkNetwork(){
     else{
         sendNWStatus(false);
     }
-
-
     nwDialog->SetText(networkInfoString);
-
     network_check_counter++;
-
-
 
 }
 
 
 void SettingsForm::timer_finished(){
-
-
     checkNetwork();
-
     timer->stop();
     timer->setInterval(5000);
     timer->start();
@@ -348,43 +311,40 @@ void SettingsForm::on_NwpushButton_clicked()
 
 void SettingsForm::getKeyboardLayouts(){
 
-    FILE *fp;
-    char data[128];
-    bool readerror = false;
+
     QString  tmpstring;
     QString outstr;
-    int read_size;
+
     QString cachedlayout;
+    QString data;
+    QByteArray read_data;
 
     tmpstring = "";
 
-    fp = popen("setxkbmap -query", "r");
-    if (fp == NULL) {
+    QString line;
+    QStringList arguments = {"-query"};
+    QProcess proc;
+    proc.start("setxkbmap", arguments);
+    if (!proc.waitForStarted()){
         qWarning() << "Current Keyboard layout can not be read" ;
-        readerror = true;
-    }
-
-    if(readerror == false){
-
-        read_size = fread(data, 1, sizeof(data), fp);
-
-        if( read_size < 1){
-            qDebug() << tr("Current Keyboard layout can not be read\n") ;
-        }
 
     }
 
-    /* close */
-    pclose(fp);
+
+    while(proc.waitForReadyRead())
+        read_data.append(proc.readAll());
+
+    // read_data = proc.readAllStandardOutput();
+    data = QString(read_data);
 
     /*get current layout*/
 
-    outstr = getValueOfString(QString::fromLocal8Bit(data, read_size), QString("layout"));
+    outstr = getValueOfString(data, QString("layout"));
 
     if(outstr != NULL)
         tmpstring = outstr;
 
-    outstr = getValueOfString(QString::fromLocal8Bit(data, read_size), QString("variant"));
+    outstr = getValueOfString(data, QString("variant"));
 
     if(outstr != NULL)
         tmpstring += ' ' + outstr;
@@ -405,17 +365,9 @@ void SettingsForm::getKeyboardLayouts(){
     emit sendKeyboardLayout(tmpstring);
     current_layout = tmpstring;
 
-    QByteArray ba;
-    char *setcommand;
-    char cmd_array[256];
-
-    ba = tmpstring.toLatin1();
-
-    setcommand = ba.data();
-
-    sprintf(cmd_array, "/usr/bin/setxkbmap %s &",setcommand);
-
-    system(cmd_array);
+    QStringList arguments_s = tmpstring.split(" ");
+    proc.start("setxkbmap", arguments_s);
+    proc.waitForFinished();
 
     Cache().setUserKeyboard(tmpstring);
 
@@ -431,30 +383,21 @@ void SettingsForm::getKeyboardLayouts(){
             ui->kybrdcomboBox->setCurrentIndex(i);
     }
 
-
-
 }
 
 
 void SettingsForm::setKeyboardLayout(int index){
 
-    char *setcommand;
-    char cmd_array[256];
-    memset(cmd_array,0,sizeof(cmd_array));
+    QProcess proc;
 
     QString actionName = ui->kybrdcomboBox->itemData(index).toString();
 
     qInfo() << "Current Keyboard layout is setting to " +  actionName + " now";
 
-    QByteArray ba;
-    ba = actionName.toLatin1();
+    QStringList arguments_s = actionName.split(" ");
 
-    setcommand = ba.data();
-
-    sprintf(cmd_array, "/usr/bin/setxkbmap %s &",setcommand);
-
-    system(cmd_array);
-
+    proc.start("setxkbmap", arguments_s);
+    proc.waitForFinished();
     Cache().setUserKeyboard(actionName);
 
     //set onscreen keyboard layout
@@ -464,7 +407,7 @@ void SettingsForm::setKeyboardLayout(int index){
 
 QString SettingsForm::getValueOfString(QString data, QString value){
 
-    //qPrintable();
+
     QString result;
 
     int indx = data.indexOf(value);

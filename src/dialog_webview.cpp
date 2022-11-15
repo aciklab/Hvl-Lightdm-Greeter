@@ -13,8 +13,7 @@
 
 Dialog_webview::Dialog_webview(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::Dialog_webview)
-{
+    ui(new Ui::Dialog_webview){
 
     ui->setupUi(this);
 
@@ -22,7 +21,6 @@ Dialog_webview::Dialog_webview(QWidget *parent) :
 
     setFixedHeight(700 + ui->closebutton->width() + 1);
     setFixedWidth(1024);
-
 
     ui->widget1->setFixedHeight(700);
     ui->widget1->setFixedWidth(1024);
@@ -32,17 +30,14 @@ Dialog_webview::Dialog_webview(QWidget *parent) :
     QString tmpurl = checkPasswordResetWebPage();
 
     if(!tmpurl.isEmpty() && !tmpurl.isNull()){
-        //ui->widget1->load(QUrl(tmpurl,QUrl::ParsingMode::TolerantMode));
        ui->widget1->setUrl(QUrl(tmpurl,QUrl::ParsingMode::TolerantMode));
-        //ui->widget1->setFocus();
         qInfo() <<  "Opening webpage " +  tmpurl + " now";
     }else{
         qCritical() << "Failed to opening webpage " +  tmpurl;
     }
 }
 
-Dialog_webview::~Dialog_webview()
-{
+Dialog_webview::~Dialog_webview(){
     delete ui;
 
 }
@@ -58,7 +53,6 @@ QString Dialog_webview::checkPasswordResetWebPage(){
 
     }
 
-
     return ret_string;
 
 }
@@ -69,8 +63,6 @@ void Dialog_webview::Initialize(){
 }
 
 
-void Dialog_webview::on_closebutton_clicked()
-{
+void Dialog_webview::on_closebutton_clicked(){
     close();
-
 }

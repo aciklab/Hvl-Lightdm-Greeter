@@ -9,6 +9,7 @@
 #include <QLocale>
 #include <QRegularExpression>
 #include <QObject>
+#include <QGuiApplication>
 #include <initializer_list>
 #include <signal.h>
 #include <unistd.h>
@@ -22,20 +23,16 @@
 
 #include "main.h"
 #include "mainwindow.h"
+#include "x11_utils.h"
 
 QFile logfile;
 QTextStream ts;
-int m_Screen;
-int timeout, interval, prefer_blanking, allow_exposures;
 
-void syncX();
+QScreen *screen;
+extern bool lockhint;
+
+
 void catchUnixSignals(std::initializer_list<int> quitSignals);
-void changeResolution();
-void setScreensaver();
-void restoreScreensaver();
-bool lockhint = false;
-void openNumlock(void);
-
 
 void messageHandler(QtMsgType type, const QMessageLogContext&, const QString& msg)
 {
@@ -66,10 +63,7 @@ int main(int argc, char *argv[])
     }
 #endif
     openNumlock();
-    m_Screen = 0;
-    // changeResolution();//gm_edition
 
-    // use std::cerr for logs
     qInstallMessageHandler(messageHandler);
     Cache::prepare();
 
@@ -77,11 +71,10 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
     catchUnixSignals({SIGQUIT, SIGINT, SIGTERM, SIGHUP});
-    m_Screen = QApplication::desktop()->primaryScreen();
+    screen = QGuiApplication::primaryScreen();
 
 
     qDebug() << "hvl-lightdm is starting now";
-
 
     system("/usr/lib/at-spi2-core/at-spi-bus-launcher --launch-immediately &");
 
@@ -102,7 +95,7 @@ int main(int argc, char *argv[])
     }
 
     MainWindow *focusWindow = 0;
-    for (int i = 0; i < QApplication::desktop()->screenCount(); ++i) {
+    for (int i = 0; i < QGuiApplication::screens().length(); ++i) {
         MainWindow *w = new MainWindow(i);
         w->show();
         if (w->showLoginForm())
@@ -131,48 +124,10 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-
-
-#include <X11/Xatom.h>
-#include <X11/Xlib.h>
-#include <QtX11Extras/QX11Info>
-#include <X11/Xcursor/Xcursor.h>
-#include <X11/Xutil.h>
-#include <X11/Xos.h>
-#include<X11/extensions/Xrandr.h>
-#include <X11/XKBlib.h>
-
-void syncX(){
-#if 0
-    Display *display = QX11Info::display();
-    int screen = XDefaultScreen (display);
-    Window w = RootWindow (display, screen);
-    Atom id = XInternAtom (display, "AT_SPI_BUS", True);
-    if (id != None)
-    {
-        XDeleteProperty (display, w, id);
-        XSync (display, false);
-    }
-
-#endif
-}
-
-
-
-void ignoreUnixSignals(std::initializer_list<int> ignoreSignals) {
-    // all these signals will be ignored.
-    for (int sig : ignoreSignals)
-        signal(sig, SIG_IGN);
-
-
-}
-
 void catchUnixSignals(std::initializer_list<int> quitSignals) {
     auto handler = [](int sig) -> void {
         // blocking and not aysnc-signal-safe func are valid
         qInfo() << "quit the application by signal " << sig;
-
-
         QCoreApplication::quit();
     };
 
@@ -188,196 +143,4 @@ void catchUnixSignals(std::initializer_list<int> quitSignals) {
 
     for (auto sig : quitSignals)
         sigaction(sig, &sa, nullptr);
-}
-
-
-
-
-void changeResolution(){
-
-
-
-    Display                 *dpy;
-    Window                  root;
-    int                     num_sizes;
-    XRRScreenSize           *xrrs;
-    XRRScreenConfiguration  *conf;
-    short                   possible_frequencies[64][64];
-    short                   original_rate;
-    Rotation                original_rotation;
-    SizeID                  original_size_id;
-
-    QRect screenRect = QApplication::desktop()->screenGeometry(m_Screen);
-
-    if(screenRect.width() <= 1920 && screenRect.height() <= 1080){
-        //return;
-    }
-
-
-    //     CONNECT TO X-SERVER, GET ROOT WINDOW ID
-    //
-    dpy    = XOpenDisplay(NULL);
-    root   = RootWindow(dpy, 0);
-    //
-    //     GET POSSIBLE SCREEN RESOLUTIONS
-    //
-    xrrs   = XRRSizes(dpy, 0, &num_sizes);
-    //
-    //     LOOP THROUGH ALL POSSIBLE RESOLUTIONS,
-    //     GETTING THE SELECTABLE DISPLAY FREQUENCIES
-    //
-    for(int i = 0; i < num_sizes; i ++) {
-        short   *rates;
-        int     num_rates;
-
-        printf("\n\t%2i : %4i x %4i   (%4imm x%4imm ) ", i, xrrs[i].width, xrrs[i].height, xrrs[i].mwidth, xrrs[i].mheight);
-
-        rates = XRRRates(dpy, 0, i, &num_rates);
-
-        for(int j = 0; j < num_rates; j ++) {
-            possible_frequencies[i][j] = rates[j];
-            printf("%4i ", rates[j]); } }
-
-    printf("\n");
-    //
-    //     GET CURRENT RESOLUTION AND FREQUENCY
-    //
-    conf                   = XRRGetScreenInfo(dpy, root);
-    original_rate          = XRRConfigCurrentRate(conf);
-    original_size_id       = XRRConfigCurrentConfiguration(conf, &original_rotation);
-
-    printf("\n\tCURRENT SIZE ID  : %i\n", original_size_id);
-    printf("\tCURRENT ROTATION : %i \n", original_rotation);
-    printf("\tCURRENT RATE     : %i Hz\n\n", original_rate);
-    //
-    //     CHANGE RESOLUTION
-    //
-
-    for(int i = 0; i < num_sizes; i ++) {
-
-        if(xrrs[i].width == 1360 && xrrs[i].height == 768){
-
-            printf("\tCHANGED TO %i x %i PIXELS, %i Hz\n\n", xrrs[i].width, xrrs[i].height, possible_frequencies[i][0]);
-            XRRSetScreenConfigAndRate(dpy, conf, root, i, RR_Rotate_0, possible_frequencies[i][0], CurrentTime);
-        }
-    }
-
-
-    //
-    //     SLEEP A WHILE
-    //
-    usleep(5000000);
-    //
-    //     RESTORE ORIGINAL CONFIGURATION
-    //
-    //  printf("\tRESTORING %i x %i PIXELS, %i Hz\n\n", xrrs[original_size_id].width, xrrs[original_size_id].height, original_rate);
-    //XRRSetScreenConfigAndRate(dpy, conf, root, original_size_id, original_rotation, original_rate, CurrentTime);
-    //
-    //     EXIT
-    //
-    XCloseDisplay(dpy);
-}
-
-
-void setScreensaver(){
-
-
-    Display *display = QX11Info::display();
-    XGetScreenSaver (display, &timeout, &interval, &prefer_blanking, &allow_exposures);
-    XForceScreenSaver (display, ScreenSaverActive);
-    //XSetScreenSaver (display, 60, 0, ScreenSaverActive, DefaultExposures);
-    XSetScreenSaver (display, 60, 0, ScreenSaverActive, DefaultExposures);
-
-}
-
-void restoreScreensaver(){
-
-    Display *display = QX11Info::display();
-    XSetScreenSaver (display, timeout, interval, prefer_blanking, allow_exposures);
-}
-
-
-
-#include <X11/Xlib.h>
-
-
-
-
-
-Display* dpy;
-
-int xkb_init()
-{
-    int xkb_opcode, xkb_event, xkb_error;
-    int xkb_lmaj = XkbMajorVersion;
-    int xkb_lmin = XkbMinorVersion;
-    return XkbLibraryVersion( &xkb_lmaj, &xkb_lmin )
-            && XkbQueryExtension( dpy, &xkb_opcode, &xkb_event, &xkb_error,
-                                  &xkb_lmaj, &xkb_lmin );
-}
-
-unsigned int xkb_mask_modifier( XkbDescPtr xkb, const char *name )
-{
-    int i;
-    if( !xkb || !xkb->names )
-        return 0;
-    for( i = 0;
-         i < XkbNumVirtualMods;
-         i++ )
-    {
-        char* modStr = XGetAtomName( xkb->dpy, xkb->names->vmods[i] );
-        if( modStr != NULL && strcmp(name, modStr) == 0 )
-        {
-            unsigned int mask;
-            XkbVirtualModsToReal( xkb, 1 << i, &mask );
-            return mask;
-        }
-    }
-    return 0;
-}
-
-unsigned int xkb_numlock_mask()
-{
-    XkbDescPtr xkb;
-    if(( xkb = XkbGetKeyboard( dpy, XkbAllComponentsMask, XkbUseCoreKbd )) != NULL )
-    {
-        unsigned int mask = xkb_mask_modifier( xkb, "NumLock" );
-        XkbFreeKeyboard( xkb, 0, True );
-        return mask;
-    }
-    return 0;
-}
-
-int xkb_set_on()
-{
-    unsigned int mask;
-    if( !xkb_init())
-        return 0;
-    mask = xkb_numlock_mask();
-    if( mask == 0 )
-        return 0;
-    XkbLockModifiers ( dpy, XkbUseCoreKbd, mask, mask);
-    return 1;
-}
-
-void numlock_set_on()
-{
-    xkb_set_on();
-}
-
-
-void openNumlock(void){
-
-    dpy = XOpenDisplay( NULL );
-    if( dpy == NULL )
-    {
-
-        return;
-    }
-
-    numlock_set_on();
-
-
-    XCloseDisplay( dpy );
-
 }

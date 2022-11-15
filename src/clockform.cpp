@@ -34,22 +34,15 @@ clockForm::~clockForm()
 
 void clockForm::updateClock(){
 
-    timer->stop();
-
-    QDateTime *qdt = new QDateTime();
-
     QString tempstring;
-
-
+    timer->stop();
+    QDateTime *qdt = new QDateTime();
     tempstring = qdt->currentDateTime().toString("hh:mm");
     ui->clockLabel->setText(tempstring);
-
-
     tempstring = qdt->currentDateTime().toString("dddd");
     ui->dayLabel->setText(tempstring.toUpper());
-
     tempstring = qdt->currentDateTime().toString(Qt::SystemLocaleShortDate);
-    //tempstring = qdt->currentDateTime().toString("dd.MM.yyyy");
+    delete(qdt);
     ui->dateLabel->setText(tempstring.section(' ', 0,0));
 
     timer->setInterval(1000);

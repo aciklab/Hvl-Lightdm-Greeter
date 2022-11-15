@@ -19,13 +19,6 @@ PowerForm::PowerForm(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
-    QT_TRANSLATE_NOOP("QPlatformTheme", "Cancel");
-    QT_TRANSLATE_NOOP("QPlatformTheme", "Apply");
-    QT_TRANSLATE_NOOP("QPlatformTheme", "&Yes");
-    QT_TRANSLATE_NOOP("QPlatformTheme", "&No");
-    QT_TRANSLATE_NOOP("QPlatformTheme", "OK");
-
     if (!power.canShutdown())
         ui->toolButtonShutdown->hide();
 

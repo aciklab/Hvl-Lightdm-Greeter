@@ -17,7 +17,6 @@ class Keyboard : public QWidget
     
 public:
     explicit Keyboard(QWidget *parent = 0);
-    void setLineEdit(QLineEdit * );
     ~Keyboard();
     QPushButton *enterButton;
 
