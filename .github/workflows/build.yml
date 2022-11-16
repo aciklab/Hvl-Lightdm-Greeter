@@ -17,8 +17,8 @@ jobs:
     - name: install packages
       run: |
         apt-get update
-        apt-get install -y qt5-default build-essential cmake qtwebengine5-dev libqt5x11extras5-dev liblightdm-qt5-3-dev libxcursor-dev libxrandr-dev qttools5-dev qttools5-dev-tools
-        apt install zip gpg curl jq upx -y 
+        apt-get install -yq qt5-default build-essential cmake qtwebengine5-dev libqt5x11extras5-dev liblightdm-qt5-3-dev libxcursor-dev libxrandr-dev qttools5-dev qttools5-dev-tools
+        apt install zip gpg curl jq upx -yq 
     - name: Build greeter
       run: |
         ./scripts/greeter.sh
