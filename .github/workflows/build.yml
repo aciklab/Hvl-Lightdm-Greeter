@@ -34,4 +34,3 @@ jobs:
             lightdm-hvl-greeter_${{ env.VERSION }}_amd64.deb
           name: "Release ${{ env.VERSION }}"
           tag_name: "v${{ env.VERSION }}"
-          prerelease: true

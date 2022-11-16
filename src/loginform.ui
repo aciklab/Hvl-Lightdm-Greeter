@@ -1538,7 +1538,7 @@ QPushButton:hover{
            </size>
           </property>
           <property name="focusPolicy">
-           <enum>Qt::ClickFocus</enum>
+           <enum>Qt::StrongFocus</enum>
           </property>
           <property name="text">
            <string/>
@@ -1572,7 +1572,7 @@ QPushButton:hover{
            </size>
           </property>
           <property name="focusPolicy">
-           <enum>Qt::ClickFocus</enum>
+           <enum>Qt::StrongFocus</enum>
           </property>
           <property name="text">
            <string/>
@@ -1612,7 +1612,7 @@ QPushButton:hover{
            </size>
           </property>
           <property name="focusPolicy">
-           <enum>Qt::ClickFocus</enum>
+           <enum>Qt::StrongFocus</enum>
           </property>
           <property name="text">
            <string/>
@@ -1649,6 +1649,9 @@ QPushButton:hover{
             <height>20</height>
            </rect>
           </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -1666,6 +1669,9 @@ QPushButton:hover{
             <height>20</height>
            </rect>
           </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -1682,6 +1688,9 @@ QPushButton:hover{
             <width>30</width>
             <height>20</height>
            </rect>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
           </property>
           <property name="text">
            <string/>
@@ -1756,7 +1765,7 @@ QPushButton:hover{
               </size>
              </property>
              <property name="focusPolicy">
-              <enum>Qt::NoFocus</enum>
+              <enum>Qt::ClickFocus</enum>
              </property>
              <property name="text">
               <string>Reset Password</string>
