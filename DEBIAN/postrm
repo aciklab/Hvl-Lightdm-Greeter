@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if test -f /etc/lightdm/lightdm.conf; then
+
+     sed -i 's/greeter-session=hvl-lightdm-greeter/#greeter-session=example-gtk-gnome/g' /etc/lightdm/lightdm.conf
+
+     sed -i 's/greeter-user=root/#greeter-user=lightdm/g' /etc/lightdm/lightdm.conf
+else
+     if test -f /etc/lightdm/lightdm.conf.d/60-lightdm-hvl.conf; then
+          rm /etc/lightdm/lightdm.conf.d/60-lightdm-hvl.conf
+     fi
+fi

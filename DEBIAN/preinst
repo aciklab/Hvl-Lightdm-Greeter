@@ -1,0 +1,28 @@
+#!/bin/bash
+
+
+
+if test -f /etc/lightdm/lightdm.conf; then
+    
+   echo lightdm.conf is ok
+fi
+
+
+if [ ! -d /usr/share/lightdm/lightdm-hvl-greeter.conf.d ]; then
+    mkdir /usr/share/lightdm/lightdm-hvl-greeter.conf.d
+fi
+
+if [ ! -d /usr/share/lightdm/lightdm-hvl-greeter.conf.d/lang ]; then
+    mkdir /usr/share/lightdm/lightdm-hvl-greeter.conf.d/lang
+fi
+
+if [ ! -d /usr/share/lightdm/lightdm-hvl-greeter.conf.d/resources ]; then
+    mkdir /usr/share/lightdm/lightdm-hvl-greeter.conf.d/resources
+fi
+
+if [ ! -d /usr/share/lightdm/lightdm-hvl-greeter.conf.d/resources/bgs ]; then
+    mkdir /usr/share/lightdm/lightdm-hvl-greeter.conf.d/resources/bgs
+fi
+
+chmod 777 /var/lib/lightdm
+chown lightdm:lightdm /var/lib/lightdm -R

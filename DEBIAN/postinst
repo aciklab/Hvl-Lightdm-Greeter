@@ -1,0 +1,47 @@
+#!/bin/bash
+
+
+if test -f /etc/lightdm/lightdm.conf; then
+    
+	if grep -Fxq "greeter-session=hvl-lightdm-greeter" /etc/lightdm/lightdm.conf
+	then
+    		echo "lightm.conf is ok" 
+	elif grep -Fxq "#greeter-session=example-gtk-gnome" /etc/lightdm/lightdm.conf
+	then
+    		sed -i 's/#greeter-session=example-gtk-gnome/greeter-session=hvl-lightdm-greeter/g' /etc/lightdm/lightdm.conf
+	elif grep -Fxq "#greeter-session=hvl-lightdm-greeter" /etc/lightdm/lightdm.conf
+	then
+    		sed -i 's/#greeter-session=hvl-lightdm-greeter/greeter-session=hvl-lightdm-greeter/g' /etc/lightdm/lightdm.conf
+    
+	else
+  		sed -i 's/#unity-compositor-timeout=60/#unity-compositor-timeout=60\ngreeter-session=hvl-lightdm-greeter/g' /etc/lightdm/lightdm.conf
+	fi
+
+
+        if grep -Fxq "greeter-user=root" /etc/lightdm/lightdm.conf
+	then
+    		echo "lightm user config is ok" 
+        else
+  	        sed -i 's/#greeter-user=lightdm/greeter-user=root/g' /etc/lightdm/lightdm.conf
+        fi
+
+
+else
+        touch /etc/lightdm/lightdm.conf.d/60-lightdm-hvl.conf
+	chmod 644 /etc/lightdm/lightdm.conf.d/60-lightdm-hvl.conf
+        printf "[LightDM]\ngreeter-user=root\n\n[Seat:*]\ngreeter-session=hvl-lightdm-greeter\n" > /etc/lightdm/lightdm.conf
+
+fi
+
+
+
+
+
+
+if test -f /usr/share/lightdm/lightdm-hvl-greeter.conf.d/hvl-lightdm-greeter.conf; then
+        rm /usr/share/lightdm/lightdm-hvl-greeter.conf.d/hvl-lightdm-greeter.conf.tmp
+
+else
+        mv /usr/share/lightdm/lightdm-hvl-greeter.conf.d/hvl-lightdm-greeter.conf.tmp /usr/share/lightdm/lightdm-hvl-greeter.conf.d/hvl-lightdm-greeter.conf
+
+fi

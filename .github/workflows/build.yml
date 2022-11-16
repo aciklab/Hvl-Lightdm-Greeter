@@ -1,0 +1,36 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+   build_1:
+    runs-on: [ubuntu-20.04]
+    container: 'debian:10'
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: install packages
+      run: |
+        sudo apt-get install -y qt5-default build-essential cmake qtwebengine5-dev libqt5x11extras5-dev liblightdm-qt5-3-dev libxcursor-dev libxrandr-dev qttools5-dev qttools5-dev-tools
+        sudo apt install zip gpg curl jq upx -y 
+    - name: Build greeter
+      run: |
+        ./scripts/greeter.sh
+        VERSION=$(cat VERSION)
+        echo "VERSION=$(cat VERSION)" >> $GITHUB_ENV
+    - name: Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      with:
+          files: |
+            lightdm-hvl-greeter_${{ env.VERSION }}_amd64.deb
+          name: "Release ${{ env.VERSION }}"
+          tag_name: "v${{ env.VERSION }}"
+          prerelease: true
