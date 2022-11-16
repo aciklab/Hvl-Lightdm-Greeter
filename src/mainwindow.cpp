@@ -162,8 +162,6 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         if(slide_timeout < 1)
             slide_timeout = 60;
 
-
-
         backgroundTimer = new QTimer();
         backgroundTimer->setTimerType(Qt::TimerType::CoarseTimer);
         backgroundTimer->setInterval(slide_timeout * 1000);
@@ -197,9 +195,6 @@ MainWindow::MainWindow(int screen, QWidget *parent) :
         }
 
     }
-
-
-
 
 }
 
@@ -898,9 +893,12 @@ void MainWindow::hideForms(void){
 void MainWindow::backgroundTimerCallback(void){
     setMainBackground(true);
 
-
     for (int i = 0; i < QGuiApplication::screens().length(); i++){
+        if(qScreen == QGuiApplication::primaryScreen())
+            continue;
+
         mainWindowsList[i]->setOtherBackgrounds(screenImage, true, false);
+
     }
 
 }
